@@ -8,6 +8,11 @@
 const SHEET_ID_DEFAULT = '1_y_qWhuJPybW3hPo91t3bRNu-xd0LS3dojfZbI8fk1A';
 const LOG_SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbyL8b-8Rh92_mKvA16Gbzymla-H8Uav-bjv8RHoasoc-rD6Vu59o9kAEsNA0Dpv68K_/exec';
 
+// Всегда возвращает актуальный URL скрипта (из adminpanel или дефолт)
+function getScriptUrl() {
+  return localStorage.getItem('bs_script_url') || LOG_SCRIPT_URL;
+}
+
 // ⚠️ Пароль не хранится в открытом виде — только SHA-256 хеш
 // Для смены пароля: запусти в консоли: crypto.subtle.digest('SHA-256', new TextEncoder().encode('НовыйПароль')).then(b => console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
 const ADMIN_PW_HASH    = '7404297e91a4ab5b540fceefb2c0030cc24965b1ac4591c774435421b5d8b9ad'; // SHA-256 от текущего пароля
@@ -500,10 +505,10 @@ function startSecurityMonitor() {
 
     try {
       // Проверяем через Apps Script — база не открыта публично
-      const res = await fetch(LOG_SCRIPT_URL, {
+      const res = await fetch(getScriptUrl(), {
         method:  'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body:    JSON.stringify({ _type: 'auth', iin: currentIin, phone: sessionStorage.getItem('bs_phone') || '' })
+        body:    JSON.stringify({ _type: 'auth', iin: currentIin, phone: sessionStorage.getItem('bs_phone') || localStorage.getItem('bs_phone') || '' })
       });
       if (!res.ok) return; // сбой сети — не прерываем сессию
 
@@ -684,13 +689,20 @@ function applyLinks() {
   }
   const tn = $('tg-note');
   if (tn) tn.innerHTML = t('tgNote').replace('__TG__', tgUrl || '#');
-  // Плавающие кнопки WA/TG
+  // Плавающие кнопки WA/TG — WA всегда виден, TG только если URL задан
   const floatWa = $('float-wa-btn');
   const floatTg = $('float-tg-btn');
-  if (floatWa && waUrl) floatWa.href = waUrl;
+  if (floatWa) {
+    if (waUrl) floatWa.href = waUrl;
+    floatWa.style.display = '';
+  }
   if (floatTg) {
-    if (tgUrl) { floatTg.href = tgUrl; floatTg.style.display = ''; }
-    else floatTg.style.display = 'none';
+    if (tgUrl) { 
+      floatTg.href = tgUrl; 
+      floatTg.style.display = ''; 
+    } else { 
+      floatTg.style.display = 'none'; 
+    }
   }
   applyLoginPageReviews();
 }
@@ -2078,7 +2090,8 @@ function getDeviceInfo() {
 
 // ══════════════════════════════ LOGIN LOG ════════════════════════
 async function logLogin(iin, name) {
-  if (!LOG_SCRIPT_URL || LOG_SCRIPT_URL.includes('ВАШИ_ID')) return;
+  const scriptUrl = getScriptUrl();
+  if (!scriptUrl || scriptUrl.includes('ВАШИ_ID')) return;
   try {
     const now = new Date();
     const { device, os, browser } = getDeviceInfo();
@@ -2090,7 +2103,7 @@ async function logLogin(iin, name) {
       ip = (await r.json()).ip || '—';
     } catch (_) {}
 
-    fetch(LOG_SCRIPT_URL, {
+    fetch(scriptUrl, {
       method:  'POST',
       mode:    'no-cors',
       headers: { 'Content-Type': 'application/json' },
@@ -2146,7 +2159,7 @@ async function doLogin() {
     const timeoutId  = setTimeout(() => controller.abort(), 15000);
     let res;
     try {
-      res = await fetch(LOG_SCRIPT_URL, {
+      res = await fetch(getScriptUrl(), {
         method:  'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body:    JSON.stringify({ _type: 'auth', iin, phone }),
@@ -2252,10 +2265,15 @@ async function doLogin() {
   currentUser = foundName || name;
   logLogin(iin, currentUser);
 
+  // Сохраняем сессию: sessionStorage для браузера + localStorage с TTL для PWA
+  const sessionData = JSON.stringify({ user: currentUser, iin, phone, ts: Date.now() });
   try {
     sessionStorage.setItem('bs_user',  currentUser);
     sessionStorage.setItem('bs_iin',   iin);
     sessionStorage.setItem('bs_phone', phone);
+  } catch (_) {}
+  try {
+    localStorage.setItem('bs_session', sessionData);
   } catch (_) {}
 
   $('login-success').textContent   = t('ok') + ' ' + currentUser + '!';
@@ -2320,7 +2338,12 @@ function showLessons() {
 function logout() {
   if (securityCheckInterval) { clearInterval(securityCheckInterval); securityCheckInterval = null; }
   currentUser = null; currentCourseIdx = null;
-  try { sessionStorage.removeItem('bs_user'); sessionStorage.removeItem('bs_iin'); } catch(_) {}
+  try { 
+    sessionStorage.removeItem('bs_user'); 
+    sessionStorage.removeItem('bs_iin'); 
+    sessionStorage.removeItem('bs_phone');
+  } catch(_) {}
+  try { localStorage.removeItem('bs_session'); } catch(_) {}
 
   $('logout-btn').style.display    = 'none';
   $('mobile-nav').style.display    = 'none';
@@ -2389,10 +2412,13 @@ function saveAdmin() {
   if (val) { gsSheetId = val; localStorage.setItem('gs_sheet_id', val); }
   const scriptInput = $('admin-script-input');
   if (scriptInput && scriptInput.value.trim()) {
-    localStorage.setItem('bs_script_url', scriptInput.value.trim());
+    const scriptVal = scriptInput.value.trim();
+    localStorage.setItem('bs_script_url', scriptVal);
+    showToast('✅ Сохранено! Script URL обновлён.', 'success');
+  } else {
+    showToast(t('savedOk'), 'success');
   }
   closeModal('admin-modal');
-  showToast(t('savedOk'), 'success');
   loadSheet2();
 }
 
@@ -2442,20 +2468,26 @@ async function runAdminDiag() {
   // 2. Test Apps Script
   log('🔍 Проверяем Apps Script (авторизацию)...');
   if (scEl) scEl.textContent = '⏳ проверяем...';
-  const scriptUrl = localStorage.getItem('bs_script_url') || LOG_SCRIPT_URL;
+  const scriptUrl = getScriptUrl();
   try {
     const ctrl2 = new AbortController();
     setTimeout(() => ctrl2.abort(), 10000);
     const res2 = await fetch(scriptUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ _type: 'ping' }),
+      body: JSON.stringify({ _type: 'auth', iin: '000000000000', phone: '' }),
       signal: ctrl2.signal
     });
     if (res2.ok) {
-      const txt = await res2.text();
-      if (scEl) scEl.textContent = '✅ отвечает';
-      log(`✅ Apps Script отвечает (${txt.length} байт)`, true);
+      const json2 = await res2.json();
+      // Ожидаем { found: false } — ИИН не найден, но скрипт работает
+      if (typeof json2.found !== 'undefined') {
+        if (scEl) scEl.textContent = '✅ отвечает';
+        log(`✅ Apps Script работает. Ответ: found=${json2.found}`, true);
+      } else {
+        if (scEl) scEl.textContent = '⚠️ неожиданный ответ';
+        log(`⚠️ Apps Script ответил, но формат неожиданный: ${JSON.stringify(json2)}`, null);
+      }
     } else {
       if (scEl) scEl.textContent = '❌ HTTP ' + res2.status;
       log(`❌ Apps Script HTTP ${res2.status}. Переопубликуйте скрипт: "Развернуть → Веб-приложение → Все"`, false);
@@ -2463,7 +2495,7 @@ async function runAdminDiag() {
   } catch(e2) {
     if (scEl) scEl.textContent = '❌ недоступен';
     if (e2.name === 'AbortError') {
-      log('❌ Apps Script: таймаут. Проверьте URL и права публикации', false);
+      log('❌ Apps Script: таймаут 10с. Проверьте URL и права публикации', false);
     } else {
       log('❌ Apps Script: ' + e2.message + '. URL неверный или скрипт не опубликован', false);
     }
@@ -2562,11 +2594,40 @@ window.addEventListener('scroll', () => {
 async function tryRestoreSession() {
   let savedUser = null;
   let savedIin = null;
+  let savedPhone = null;
+
+  // Сначала пробуем sessionStorage (браузер)
   try { 
-    savedUser = sessionStorage.getItem('bs_user'); 
-    savedIin  = sessionStorage.getItem('bs_iin');
+    savedUser  = sessionStorage.getItem('bs_user'); 
+    savedIin   = sessionStorage.getItem('bs_iin');
+    savedPhone = sessionStorage.getItem('bs_phone');
   } catch(_) {}
-  
+
+  // Для PWA: если sessionStorage пустой — проверяем localStorage с TTL 8 ч
+  if (!savedUser) {
+    try {
+      const raw = localStorage.getItem('bs_session');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const TTL = 8 * 60 * 60 * 1000; // 8 часов
+        if (parsed && parsed.user && parsed.iin && (Date.now() - (parsed.ts || 0)) < TTL) {
+          savedUser  = parsed.user;
+          savedIin   = parsed.iin;
+          savedPhone = parsed.phone || '';
+          // Восстанавливаем в sessionStorage
+          try {
+            sessionStorage.setItem('bs_user',  savedUser);
+            sessionStorage.setItem('bs_iin',   savedIin);
+            sessionStorage.setItem('bs_phone', savedPhone);
+          } catch(_) {}
+        } else {
+          // Истёк TTL — удаляем
+          localStorage.removeItem('bs_session');
+        }
+      }
+    } catch(_) {}
+  }
+
   if (!savedUser || !savedIin) return false;
   
   currentUser = savedUser;
