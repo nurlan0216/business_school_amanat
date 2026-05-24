@@ -1991,268 +1991,742 @@ body.video-theater #theater-esc {
   margin-top: 8px;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   LANDING PAGE
+   ═══════════════════════════════════════════════════════════════ */
 
-/* ══════════════════════════════ GUEST LANDING STYLES ═══════════════════ */
-#landing-screen {
-  background-color: #0a0a0f;
-  color: #fff;
-  font-family: 'DM Sans', sans-serif;
+.landing-page {
   min-height: 100vh;
+  padding-top: 72px;
+  color: var(--text1);
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── Hero ── */
+.lp-hero {
   position: relative;
-  overflow-x: hidden;
-}
-
-#landing-screen .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
+  padding: 64px 20px 0;
   text-align: center;
+  overflow: hidden;
 }
-
-#landing-screen .gold-text {
-  color: #f5c842;
-  background: linear-gradient(135deg, #f5c842 0%, #e2b834 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.lp-hero-glow {
+  position: absolute;
+  top: -120px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(245,200,66,.18) 0%, transparent 70%);
+  pointer-events: none;
 }
-
-.landing-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(10, 10, 15, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(39, 39, 62, 0.5);
-}
-
-.landing-header-inner {
-  max-width: 1200px;
+.lp-hero-inner {
+  position: relative;
+  max-width: 560px;
   margin: 0 auto;
-  padding: 16px 24px;
-  display: flex;
-  justify-content: space-between;
+}
+.lp-badge {
+  display: inline-flex;
   align-items: center;
+  gap: 8px;
+  background: rgba(245,200,66,.1);
+  border: 1px solid rgba(245,200,66,.25);
+  border-radius: 99px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: .04em;
+  margin-bottom: 24px;
 }
-
-.landing-logo {
+.lp-badge-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+  animation: pulse 2s infinite;
+}
+.lp-h1 {
   font-family: 'Syne', sans-serif;
+  font-size: clamp(36px, 9vw, 58px);
   font-weight: 800;
-  font-size: 20px;
-  letter-spacing: -0.5px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
   line-height: 1.1;
+  letter-spacing: -.02em;
+  margin-bottom: 20px;
 }
-
-.landing-logo .sub-logo {
-  font-size: 10px;
-  color: #8080a8;
-  letter-spacing: 2px;
-  font-weight: 400;
-  margin-top: 2px;
+.lp-h1-gold {
+  color: var(--gold);
+  position: relative;
 }
+.lp-sub {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text2);
+  margin-bottom: 32px;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.lp-sub strong { color: var(--text1); }
 
-#landing-screen .btn-primary {
-  display: inline-block;
-  background: linear-gradient(135deg, #f5c842 0%, #d4aa28 100%);
-  color: #060608;
+.lp-hero-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+.lp-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gold);
+  color: #000;
   font-weight: 700;
-  padding: 16px 32px;
+  font-size: 14px;
+  padding: 14px 26px;
   border-radius: 14px;
-  text-decoration: none;
-  font-size: 16px;
   border: none;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 8px 24px rgba(245, 200, 66, 0.25);
+  text-decoration: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 4px 24px rgba(245,200,66,.35);
 }
-
-#landing-screen .btn-primary:active {
-  transform: scale(0.98);
+.lp-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(245,200,66,.5);
 }
-
-.btn-secondary {
-  background: rgba(22, 22, 34, 0.8);
-  border: 1px solid rgba(39, 39, 62, 1);
-  color: #fff;
+.lp-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,.06);
+  color: var(--text1);
   font-weight: 600;
-  padding: 10px 20px;
-  border-radius: 10px;
-  cursor: pointer;
   font-size: 14px;
-  transition: all 0.2s ease;
+  padding: 14px 22px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.1);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background .2s, border-color .2s;
+}
+.lp-btn-secondary:hover {
+  background: rgba(255,255,255,.1);
+  border-color: rgba(255,255,255,.2);
 }
 
-.btn-secondary:hover {
-  background: #1d1d2e;
-  border-color: #f5c842;
+/* ── Stats bar ── */
+.lp-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 20px 20px 0 0;
+  padding: 24px 32px;
+  max-width: 480px;
+  margin: 0 auto;
 }
-
-.landing-hero {
-  padding: 80px 0 60px 0;
+.lp-stat {
+  flex: 1;
+  text-align: center;
 }
-
-.hero-title {
+.lp-stat-num {
+  display: block;
   font-family: 'Syne', sans-serif;
-  font-size: 42px;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1.1;
+}
+.lp-stat-lbl {
+  font-size: 11px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.lp-stat-div {
+  width: 1px;
+  height: 36px;
+  background: rgba(255,255,255,.1);
+  margin: 0 20px;
+}
+
+/* ── Sections ── */
+.lp-section {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 56px 20px;
+}
+.lp-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.lp-section-h {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(24px, 5vw, 34px);
   font-weight: 800;
   line-height: 1.2;
-  letter-spacing: -1px;
-  margin-bottom: 20px;
-  max-width: 800px;
+  margin-bottom: 32px;
+}
+
+/* ── Features ── */
+.lp-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 480px) {
+  .lp-features { grid-template-columns: 1fr; }
+}
+.lp-feat {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 18px;
+  padding: 22px 20px;
+  transition: border-color .2s, background .2s;
+}
+.lp-feat:hover {
+  background: rgba(255,255,255,.07);
+  border-color: rgba(245,200,66,.2);
+}
+.lp-feat-icon {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+.lp-feat-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text1);
+}
+.lp-feat-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text3);
+}
+
+/* ── Reviews ── */
+.lp-reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.lp-review {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 18px;
+  padding: 22px 20px;
+}
+.lp-review-stars {
+  color: var(--gold);
+  font-size: 14px;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+.lp-review-text {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text2);
+  margin-bottom: 16px;
+  font-style: italic;
+}
+.lp-review-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.lp-review-ava {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+.lp-review-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text1);
+}
+.lp-review-city {
+  font-size: 12px;
+  color: var(--text3);
+}
+
+/* ── Demo section ── */
+.lp-demo-section {
+  border-top: 1px solid rgba(255,255,255,.06);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  background: rgba(245,200,66,.03);
+}
+.lp-demo-inner {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+@media (max-width: 500px) {
+  .lp-demo-inner { flex-direction: column; }
+}
+.lp-demo-left { flex: 1; }
+.lp-demo-right { flex-shrink: 0; }
+.lp-demo-preview {
+  width: 140px; height: 100px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(245,200,66,.15), rgba(245,200,66,.05));
+  border: 1px solid rgba(245,200,66,.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+}
+.lp-demo-play {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  box-shadow: 0 4px 20px rgba(245,200,66,.4);
+}
+.lp-demo-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+/* ── Final CTA ── */
+.lp-cta {
+  position: relative;
+  text-align: center;
+  padding: 64px 20px 80px;
+  overflow: hidden;
+}
+.lp-cta-glow {
+  position: absolute;
+  bottom: -100px; left: 50%;
+  transform: translateX(-50%);
+  width: 500px; height: 400px;
+  background: radial-gradient(circle, rgba(245,200,66,.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.lp-cta-h {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 7vw, 44px);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.lp-cta-sub {
+  font-size: 15px;
+  color: var(--text3);
+  margin-bottom: 32px;
+  max-width: 340px;
   margin-left: auto;
   margin-right: auto;
 }
 
-.hero-subtitle {
-  font-size: 16px;
-  line-height: 1.6;
-  color: #8080a8;
-  max-width: 640px;
-  margin: 0 auto 36px auto;
+/* Light theme overrides */
+[data-theme="light"] .lp-feat,
+[data-theme="light"] .lp-review {
+  background: rgba(0,0,0,.03);
+  border-color: rgba(0,0,0,.07);
+}
+[data-theme="light"] .lp-stats {
+  background: rgba(0,0,0,.03);
+  border-color: rgba(0,0,0,.07);
+}
+[data-theme="light"] .lp-btn-secondary {
+  background: rgba(0,0,0,.04);
+  border-color: rgba(0,0,0,.12);
+  color: var(--text1);
 }
 
-.landing-features {
-  padding: 60px 0;
-  background: #0f0f16;
+
+/* ════════════════════════════════════════════════════════════════════
+   ADDITIONS v3.2 — Page transitions, Cursor tooltip, Idle beacon,
+   Resume beacon, Back button, Online counter, lp-online-dot,
+   Curator demo buttons, Missing hover polish
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Page fade transitions ─────────────────────────────────────── */
+.page-fade-in {
+  animation: pageFadeIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.page-fade-out {
+  animation: pageFadeOut 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+  pointer-events: none;
+}
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pageFadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-8px); }
 }
 
-.section-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 28px;
-  font-weight: 800;
-  margin-bottom: 40px;
+/* Landing page default hidden state handled by JS; ensure it's properly
+   positioned above other content when visible */
+.landing-page {
+  position: relative;
+  z-index: 1;
 }
 
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.feature-card {
-  background: #161622;
-  border: 1px solid #1e1e30;
-  padding: 30px 24px;
-  border-radius: 20px;
-  text-align: left;
-  transition: border-color 0.3s ease;
-}
-
-.feature-card:hover {
-  border-color: rgba(245, 200, 66, 0.4);
-}
-
-.feature-icon {
-  font-size: 32px;
-  margin-bottom: 16px;
-}
-
-.feature-card h3 {
-  font-family: 'Syne', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-.feature-card p {
-  font-size: 14px;
-  color: #8080a8;
-  line-height: 1.5;
-}
-
-.landing-proof {
-  padding: 60px 0;
-}
-
-.stats-counter {
-  margin-bottom: 50px;
-}
-
-.stats-number {
-  font-family: 'Syne', sans-serif;
-  font-size: 54px;
-  font-weight: 800;
-  display: block;
-  line-height: 1;
-}
-
-.stats-label {
-  font-size: 15px;
-  color: #8080a8;
-  margin-top: 10px;
-  display: block;
-}
-
-.reviews-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-
-.review-card {
-  background: #0f0f16;
-  border: 1px solid #1e1e30;
-  padding: 24px;
-  border-radius: 18px;
-  text-align: left;
-}
-
-.review-text {
-  font-style: italic;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #e2e2e8;
-  margin-bottom: 16px;
-}
-
-.review-author {
+/* ── 2. Cursor tooltip ────────────────────────────────────────────── */
+.cursor-tooltip {
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 10000;
+  background: rgba(10, 10, 18, 0.92);
+  color: var(--gold);
+  font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   font-weight: 700;
-  color: #f5c842;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
+  padding: 6px 13px;
+  border-radius: 9px;
+  border: 1px solid rgba(245, 200, 66, 0.22);
+  pointer-events: none;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: scale(0.88) translateY(4px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.cursor-tooltip.visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+/* Hide tooltip on touch devices */
+@media (hover: none) { .cursor-tooltip { display: none; } }
+
+/* ── 3. Idle beacon — pulsing glow on primary CTA after 5s idle ─── */
+@keyframes idle-beacon-pulse {
+  0%   { box-shadow: 0 4px 24px rgba(245,200,66,.35), 0 0 0 0 rgba(245,200,66,.5); }
+  50%  { box-shadow: 0 8px 32px rgba(245,200,66,.55), 0 0 0 12px rgba(245,200,66,0); }
+  100% { box-shadow: 0 4px 24px rgba(245,200,66,.35), 0 0 0 0 rgba(245,200,66,0); }
+}
+.lp-btn-primary.idle-beacon {
+  animation: idle-beacon-pulse 1.8s ease-in-out infinite;
+}
+/* Don't double-animate if already has another animation */
+.lp-btn-primary.idle-beacon:hover {
+  animation: none;
 }
 
-.landing-demo-cta {
-  padding: 40px 0;
+/* ── 4. Resume beacon — floating "Continue" pill ─────────────────── */
+.resume-beacon {
+  position: fixed;
+  bottom: 96px; /* above mobile nav */
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 450;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+  max-width: calc(100vw - 32px);
+}
+.resume-beacon.rb-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+@media (min-width: 641px) {
+  .resume-beacon {
+    bottom: 32px;
+    left: auto;
+    right: 24px;
+    transform: translateX(0) translateY(20px);
+  }
+  .resume-beacon.rb-visible {
+    transform: translateX(0) translateY(0);
+  }
+}
+.rb-inner {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--rb-color, var(--gold));
+  border-radius: 16px;
+  padding: 12px 16px 12px 14px;
+  cursor: pointer;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(0,0,0,0.2),
+    0 0 24px color-mix(in srgb, var(--rb-color, var(--gold)) 18%, transparent);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  min-width: 240px;
+  max-width: 360px;
+  position: relative;
+}
+.rb-inner:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 16px 48px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(0,0,0,0.25),
+    0 0 32px color-mix(in srgb, var(--rb-color, var(--gold)) 28%, transparent);
+}
+.rb-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+}
+.rb-text { flex: 1; min-width: 0; }
+.rb-course {
+  font-size: 10px; font-weight: 800;
+  color: var(--text3); text-transform: uppercase;
+  letter-spacing: 0.8px; margin-bottom: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rb-lesson {
+  font-size: 13px; font-weight: 700;
+  color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rb-close {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text3);
+  font-size: 11px;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+}
+.rb-close:hover { background: var(--surface3); color: var(--text); }
+
+/* ── 5. Back button on login page ────────────────────────────────── */
+.lp-back-btn {
+  display: none; /* shown by JS when login-page is open from landing */
+  align-items: center;
+  gap: 7px;
+  position: relative;
+  z-index: 1;
+  margin: 0 auto 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 11px;
+  padding: 9px 18px;
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  align-self: flex-start;
+}
+.lp-back-btn:hover {
+  border-color: rgba(245,200,66,0.3);
+  color: var(--gold);
+  background: rgba(245,200,66,0.05);
+  transform: translateX(-3px);
+}
+/* When displayed as flex (JS sets display:flex) */
+#lp-back-btn[style*="flex"] {
+  display: flex !important;
+}
+/* Position it just below header inside login-page */
+#login-page {
+  padding-top: calc(var(--header-h) + 16px);
+}
+/* Ensure back btn is at top of page flow */
+#login-page > #lp-back-btn {
+  order: -1;
 }
 
-.demo-cta-box {
-  background: linear-gradient(135deg, #0f0f16 0%, #161622 100%);
-  border: 1px solid #27273e;
-  padding: 40px 24px;
-  border-radius: 24px;
+/* ── 6. Online counter dot (FOMO) ─────────────────────────────────── */
+.lp-online-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px rgba(34,196,138,0.7);
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: online-blink 2.2s ease-in-out infinite;
+}
+@keyframes online-blink {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(34,196,138,0.7); }
+  50%       { opacity: 0.6; box-shadow: 0 0 12px rgba(34,196,138,0.4); }
 }
 
-.landing-final {
-  padding: 80px 0;
-  background: #0f0f16;
-  border-top: 1px solid #1e1e30;
+/* ── 7. Demo curator buttons ─────────────────────────────────────── */
+.demo-curator-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 13px; font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  border: 1px solid transparent;
+}
+.wa-btn-demo {
+  background: rgba(37,211,102,0.1);
+  color: var(--wa);
+  border-color: rgba(37,211,102,0.25);
+}
+.wa-btn-demo:hover {
+  background: var(--wa);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37,211,102,0.3);
+}
+.tg-btn-demo {
+  background: rgba(34,158,217,0.1);
+  color: var(--tg);
+  border-color: rgba(34,158,217,0.25);
+}
+.tg-btn-demo:hover {
+  background: var(--tg);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(34,158,217,0.3);
 }
 
-.pulse-eff {
-  animation: pulse-animation 2.5s infinite;
+/* ── 8. Light theme overrides for new elements ───────────────────── */
+[data-theme="light"] .rb-inner {
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.12),
+    0 0 0 1px rgba(0,0,0,0.05),
+    0 0 24px color-mix(in srgb, var(--rb-color, var(--gold)) 10%, transparent);
+}
+[data-theme="light"] .cursor-tooltip {
+  background: rgba(245,245,250,0.95);
+  color: var(--gold2);
+  border-color: rgba(245,200,66,0.3);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+[data-theme="light"] .lp-back-btn {
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.1);
+  color: var(--text2);
+}
+[data-theme="light"] .lp-back-btn:hover {
+  border-color: rgba(245,200,66,0.4);
+  background: rgba(245,200,66,0.06);
 }
 
-@keyframes pulse-animation {
-  0% { box-shadow: 0 0 0 0 rgba(245, 200, 66, 0.4); }
-  70% { box-shadow: 0 0 0 15px rgba(245, 200, 66, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(245, 200, 66, 0); }
+/* ── 9. Improved lp-h1 animation on landing page ─────────────────── */
+.lp-hero-inner {
+  animation: pageFadeIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.lp-stats {
+  animation: pageFadeIn 0.7s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.lp-section {
+  animation: pageFadeIn 0.6s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@media (max-width: 768px) {
-  .hero-title { font-size: 32px; }
-  .reviews-grid { grid-template-columns: 1fr; }
-  .landing-hero { padding: 50px 0 40px 0; }
-  .section-title { font-size: 24px; }
-  #landing-screen .btn-primary { width: 100%; text-align: center; box-sizing: border-box; }
+/* ── 10. Landing page button enhanced hover states ───────────────── */
+.lp-btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+.lp-btn-primary::after {
+  content: '';
+  position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+  pointer-events: none;
+}
+.lp-btn-primary:hover::after { left: 100%; }
+
+/* ── 11. lp-hero-btns responsive ─────────────────────────────────── */
+@media (max-width: 400px) {
+  .lp-hero-btns {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .lp-btn-primary,
+  .lp-btn-secondary {
+    justify-content: center;
+    text-align: center;
+  }
 }
 
-@media (max-width: 480px) {
-  .hero-title { font-size: 28px; }
-  .feature-card { padding: 24px 20px; }
-  .stats-number { font-size: 46px; }
+/* ── 12. Smooth video-active mobile transition ────────────────────── */
+@media (max-width: 640px) {
+  .overlay.video-active {
+    transition: background 0.3s;
+  }
 }
+
+/* ── 13. Missing: vid-prev-btn / vid-next-btn (inside video section) */
+#vid-prev-btn,
+#vid-next-btn {
+  display: none; /* hidden by default, shown by JS if needed */
+}
+
+/* ── 14. Block overlay text polish ───────────────────────────────── */
+#block-overlay a:hover {
+  opacity: 0.88;
+  transform: translateY(-1px) scale(1.02);
+  display: inline-block;
+}
+
+/* ── 15. Progress bar label text truncation on small screens ─────── */
+@media (max-width: 380px) {
+  .progress-label-text { font-size: 10px; }
+  .p-step { font-size: 10px; padding: 3px 9px; }
+}
+
+/* ── 16. Demo section open/close transition ──────────────────────── */
+.demo-cards-wrap {
+  overflow: hidden;
+}
+
+/* ── 17. Skeleton cards responsive ──────────────────────────────── */
+@media (max-width: 500px) {
+  .skeleton-card { height: 140px; }
+}
+
+/* ── 18. lp-online-count number smooth transition ────────────────── */
+#lp-online-count {
+  display: inline-block;
+  transition: opacity 0.3s;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 19. Demo video overlay mobile full-screen ───────────────────── */
+@media (max-width: 640px) {
+  .demo-video-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .demo-video-inner {
+    border-radius: 20px 20px 0 0;
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 18px 16px;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+  #demo-video-container {
+    padding-bottom: 56.25%;
+  }
+}
+
+/* ── 20. Cursor active class: hide native cursor on entire page ───── */
+.cursor-active,
+.cursor-active * {
+  cursor: none !important;
+}
+
+/* ─── END ADDITIONS v3.2 ─────────────────────────────────────────── */
