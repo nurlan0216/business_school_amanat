@@ -2165,6 +2165,12 @@ async function doLogin() {
   } catch (e) {
     console.warn('Apps Script unavailable, trying direct sheet fallback:', e.message);
     // ── Попытка 2: Прямое чтение Лист1 через gviz ──────────────────
+    // Структура Лист1 (по Apps Script):
+    //   col0  = ИИН
+    //   col1  = Имя
+    //   col3  = Телефон
+    //   col10 = Статус доступа  (✅ РАЗРЕШЕНО / ✅ РҰҚСАТ)
+    //   col11 = Статус оплаты   (✅ ОПЛАЧЕНО  / ✅ ТӨЛЕНДІ)
     try {
       await animProg(40, 42, 100, steps[1]);
       const sheetUrl = `https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:csv&sheet=Лист1`;
@@ -2172,30 +2178,48 @@ async function doLogin() {
       setTimeout(() => ctrl2.abort(), 12000);
       const res2 = await fetch(sheetUrl, { signal: ctrl2.signal });
       if (!res2.ok) throw new Error('sheet_http_' + res2.status);
-      const csv   = await res2.text();
-      const rows  = parseCSV(csv);
-      // Row format: A=IIN, B=Phone, C=Name, D=isPaid(да/yes), E=isAllowed(да/yes)
-      const matchIin = iin.replace(/\D/g,'');
-      const matchPhone = phone.replace(/[\s\-+()]/g,'');
+      const csv  = await res2.text();
+      const rows = parseCSV(csv);
+
+      // Нормализация телефона — 10 последних цифр
+      const normPhone = p => {
+        let d = (p||'').replace(/\D/g,'');
+        if (d.length === 11 && d[0] === '8') d = '7' + d.slice(1);
+        if (d.length === 10) d = '7' + d;
+        return d;
+      };
+
+      const matchIin   = iin.replace(/\D/g,'').trim();
+      const matchPhone = normPhone(phone);
       let found = false;
+
       for (const row of rows) {
-        const rowIin   = (row[0]||'').replace(/\D/g,'').trim();
-        const rowPhone = (row[1]||'').replace(/[\s\-+()]/g,'').trim();
-        if (rowIin === matchIin) {
-          found = true;
-          // Phone check — partial match (last 10 digits)
-          const rp10 = rowPhone.slice(-10), up10 = matchPhone.slice(-10);
-          if (rp10 && up10 && rp10 !== up10) {
-            finishLogin(btn); showMsg('error', t('errNotFound')); return;
-          }
-          foundName  = (row[2]||'').trim() || name;
-          const pd   = (row[3]||'').trim().toLowerCase();
-          const ac   = (row[4]||'').trim().toLowerCase();
-          isPaid     = pd === 'да' || pd === 'yes' || pd === '1' || pd === 'true';
-          isAllowed  = ac === 'да' || ac === 'yes' || ac === '1' || ac === 'true';
-          break;
+        const rowIin = (row[0]||'').replace(/\D/g,'').trim();
+        if (rowIin !== matchIin) continue;
+
+        found = true;
+        const rowPhone = normPhone(row[3]||'');
+
+        // Проверяем телефон (если в строке есть номер)
+        if (rowPhone && matchPhone && rowPhone !== matchPhone) {
+          finishLogin(btn); showMsg('error', t('errNotFound')); return;
         }
+
+        // Заблокирован за нарушение?
+        if ((row[3]||'').includes('НАРУШЕНИЕ')) {
+          finishLogin(btn); showMsg('error', t('errNoAccess')); return;
+        }
+
+        foundName = (row[1]||'').trim() || name;
+
+        const statusA = (row[10]||'').toUpperCase();
+        const statusP = (row[11]||'').toUpperCase();
+
+        isAllowed = statusA.includes('✅') && (statusA.includes('РАЗРЕШЕНО') || statusA.includes('РҰҚСАТ'));
+        isPaid    = statusP.includes('✅') && (statusP.includes('ОПЛАЧЕНО')  || statusP.includes('ТӨЛЕНДІ'));
+        break;
       }
+
       if (!found) { finishLogin(btn); showMsg('error', t('errNotFound')); return; }
       scriptOk = true;
     } catch(e2) {
