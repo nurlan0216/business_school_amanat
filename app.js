@@ -366,7 +366,7 @@ function applyTexts() {
   setText('user-status-text', t('statusText'));
   const ls = $('lesson-search'); if(ls) ls.placeholder = t('searchLessons');
   const cs = $('course-search'); if(cs) cs.placeholder = t('coursesSearch');
-  if (currentUser) setText('user-name-badge', t('hello') + ' ' + currentUser);
+  if (currentUser) setText('user-name-badge', t('hello') + ' ' + currentUser + '!');
   document.querySelectorAll('.deco-lbl').forEach(el => { const v = el.dataset[lang]; if (v) el.textContent = v; });
   document.querySelectorAll('.hstat-lbl').forEach(el => { const v = el.dataset[lang]; if (v) el.textContent = v; });
 
@@ -487,9 +487,10 @@ function triggerInstantBlock() {
   if (blockOverlay) {
     blockOverlay.style.display = 'flex';
   } else {
-    // Если оверлей не добавлен в HTML, откатываем на страницу логина с ошибкой
-    $('login-page').style.display = 'flex';
-    showMsg('error', t('errNoAccess'));
+    // Если оверлей не добавлен — на лендинг
+    const lp = $('landing-page');
+    if (lp) lp.style.display = 'block';
+    $('login-page').style.display = 'none';
   }
 }
 
@@ -2162,12 +2163,14 @@ function animProg(from, to, dur, label) {
 }
 
 function showLessons() {
+  // ── скрываем ВСЕ нерабочие экраны ──────────────────────────
+  $('landing-page').style.display  = 'none';
   $('login-page').style.display    = 'none';
   $('lessons-page').style.display  = 'block';
   $('logout-btn').style.display    = 'flex';
   $('header-center').style.display = 'flex';
   if (window.innerWidth <= 640) $('mobile-nav').style.display = 'flex';
-  
+
   // Закрываем окно принудительной блокировки, если оно висело
   const blockOverlay = $('block-overlay');
   if (blockOverlay) blockOverlay.style.display = 'none';
@@ -2185,26 +2188,33 @@ function showLessons() {
 }
 
 function logout() {
-  // Сбрасываем фоновый интервал проверки при ручном выходе
-  if (securityCheckInterval) {
-    clearInterval(securityCheckInterval);
-    securityCheckInterval = null;
-  }
-
+  if (securityCheckInterval) { clearInterval(securityCheckInterval); securityCheckInterval = null; }
   currentUser = null; currentCourseIdx = null;
   try { sessionStorage.removeItem('bs_user'); sessionStorage.removeItem('bs_iin'); } catch(_) {}
+
   $('logout-btn').style.display    = 'none';
   $('mobile-nav').style.display    = 'none';
   $('header-center').style.display = 'none';
   $('lessons-page').style.display  = 'none';
-  $('login-page').style.display    = 'flex';
+  $('login-page').style.display    = 'none';  // прячем — идём на лендинг
+
   ['inp-name','inp-iin','inp-phone'].forEach(id => { const e=$(id); if(e) e.value=''; });
   ['login-error','login-success'].forEach(id => { const e=$(id); if(e) e.style.display='none'; });
   $('progress-wrap').style.display = 'none';
   $('prog-fill').style.width = '0%';
-  const btn = $('login-btn');
-  btn.disabled = false;
-  btn.classList.remove('loading');
+  const btn = $('login-btn'); btn.disabled = false; btn.classList.remove('loading');
+
+  // ── возвращаем на лендинг с fade ──
+  const lp = $('landing-page');
+  if (lp) {
+    lp.style.display = 'block';
+    lp.classList.add('page-fade-in');
+    setTimeout(() => lp.classList.remove('page-fade-in'), 400);
+  }
+  const backBtn = $('lp-back-btn');
+  if (backBtn) backBtn.style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  resetIdleBeacon();
 }
 
 // ══════════════════════════════ ADMIN ════════════════════════════
@@ -2432,11 +2442,19 @@ function initOnlineCounter() {
   const base = 8 + Math.floor(Math.random() * 12);
   el.textContent = base;
   // Флуктуация каждые 12-20 секунд
+  function updateCount(next) {
+    el.style.opacity = '0';
+    el.style.transition = 'opacity 0.3s';
+    setTimeout(() => {
+      el.textContent = next;
+      el.style.opacity = '1';
+    }, 300);
+  }
   setInterval(() => {
     const current = parseInt(el.textContent) || base;
     const delta = Math.random() < 0.5 ? 1 : -1;
     const next = Math.min(28, Math.max(6, current + delta));
-    el.textContent = next;
+    updateCount(next);
   }, 12000 + Math.random() * 8000);
 }
 
