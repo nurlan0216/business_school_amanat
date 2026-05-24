@@ -36,12 +36,96 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
 <!-- YouTube IFrame API for seek control -->
 <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════ AMBIENT LAYER ═══════ -->
+<!-- ═══════════════════════════════════════════ SOCIAL PROOF TOAST ══ -->
+<div id="social-proof-toast" class="sp-toast" role="status" aria-live="polite" style="display:none">
+  <div class="sp-toast-avatar"></div>
+  <div class="sp-toast-text">
+    <div class="sp-toast-name" id="sp-toast-name"></div>
+    <div class="sp-toast-action">только что купил доступ</div>
+  </div>
+  <div class="sp-toast-badge">🔥</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ STICKY CTA BAR ═══════ -->
+<div id="sticky-cta-bar" class="sticky-cta-bar" style="display:none">
+  <div class="sticky-cta-inner">
+    <div class="sticky-cta-logo">
+      <div class="logo-emblem" style="width:32px;height:32px">
+        <span class="logo-glyph" style="font-size:11px">BS</span>
+        <div class="logo-ring"></div>
+      </div>
+      <span class="sticky-cta-brand">Business School Amanat</span>
+    </div>
+    <div class="sticky-cta-btns">
+      <a class="sticky-cta-wa" href="https://wa.me/77776020216?text=Здравствуйте%2C%20хочу%20узнать%20о%20доступе%20к%20платформе" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.553 4.116 1.524 5.847L.057 23.882l6.186-1.448A11.952 11.952 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.878 9.878 0 0 1-5.031-1.378l-.361-.214-3.741.875.944-3.643-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.536 6.536 2.106 12 2.106S21.894 6.536 21.894 12 17.464 21.894 12 21.894z"/></svg>
+        <span>Узнать стоимость</span>
+      </a>
+      <button class="sticky-cta-login" onclick="showLandingLogin()">Войти →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ HEADER PROGRESS BAR ══ -->
+<div id="header-progress-bar" class="header-progress-bar" style="display:none">
+  <div class="header-progress-fill" id="header-progress-fill"></div>
+  <div class="header-progress-tooltip" id="header-progress-tooltip"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ CONFETTI CANVAS ══════ -->
+<canvas id="confetti-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99990;display:none"></canvas>
+
+<!-- ═══════════════════════════════════════════ ACHIEVEMENT BADGE ════ -->
+<div id="achievement-badge" class="achievement-badge" style="display:none">
+  <div class="achievement-inner">
+    <span class="achievement-icon">🎓</span>
+    <div>
+      <div class="achievement-title">Достижение!</div>
+      <div class="achievement-sub" id="achievement-sub-text"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ CERT MODAL ═══════════ -->
+<div class="overlay" id="cert-modal" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:420px;text-align:center">
+    <button class="modal-close" onclick="closeCertModal()" aria-label="Закрыть">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h3 class="modal-h">🏆 Сертификат о прохождении</h3>
+    <p class="modal-sub" id="cert-modal-sub">Поздравляем с завершением курса!</p>
+    <canvas id="cert-canvas" style="width:100%;border-radius:12px;margin:16px 0;border:1px solid var(--border2)"></canvas>
+    <button class="login-btn" onclick="downloadCert()" style="margin-top:0">
+      <span class="btn-content">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Скачать PNG</span>
+      </span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PROGRESS DASHBOARD ═══ -->
+<div class="overlay" id="progress-modal" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:560px">
+    <button class="modal-close" onclick="closeModal('progress-modal')" aria-label="Закрыть">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h3 class="modal-h">📊 Мой прогресс</h3>
+    <div id="progress-modal-body" class="progress-modal-body"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PWA INSTALL BTN ══════ -->
+<button id="pwa-install-btn" class="pwa-install-btn" style="display:none" onclick="installPWA()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  <span>Установить приложение</span>
+</button>
 <div class="ambient" aria-hidden="true">
   <div class="ambient-orb orb-1"></div>
   <div class="ambient-orb orb-2"></div>
@@ -459,6 +543,11 @@
         <span class="user-dot"></span>
         <span id="user-name-badge">Привет!</span>
       </div>
+      <div id="streak-badge-hero" class="streak-badge-hero" style="display:none"></div>
+      <button class="progress-dashboard-btn" onclick="openProgressDashboard()" id="progress-dashboard-btn" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Мой прогресс
+      </button>
     </div>
     <div class="hero-stats" id="hero-stats">
       <div class="hstat">
@@ -710,6 +799,10 @@
         <h4 id="completion-title">Курс завершён!</h4>
         <p id="completion-sub">Вы просмотрели все уроки. Отличная работа!</p>
       </div>
+      <button class="cert-btn" onclick="openCertModal()" id="cert-btn-completion">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+        Получить сертификат
+      </button>
     </div>
 
     <!-- Progress bar in modal -->

@@ -2505,3 +2505,604 @@ function showResumeBeacon() {
     return; // показываем только один маяк
   }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   FEATURE ADDITIONS v4.0
+   ══════════════════════════════════════════════════════════════ */
+
+// ── 2. Social Proof Toast ─────────────────────────────────────
+const SP_NAMES = [
+  { name: 'Нурлан', city: 'Алматы', emoji: '👨' },
+  { name: 'Айгерим', city: 'Астана', emoji: '👩' },
+  { name: 'Данияр', city: 'Шымкент', emoji: '👨' },
+  { name: 'Зарина', city: 'Алматы', emoji: '👩' },
+  { name: 'Болат', city: 'Атырау', emoji: '👨' },
+  { name: 'Мадина', city: 'Тараз', emoji: '👩' },
+  { name: 'Арман', city: 'Актобе', emoji: '👨' },
+  { name: 'Сабина', city: 'Астана', emoji: '👩' },
+  { name: 'Ерлан', city: 'Усть-Каменогорск', emoji: '👨' },
+  { name: 'Гульнара', city: 'Алматы', emoji: '👩' },
+  { name: 'Темирлан', city: 'Кокшетау', emoji: '👨' },
+  { name: 'Айнур', city: 'Семей', emoji: '👩' },
+];
+
+let spToastTimer = null;
+
+function initSocialProofToast() {
+  function scheduleNext() {
+    const delay = 45000 + Math.random() * 45000; // 45–90 сек
+    spToastTimer = setTimeout(showSpToast, delay);
+  }
+  scheduleNext();
+}
+
+function showSpToast() {
+  // Показываем только на лендинге
+  const lp = $('landing-page');
+  if (!lp || lp.style.display === 'none') {
+    initSocialProofToast(); return;
+  }
+  const person = SP_NAMES[Math.floor(Math.random() * SP_NAMES.length)];
+  const el = $('social-proof-toast');
+  const nameEl = $('sp-toast-name');
+  if (!el || !nameEl) return;
+
+  el.querySelector('.sp-toast-avatar').textContent = person.emoji;
+  nameEl.textContent = `${person.name} из ${person.city}`;
+  el.style.display = 'flex';
+
+  requestAnimationFrame(() => {
+    el.classList.add('sp-visible');
+  });
+
+  setTimeout(() => {
+    el.classList.remove('sp-visible');
+    setTimeout(() => { el.style.display = 'none'; }, 400);
+  }, 4000);
+
+  initSocialProofToast(); // schedule next
+}
+
+// ── 3. Sticky CTA Bar ─────────────────────────────────────────
+(function initStickyCta() {
+  let lastScroll = 0;
+  let stickyShown = false;
+
+  window.addEventListener('scroll', () => {
+    const lp = $('landing-page');
+    if (!lp || lp.style.display === 'none') return;
+
+    const bar = $('sticky-cta-bar');
+    if (!bar) return;
+
+    const scrollY = window.scrollY;
+
+    if (scrollY > 300 && scrollY > lastScroll) {
+      // Скролл вниз > 300px — показать
+      if (!stickyShown) {
+        bar.style.display = 'block';
+        requestAnimationFrame(() => bar.classList.add('sticky-visible'));
+        stickyShown = true;
+      }
+    } else if (scrollY < lastScroll) {
+      // Скролл вверх — скрыть
+      if (stickyShown) {
+        bar.classList.remove('sticky-visible');
+        stickyShown = false;
+      }
+    }
+    lastScroll = scrollY;
+  }, { passive: true });
+})();
+
+// При выходе на лендинг — скрываем sticky bar
+const _origShowLanding = showLanding;
+showLanding = function() {
+  const bar = $('sticky-cta-bar');
+  if (bar) { bar.classList.remove('sticky-visible'); }
+  _origShowLanding.call(this);
+};
+
+// ── 4. Header Progress Bar ────────────────────────────────────
+function updateHeaderProgressBar() {
+  const bar = $('header-progress-bar');
+  const fill = $('header-progress-fill');
+  const tooltip = $('header-progress-tooltip');
+  if (!bar || !fill) return;
+
+  if (!currentUser) {
+    bar.style.display = 'none';
+    return;
+  }
+
+  bar.style.display = 'block';
+  const prog = getTotalProgress();
+  fill.style.width = prog.pct + '%';
+
+  if (tooltip) {
+    tooltip.textContent = `${prog.pct}% — ${prog.watched} из ${prog.total} уроков просмотрено`;
+  }
+}
+
+// ── 6. Учебный стрик ─────────────────────────────────────────
+function getTodayDateStr() {
+  return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
+function getStreakData() {
+  try {
+    const raw = localStorage.getItem('bs_streak');
+    return raw ? JSON.parse(raw) : { count: 0, lastDate: '' };
+  } catch(_) { return { count: 0, lastDate: '' }; }
+}
+
+function saveStreakData(data) {
+  try { localStorage.setItem('bs_streak', JSON.stringify(data)); } catch(_) {}
+}
+
+function recordLessonToday() {
+  const today = getTodayDateStr();
+  const data = getStreakData();
+
+  if (data.lastDate === today) return; // уже записано сегодня
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yStr = yesterday.toISOString().slice(0, 10);
+
+  if (data.lastDate === yStr) {
+    data.count = (data.count || 0) + 1;
+  } else if (data.lastDate !== today) {
+    data.count = 1; // стрик сбрасывается
+  }
+  data.lastDate = today;
+  saveStreakData(data);
+  updateStreakBadge();
+}
+
+function updateStreakBadge() {
+  const badge = $('streak-badge-hero');
+  if (!badge || !currentUser) return;
+  const data = getStreakData();
+  const today = getTodayDateStr();
+  if (data.count >= 1 && data.lastDate === today) {
+    badge.textContent = `🔥 ${data.count} ${pluralDays(data.count)} подряд`;
+    badge.style.display = 'inline-flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function pluralDays(n) {
+  if (n % 10 === 1 && n % 100 !== 11) return 'день';
+  if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return 'дня';
+  return 'дней';
+}
+
+function checkStreakOnLogin() {
+  if (!currentUser) return;
+  const data = getStreakData();
+  if (data.count > 3) {
+    const msg = `🔥 ${data.count} ${pluralDays(data.count)} подряд! Так держать, ${currentUser}!`;
+    setTimeout(() => showToast(msg, 'success'), 1000);
+  }
+}
+
+// ── 7. Сертификат ─────────────────────────────────────────────
+let certCourseIdx = null;
+
+function openCertModal() {
+  if (currentCourseIdx === null) return;
+  certCourseIdx = currentCourseIdx;
+  const course = courses[certCourseIdx];
+  if (!course) return;
+
+  const courseName = lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ);
+  const sub = $('cert-modal-sub');
+  if (sub) sub.textContent = `Курс: «${courseName}»`;
+
+  const canvas = $('cert-canvas');
+  if (!canvas) return;
+  drawCertificate(canvas, currentUser || 'Студент', courseName);
+
+  $('cert-modal').classList.add('show');
+}
+
+function closeCertModal() {
+  $('cert-modal').classList.remove('show');
+}
+
+function drawCertificate(canvas, studentName, courseName) {
+  const W = 800, H = 560;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#060608';
+  ctx.fillRect(0, 0, W, H);
+
+  // Gold border gradient
+  const borderGrad = ctx.createLinearGradient(0, 0, W, H);
+  borderGrad.addColorStop(0, '#f5c842');
+  borderGrad.addColorStop(0.5, '#ffd96a');
+  borderGrad.addColorStop(1, '#e8920a');
+  ctx.strokeStyle = borderGrad;
+  ctx.lineWidth = 4;
+  ctx.strokeRect(12, 12, W - 24, H - 24);
+
+  // Inner border
+  ctx.strokeStyle = 'rgba(245,200,66,0.2)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(24, 24, W - 48, H - 48);
+
+  // Corner decorations
+  const corners = [[40, 40], [W-40, 40], [40, H-40], [W-40, H-40]];
+  corners.forEach(([cx, cy]) => {
+    ctx.beginPath();
+    ctx.arc(cx, cy, 12, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(245,200,66,0.15)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(245,200,66,0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+
+  // BS Emblem circle
+  ctx.beginPath();
+  ctx.arc(W / 2, 110, 44, 0, Math.PI * 2);
+  const circGrad = ctx.createRadialGradient(W/2, 110, 0, W/2, 110, 44);
+  circGrad.addColorStop(0, '#f5c842');
+  circGrad.addColorStop(1, '#e8920a');
+  ctx.fillStyle = circGrad;
+  ctx.fill();
+
+  ctx.font = 'bold 20px Syne, sans-serif';
+  ctx.fillStyle = '#000';
+  ctx.textAlign = 'center';
+  ctx.fillText('BS', W / 2, 117);
+
+  // Title
+  ctx.font = '600 13px DM Sans, sans-serif';
+  ctx.fillStyle = 'rgba(245,200,66,0.7)';
+  ctx.textAlign = 'center';
+  ctx.fillText('СЕРТИФИКАТ О ПРОХОЖДЕНИИ КУРСА', W / 2, 186);
+
+  // Divider line
+  const lineGrad = ctx.createLinearGradient(160, 0, W - 160, 0);
+  lineGrad.addColorStop(0, 'transparent');
+  lineGrad.addColorStop(0.3, 'rgba(245,200,66,0.5)');
+  lineGrad.addColorStop(0.7, 'rgba(245,200,66,0.5)');
+  lineGrad.addColorStop(1, 'transparent');
+  ctx.strokeStyle = lineGrad;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(160, 200); ctx.lineTo(W - 160, 200);
+  ctx.stroke();
+
+  // Student name
+  ctx.font = 'bold 36px Syne, sans-serif';
+  ctx.fillStyle = '#ededf5';
+  ctx.textAlign = 'center';
+  ctx.fillText(studentName, W / 2, 260);
+
+  // "успешно прошёл(а)"
+  ctx.font = '400 15px DM Sans, sans-serif';
+  ctx.fillStyle = '#8080a8';
+  ctx.fillText('успешно прошёл(а) курс', W / 2, 292);
+
+  // Course name
+  const maxWidth = 600;
+  ctx.font = '700 22px Syne, sans-serif';
+  ctx.fillStyle = '#f5c842';
+  ctx.textAlign = 'center';
+  // Word wrap for long course names
+  const words = courseName.split(' ');
+  let line = '', lines2 = [];
+  for (const w of words) {
+    const test = line ? line + ' ' + w : w;
+    if (ctx.measureText(test).width > maxWidth) { lines2.push(line); line = w; }
+    else line = test;
+  }
+  if (line) lines2.push(line);
+  lines2.forEach((l, i) => ctx.fillText(l, W / 2, 334 + i * 30));
+
+  // Divider
+  ctx.beginPath();
+  ctx.moveTo(160, 390); ctx.lineTo(W - 160, 390);
+  ctx.stroke();
+
+  // Date
+  const dateStr = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+  ctx.font = '400 13px DM Sans, sans-serif';
+  ctx.fillStyle = '#44445c';
+  ctx.fillText(dateStr, W / 2, 416);
+
+  // Business School Amanat footer
+  ctx.font = '700 14px Syne, sans-serif';
+  ctx.fillStyle = 'rgba(245,200,66,0.5)';
+  ctx.fillText('Business School AMANAT', W / 2, 450);
+
+  // Stars decoration
+  ctx.fillStyle = 'rgba(245,200,66,0.35)';
+  ctx.font = '20px serif';
+  ctx.fillText('★  ★  ★  ★  ★', W / 2, 490);
+}
+
+function downloadCert() {
+  const canvas = $('cert-canvas');
+  if (!canvas) return;
+  const course = courses[certCourseIdx];
+  const courseName = course ? (lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ)) : 'Курс';
+  const link = document.createElement('a');
+  link.download = `Сертификат_BSAmanat_${courseName.replace(/\s+/g, '_')}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+// ── 8. Конфетти + Достижения ──────────────────────────────────
+function launchConfetti(duration = 3000) {
+  const canvas = $('confetti-canvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth, H = canvas.offsetHeight;
+  canvas.width = W; canvas.height = H;
+
+  const COLORS = ['#f5c842', '#ffffff', '#e8920a', '#ffd96a', '#fffbe6'];
+  const particles = Array.from({ length: 120 }, () => ({
+    x: Math.random() * W,
+    y: -10 - Math.random() * 40,
+    w: 4 + Math.random() * 8,
+    h: 6 + Math.random() * 10,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    vx: (Math.random() - 0.5) * 3,
+    vy: 2 + Math.random() * 4,
+    rot: Math.random() * Math.PI * 2,
+    rotV: (Math.random() - 0.5) * 0.15,
+    opacity: 1,
+  }));
+
+  const endTime = Date.now() + duration;
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const now = Date.now();
+    const remaining = endTime - now;
+
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.rotV;
+      p.vy += 0.05; // gravity
+      if (remaining < 500) p.opacity = Math.max(0, remaining / 500);
+
+      ctx.save();
+      ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
+      ctx.rotate(p.rot);
+      ctx.globalAlpha = p.opacity;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+
+      if (p.y > H + 20) {
+        p.y = -10;
+        p.x = Math.random() * W;
+        p.vy = 2 + Math.random() * 4;
+      }
+    });
+
+    if (now < endTime) {
+      requestAnimationFrame(draw);
+    } else {
+      canvas.style.display = 'none';
+    }
+  }
+  draw();
+}
+
+function showAchievementBadge(text) {
+  const badge = $('achievement-badge');
+  const sub = $('achievement-sub-text');
+  if (!badge || !sub) return;
+  sub.textContent = text;
+  badge.style.display = 'block';
+  requestAnimationFrame(() => {
+    badge.classList.add('ach-visible');
+  });
+  setTimeout(() => {
+    badge.classList.remove('ach-visible');
+    setTimeout(() => { badge.style.display = 'none'; }, 400);
+  }, 4000);
+}
+
+// Track first lesson viewed
+function checkFirstLesson() {
+  const key = 'bs_first_lesson_done';
+  if (localStorage.getItem(key)) return;
+  localStorage.setItem(key, '1');
+  launchConfetti(3000);
+  showAchievementBadge('Первый урок! 🎓');
+}
+
+function checkCourseCompletion(courseIdx) {
+  const prog = getCourseProgress(courseIdx);
+  const key = `bs_course_completed_${courseIdx}`;
+  if (prog.pct === 100 && prog.total > 0 && !localStorage.getItem(key)) {
+    localStorage.setItem(key, '1');
+    launchConfetti(3000);
+    const course = courses[courseIdx];
+    const name = course ? (lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ)) : 'Курс';
+    showAchievementBadge(`Курс «${name}» завершён!`);
+  }
+}
+
+// ── 9. PWA ────────────────────────────────────────────────────
+let pwaInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  pwaInstallPrompt = e;
+  const btn = $('pwa-install-btn');
+  if (btn) btn.style.display = 'flex';
+});
+
+function installPWA() {
+  if (!pwaInstallPrompt) return;
+  pwaInstallPrompt.prompt();
+  pwaInstallPrompt.userChoice.then(() => {
+    pwaInstallPrompt = null;
+    const btn = $('pwa-install-btn');
+    if (btn) btn.style.display = 'none';
+  });
+}
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW registration failed:', e));
+  });
+}
+
+// ── 10. Авто тёмная тема ──────────────────────────────────────
+function initAutoTheme() {
+  const manualTheme = localStorage.getItem('manualTheme');
+  if (manualTheme) return; // пользователь менял вручную — не трогаем
+
+  const hour = new Date().getHours();
+  const shouldBeDark = hour >= 22 || hour < 7;
+  const target = shouldBeDark ? 'dark' : 'light';
+
+  if (currentTheme !== target) {
+    currentTheme = target;
+    localStorage.setItem('theme', currentTheme);
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    const msg = shouldBeDark ? 'Переключили на тёмную тему 🌙' : 'Переключили на светлую тему ☀️';
+    showToast(msg, 'success');
+  }
+}
+
+// Патч toggleTheme для сохранения ручного флага
+const _origToggleTheme = toggleTheme;
+window.toggleTheme = function() {
+  localStorage.setItem('manualTheme', '1');
+  _origToggleTheme.call(this);
+};
+
+// ── 11. Дашборд прогресса ─────────────────────────────────────
+function openProgressDashboard() {
+  const body = $('progress-modal-body');
+  if (!body) return;
+
+  const totalProg = getTotalProgress();
+  const streak = getStreakData();
+  const watchTime = Math.round(totalProg.watched * 5); // 5 мин/урок
+
+  const startKey = 'bs_start_date';
+  let startDate = localStorage.getItem(startKey);
+  if (!startDate) {
+    startDate = new Date().toLocaleDateString('ru-RU');
+    localStorage.setItem(startKey, startDate);
+  }
+
+  let html = `
+    <div class="pd-meta-row">
+      <div class="pd-meta-card">
+        <div class="pd-meta-num">${totalProg.pct}%</div>
+        <div class="pd-meta-lbl">Общий прогресс</div>
+      </div>
+      <div class="pd-meta-card">
+        <div class="pd-meta-num">${watchTime} мин</div>
+        <div class="pd-meta-lbl">Время обучения</div>
+      </div>
+      <div class="pd-meta-card">
+        <div class="pd-meta-num">🔥 ${streak.count}</div>
+        <div class="pd-meta-lbl">${pluralDays(streak.count)} подряд</div>
+      </div>
+      <div class="pd-meta-card">
+        <div class="pd-meta-num" style="font-size:14px">${startDate}</div>
+        <div class="pd-meta-lbl">Начало обучения</div>
+      </div>
+    </div>
+    <div class="pd-chart-title">Прогресс по курсам</div>
+  `;
+
+  courses.forEach((course, idx) => {
+    const name = lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ);
+    const prog = getCourseProgress(idx);
+    const color = course.hexColor || DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
+    if (prog.total === 0) return;
+    html += `
+      <div class="pd-bar-row">
+        <div class="pd-bar-label" title="${escHtml(name)}">${escHtml(name)}</div>
+        <div class="pd-bar-track">
+          <div class="pd-bar-fill" style="width:${prog.pct}%;background:linear-gradient(90deg,${color},${lightenHex(color,20)})"></div>
+        </div>
+        <div class="pd-bar-pct">${prog.pct}%</div>
+      </div>
+    `;
+  });
+
+  body.innerHTML = html;
+  $('progress-modal').classList.add('show');
+}
+
+// ── PATCH markWatched to trigger new features ─────────────────
+const _origMarkWatched = markWatched;
+markWatched = function(ci, li) {
+  _origMarkWatched.call(this, ci, li);
+  recordLessonToday();
+  checkFirstLesson();
+  checkCourseCompletion(ci);
+  updateHeaderProgressBar();
+};
+
+// ── PATCH showLessons to trigger new features ─────────────────
+const _origShowLessons = showLessons;
+showLessons = function() {
+  _origShowLessons.call(this);
+  initAutoTheme();
+  checkStreakOnLogin();
+  updateStreakBadge();
+  updateHeaderProgressBar();
+  // Show hero progress btn
+  const btn = $('progress-dashboard-btn');
+  if (btn) btn.style.display = 'inline-flex';
+  // Update start date if not set
+  if (!localStorage.getItem('bs_start_date')) {
+    localStorage.setItem('bs_start_date', new Date().toLocaleDateString('ru-RU'));
+  }
+  // Hide sticky cta
+  const bar = $('sticky-cta-bar');
+  if (bar) { bar.style.display = 'none'; bar.classList.remove('sticky-visible'); }
+};
+
+// ── PATCH logout to hide new features ─────────────────────────
+const _origLogout = logout;
+logout = function() {
+  _origLogout.call(this);
+  updateHeaderProgressBar();
+  const btn = $('progress-dashboard-btn');
+  if (btn) btn.style.display = 'none';
+  const streak = $('streak-badge-hero');
+  if (streak) streak.style.display = 'none';
+};
+
+// ── INIT new features ─────────────────────────────────────────
+(function initFeatures() {
+  // Social proof toast — только на лендинге, с задержкой 10 сек
+  setTimeout(initSocialProofToast, 10000);
+
+  // Auto theme check (без вывода toast при первой загрузке)
+  const manualTheme = localStorage.getItem('manualTheme');
+  if (!manualTheme) {
+    const hour = new Date().getHours();
+    const shouldBeDark = hour >= 22 || hour < 7;
+    const target = shouldBeDark ? 'dark' : 'light';
+    if (currentTheme !== target) {
+      currentTheme = target;
+      localStorage.setItem('theme', currentTheme);
+      document.documentElement.setAttribute('data-theme', currentTheme);
+    }
+  }
+})();
