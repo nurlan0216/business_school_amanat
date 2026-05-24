@@ -101,6 +101,7 @@ const T = {
     statusText: 'В сети', userOnline: 'Онлайн',
     courses: 'Курсов', progress: 'Прогресс', watchedStat: 'Уроков',
     // Лендинг
+    lpH1Verb: 'Зарабатывай',
     lpH1Gold: 'маркетплейсах',
     lpH1End: 'с нуля',
     lpHeroSub: 'Kaspi · Wildberries · Ozon — обучаем с нуля до стабильного дохода.<br>Уже <strong>2 400+</strong> студентов прошли путь и продают.',
@@ -170,6 +171,7 @@ const T = {
     statusText: 'Желіде', userOnline: 'Онлайн',
     courses: 'Курс', progress: 'Барысы', watchedStat: 'Сабақ',
     // Лендинг KZ
+    lpH1Verb: 'Табыс тап',
     lpH1Gold: 'маркетплейстерде',
     lpH1End: 'нөлден бастай',
     lpHeroSub: 'Kaspi · Wildberries · Ozon — нөлден тұрақты табысқа дейін үйретеміз.<br>Қазірдің өзінде <strong>2 400+</strong> студент сатып жатыр.',
@@ -201,6 +203,70 @@ const T = {
 };
 
 const t       = k => (T[lang] && T[lang][k]) ? T[lang][k] : k;
+
+// ══════════════════════════════ REVIEWS CAROUSEL DATA ══════════════
+const REVIEWS = {
+  ru: [
+    { text: '«Запустила магазин на Wildberries через месяц обучения. Поддержка куратора на высшем уровне — всегда на связи и помогает разобраться»', name: 'Айгерим С.', city: 'Алматы', init: 'АС', grad: 'linear-gradient(135deg,#f5c842,#ff9800)' },
+    { text: '«За 3 месяца вышел на стабильный доход с маркетплейсов. Уроки структурированы логично — всё по делу, без воды»', name: 'Нурлан М.', city: 'Астана', init: 'НМ', grad: 'linear-gradient(135deg,#22c48a,#0055ff)' },
+    { text: '«Искала обучение по Kaspi — нашла здесь. Куратор всегда на связи, отвечает быстро. Материал актуальный. Очень довольна!»', name: 'Дина К.', city: 'Алматы', init: 'ДК', grad: 'linear-gradient(135deg,#229ED9,#9d4ed0)' },
+    { text: '«Начинала с нуля, сейчас мой магазин на Ozon приносит стабильный доход. Курс структурирован очень понятно»', name: 'Мадина Т.', city: 'Шымкент', init: 'МТ', grad: 'linear-gradient(135deg,#e31e24,#ff9800)' },
+    { text: '«Самое ценное — живая поддержка куратора. Никогда не чувствовала, что осталась одна с вопросами»', name: 'Зарина А.', city: 'Тараз', init: 'ЗА', grad: 'linear-gradient(135deg,#f5c842,#22c48a)' },
+    { text: '«Через 2 месяца после курса открыл второй магазин. Business School Amanat — это реальный результат, не обещания»', name: 'Серик Б.', city: 'Астана', init: 'СБ', grad: 'linear-gradient(135deg,#0055ff,#22c48a)' },
+  ],
+  kz: [
+    { text: '«Бір ай оқудан кейін Wildberries-те дүкен аштым. Куратор қолдауы өте жоғары деңгейде»', name: 'Айгерим С.', city: 'Алматы', init: 'АС', grad: 'linear-gradient(135deg,#f5c842,#ff9800)' },
+    { text: '«3 айда маркетплейстерден тұрақты табысқа шықтым. Сабақтар логикалы, нақты, бос сөзсіз»', name: 'Нурлан М.', city: 'Астана', init: 'НМ', grad: 'linear-gradient(135deg,#22c48a,#0055ff)' },
+    { text: '«Kaspi бойынша оқуды іздедім — осында таптым. Куратор әрқашан байланыста. Өте риза болдым!»', name: 'Дина К.', city: 'Алматы', init: 'ДК', grad: 'linear-gradient(135deg,#229ED9,#9d4ed0)' },
+    { text: '«Нөлден бастадым, қазір Ozon-дағы дүкенім тұрақты табыс әкелуде. Курс өте түсінікті»', name: 'Мадина Т.', city: 'Шымкент', init: 'МТ', grad: 'linear-gradient(135deg,#e31e24,#ff9800)' },
+    { text: '«Ең бағалысы — куратордың тірі қолдауы. Сұрақтарыммен жалғыз қалғаным болмады»', name: 'Зарина А.', city: 'Тараз', init: 'ЗА', grad: 'linear-gradient(135deg,#f5c842,#22c48a)' },
+    { text: '«Курстан кейін 2 ай өтіп екінші дүкен аштым. Business School Amanat — уәде емес, нақты нәтиже»', name: 'Серік Б.', city: 'Астана', init: 'СБ', grad: 'linear-gradient(135deg,#0055ff,#22c48a)' },
+  ]
+};
+
+let _carouselIdx      = 0;
+let _carouselTimer    = null;
+
+function renderLandingCarousel() {
+  const track = document.getElementById('lp-carousel-track');
+  const dots  = document.getElementById('lp-carousel-dots');
+  if (!track || !dots) return;
+  const reviews = REVIEWS[lang] || REVIEWS.ru;
+  track.innerHTML = reviews.map((r, i) => `
+    <div class="lp-carousel-slide${i === _carouselIdx ? ' active' : ''}">
+      <div class="lp-review-stars">★★★★★</div>
+      <p class="lp-review-text">${escHtml(r.text)}</p>
+      <div class="lp-review-author">
+        <div class="lp-review-ava" style="background:${r.grad}">${r.init}</div>
+        <div>
+          <div class="lp-review-name">${escHtml(r.name)}</div>
+          <div class="lp-review-city">${escHtml(r.city)}</div>
+        </div>
+      </div>
+    </div>`).join('');
+  dots.innerHTML = reviews.map((_, i) =>
+    `<button class="lp-carousel-dot${i === _carouselIdx ? ' active' : ''}" onclick="goCarousel(${i})" aria-label="Отзыв ${i+1}"></button>`
+  ).join('');
+  startCarouselTimer();
+}
+
+function goCarousel(idx) {
+  const reviews = REVIEWS[lang] || REVIEWS.ru;
+  _carouselIdx = (idx + reviews.length) % reviews.length;
+  const slides = document.querySelectorAll('.lp-carousel-slide');
+  const dotEls = document.querySelectorAll('.lp-carousel-dot');
+  slides.forEach((s, i) => s.classList.toggle('active', i === _carouselIdx));
+  dotEls.forEach((d, i) => d.classList.toggle('active', i === _carouselIdx));
+  startCarouselTimer();
+}
+
+function startCarouselTimer() {
+  if (_carouselTimer) clearInterval(_carouselTimer);
+  _carouselTimer = setInterval(() => {
+    const reviews = REVIEWS[lang] || REVIEWS.ru;
+    goCarousel((_carouselIdx + 1) % reviews.length);
+  }, 4500);
+}
 const $       = id => document.getElementById(id);
 const setText = (id, v) => { const e=$(id); if(e) e.textContent = v; };
 const setHtml = (id, v) => { const e=$(id); if(e) e.innerHTML = v; };
@@ -371,6 +437,7 @@ function applyTexts() {
   document.querySelectorAll('.hstat-lbl').forEach(el => { const v = el.dataset[lang]; if (v) el.textContent = v; });
 
   // ── Лендинг — все тексты ──
+  setText('lp-hero-h1-verb',     t('lpH1Verb'));
   setText('lp-hero-h1-gold',    t('lpH1Gold'));
   setText('lp-hero-h1-end',     t('lpH1End'));
   setHtml('lp-hero-sub',        t('lpHeroSub'));
@@ -391,15 +458,7 @@ function applyTexts() {
   setText('lp-feat4-desc',      t('lpFeat4Desc'));
   setText('lp-rev-label',       t('lpRevLabel'));
   setText('lp-rev-h',           t('lpRevH'));
-  setText('lp-rev1-text',       t('lpRev1'));
-  setText('lp-rev1-name',       t('lpRev1Name'));
-  setText('lp-rev1-city',       t('lpRev1City'));
-  setText('lp-rev2-text',       t('lpRev2'));
-  setText('lp-rev2-name',       t('lpRev2Name'));
-  setText('lp-rev2-city',       t('lpRev2City'));
-  setText('lp-rev3-text',       t('lpRev3'));
-  setText('lp-rev3-name',       t('lpRev3Name'));
-  setText('lp-rev3-city',       t('lpRev3City'));
+  renderLandingCarousel();
   setText('lp-demo-label',      t('lpDemoLabel'));
   setText('lp-demo-h',          t('lpDemoH'));
   setText('lp-demo-sub',        t('lpDemoSub'));
@@ -625,6 +684,14 @@ function applyLinks() {
   }
   const tn = $('tg-note');
   if (tn) tn.innerHTML = t('tgNote').replace('__TG__', tgUrl || '#');
+  // Плавающие кнопки WA/TG
+  const floatWa = $('float-wa-btn');
+  const floatTg = $('float-tg-btn');
+  if (floatWa && waUrl) floatWa.href = waUrl;
+  if (floatTg) {
+    if (tgUrl) { floatTg.href = tgUrl; floatTg.style.display = ''; }
+    else floatTg.style.display = 'none';
+  }
   applyLoginPageReviews();
 }
 
@@ -2072,12 +2139,13 @@ async function doLogin() {
   await animProg(15, 40, 400, steps[1]); markStep(1);
 
   let foundName = '', isPaid = false, isAllowed = false;
+  // ── Попытка 1: Apps Script ──────────────────────────────────────
+  let scriptOk = false;
   try {
     const controller = new AbortController();
     const timeoutId  = setTimeout(() => controller.abort(), 15000);
     let res;
     try {
-      // Apps Script требует text/plain для CORS с внешних доменов
       res = await fetch(LOG_SCRIPT_URL, {
         method:  'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -2089,19 +2157,57 @@ async function doLogin() {
     }
     if (!res.ok) throw new Error('http_' + res.status);
     const result = await res.json();
+    scriptOk = true;
     if (!result.found) { finishLogin(btn); showMsg('error', t('errNotFound')); return; }
     foundName  = result.name || name;
     isPaid     = !!result.isPaid;
     isAllowed  = !!result.isAllowed;
   } catch (e) {
-    await animProg(40, 40, 50, '');
-    btn.disabled = false;
-    btn.classList.remove('loading');
-    pgw.style.display = 'none';
-    if (pg) pg.classList.remove('active');
-    const msg = (e.name === 'AbortError') ? t('errSheetUnavailable') : t('errNetwork');
-    showMsg('error', msg);
-    return;
+    console.warn('Apps Script unavailable, trying direct sheet fallback:', e.message);
+    // ── Попытка 2: Прямое чтение Лист1 через gviz ──────────────────
+    try {
+      await animProg(40, 42, 100, steps[1]);
+      const sheetUrl = `https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:csv&sheet=Лист1`;
+      const ctrl2 = new AbortController();
+      setTimeout(() => ctrl2.abort(), 12000);
+      const res2 = await fetch(sheetUrl, { signal: ctrl2.signal });
+      if (!res2.ok) throw new Error('sheet_http_' + res2.status);
+      const csv   = await res2.text();
+      const rows  = parseCSV(csv);
+      // Row format: A=IIN, B=Phone, C=Name, D=isPaid(да/yes), E=isAllowed(да/yes)
+      const matchIin = iin.replace(/\D/g,'');
+      const matchPhone = phone.replace(/[\s\-+()]/g,'');
+      let found = false;
+      for (const row of rows) {
+        const rowIin   = (row[0]||'').replace(/\D/g,'').trim();
+        const rowPhone = (row[1]||'').replace(/[\s\-+()]/g,'').trim();
+        if (rowIin === matchIin) {
+          found = true;
+          // Phone check — partial match (last 10 digits)
+          const rp10 = rowPhone.slice(-10), up10 = matchPhone.slice(-10);
+          if (rp10 && up10 && rp10 !== up10) {
+            finishLogin(btn); showMsg('error', t('errNotFound')); return;
+          }
+          foundName  = (row[2]||'').trim() || name;
+          const pd   = (row[3]||'').trim().toLowerCase();
+          const ac   = (row[4]||'').trim().toLowerCase();
+          isPaid     = pd === 'да' || pd === 'yes' || pd === '1' || pd === 'true';
+          isAllowed  = ac === 'да' || ac === 'yes' || ac === '1' || ac === 'true';
+          break;
+        }
+      }
+      if (!found) { finishLogin(btn); showMsg('error', t('errNotFound')); return; }
+      scriptOk = true;
+    } catch(e2) {
+      await animProg(40, 40, 50, '');
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      pgw.style.display = 'none';
+      if (pg) pg.classList.remove('active');
+      const msg = (e2.name === 'AbortError') ? t('errSheetUnavailable') : t('errNetwork');
+      showMsg('error', msg);
+      return;
+    }
   }
 
   await animProg(40, 60, 300, steps[2]); markStep(2);
@@ -2250,14 +2356,97 @@ $('admin-pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') ch
 
 function openAdmin() {
   $('admin-gs-input').value = gsSheetId;
+  const scriptInput = $('admin-script-input');
+  if (scriptInput) scriptInput.value = localStorage.getItem('bs_script_url') || LOG_SCRIPT_URL;
   $('admin-modal').classList.add('show');
 }
 function saveAdmin() {
   const val = $('admin-gs-input').value.trim();
   if (val) { gsSheetId = val; localStorage.setItem('gs_sheet_id', val); }
+  const scriptInput = $('admin-script-input');
+  if (scriptInput && scriptInput.value.trim()) {
+    localStorage.setItem('bs_script_url', scriptInput.value.trim());
+  }
   closeModal('admin-modal');
   showToast(t('savedOk'), 'success');
   loadSheet2();
+}
+
+async function runAdminDiag() {
+  const logEl = $('admin-diag-log');
+  const s2El  = $('diag-sheet2');
+  const scEl  = $('diag-script');
+  const runBtn = $('admin-diag-run-btn');
+  if (logEl) { logEl.style.display = 'block'; logEl.innerHTML = ''; }
+  if (runBtn) runBtn.disabled = true;
+
+  const log = (msg, ok) => {
+    if (!logEl) return;
+    const line = document.createElement('div');
+    line.className = 'diag-line ' + (ok === true ? 'ok' : ok === false ? 'err' : 'info');
+    line.textContent = msg;
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+  };
+
+  // 1. Test Google Sheets (Лист2)
+  log('🔍 Проверяем Google Sheets (Лист2)...');
+  if (s2El) s2El.textContent = '⏳ проверяем...';
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:csv&sheet=Лист2`;
+    const ctrl = new AbortController();
+    setTimeout(() => ctrl.abort(), 8000);
+    const res = await fetch(url, { signal: ctrl.signal });
+    if (res.ok) {
+      const text = await res.text();
+      if (text && text.length > 5) {
+        if (s2El) s2El.textContent = '✅ доступна';
+        log(`✅ Лист2 загружен (${text.length} байт)`, true);
+      } else {
+        if (s2El) s2El.textContent = '⚠️ пусто';
+        log('⚠️ Лист2 пустой или нет данных', null);
+      }
+    } else {
+      if (s2El) s2El.textContent = '❌ ошибка ' + res.status;
+      log(`❌ Лист2 HTTP ${res.status}. Проверьте: таблица должна быть открыта для всех ("Читатель")`, false);
+    }
+  } catch (e) {
+    if (s2El) s2El.textContent = '❌ недоступна';
+    log('❌ Лист2 недоступен: ' + (e.name === 'AbortError' ? 'таймаут 8с' : e.message), false);
+  }
+
+  // 2. Test Apps Script
+  log('🔍 Проверяем Apps Script (авторизацию)...');
+  if (scEl) scEl.textContent = '⏳ проверяем...';
+  const scriptUrl = localStorage.getItem('bs_script_url') || LOG_SCRIPT_URL;
+  try {
+    const ctrl2 = new AbortController();
+    setTimeout(() => ctrl2.abort(), 10000);
+    const res2 = await fetch(scriptUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ _type: 'ping' }),
+      signal: ctrl2.signal
+    });
+    if (res2.ok) {
+      const txt = await res2.text();
+      if (scEl) scEl.textContent = '✅ отвечает';
+      log(`✅ Apps Script отвечает (${txt.length} байт)`, true);
+    } else {
+      if (scEl) scEl.textContent = '❌ HTTP ' + res2.status;
+      log(`❌ Apps Script HTTP ${res2.status}. Переопубликуйте скрипт: "Развернуть → Веб-приложение → Все"`, false);
+    }
+  } catch(e2) {
+    if (scEl) scEl.textContent = '❌ недоступен';
+    if (e2.name === 'AbortError') {
+      log('❌ Apps Script: таймаут. Проверьте URL и права публикации', false);
+    } else {
+      log('❌ Apps Script: ' + e2.message + '. URL неверный или скрипт не опубликован', false);
+    }
+  }
+
+  log('✔ Диагностика завершена');
+  if (runBtn) runBtn.disabled = false;
 }
 
 // ══════════════════════════════ MODALS HELPERS ════════════════════

@@ -9,7 +9,7 @@
 <meta name="description" content="Business School Amanat — образовательная платформа для обучения продажам на маркетплейсах. Курсы по Wildberries, Kaspi, Ozon и другим площадкам.">
 <meta name="keywords" content="Business School Amanat, маркетплейс, обучение, курсы, Wildberries, Kaspi, Ozon, продажи">
 <meta name="author" content="Business School Amanat">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 
 <!-- ── Open Graph ── -->
 <meta property="og:type" content="website">
@@ -190,7 +190,7 @@
         <span class="lp-badge-dot"></span>
         <span>Business School Amanat</span>
       </div>
-      <h1 class="lp-h1" id="lp-hero-h1">Зарабатывай на<br><span class="lp-h1-gold" id="lp-hero-h1-gold">маркетплейсах</span><br><span id="lp-hero-h1-end">с нуля</span></h1>
+      <h1 class="lp-h1" id="lp-hero-h1"><span id="lp-hero-h1-verb">Зарабатывай</span> на<br><span class="lp-h1-gold" id="lp-hero-h1-gold">маркетплейсах</span><br><span id="lp-hero-h1-end">с нуля</span></h1>
       <p class="lp-sub" id="lp-hero-sub">Kaspi · Wildberries · Ozon — обучаем с нуля до стабильного дохода.<br>Уже <strong>2 400+</strong> студентов прошли путь и продают.</p>
       <div class="lp-hero-btns">
         <a class="lp-btn-primary" id="lp-hero-btn-wa" href="https://wa.me/77776020216?text=Здравствуйте%2C%20хочу%20узнать%20о%20доступе%20к%20платформе" target="_blank" rel="noopener">
@@ -251,44 +251,15 @@
     </div>
   </section>
 
-  <!-- ОТЗЫВЫ -->
+  <!-- ОТЗЫВЫ — КАРУСЕЛЬ -->
   <section class="lp-section">
     <div class="lp-section-label" id="lp-rev-label">Результаты студентов</div>
     <h2 class="lp-section-h" id="lp-rev-h">Они уже продают</h2>
-    <div class="lp-reviews">
-      <div class="lp-review">
-        <div class="lp-review-stars">★★★★★</div>
-        <p class="lp-review-text" id="lp-rev1-text">«Запустила магазин на Wildberries через месяц обучения. Поддержка куратора на высшем уровне — всегда на связи и помогает разобраться»</p>
-        <div class="lp-review-author">
-          <div class="lp-review-ava" style="background:linear-gradient(135deg,#f5c842,#ff9800)">АС</div>
-          <div>
-            <div class="lp-review-name" id="lp-rev1-name">Айгерим С.</div>
-            <div class="lp-review-city" id="lp-rev1-city">Алматы</div>
-          </div>
-        </div>
+    <div class="lp-carousel-wrap" id="lp-carousel-wrap">
+      <div class="lp-carousel-track" id="lp-carousel-track">
+        <!-- Reviews rendered by JS -->
       </div>
-      <div class="lp-review">
-        <div class="lp-review-stars">★★★★★</div>
-        <p class="lp-review-text" id="lp-rev2-text">«За 3 месяца вышел на стабильный доход с маркетплейсов. Уроки структурированы логично — всё по делу, без воды»</p>
-        <div class="lp-review-author">
-          <div class="lp-review-ava" style="background:linear-gradient(135deg,#22c48a,#0055ff)">НМ</div>
-          <div>
-            <div class="lp-review-name" id="lp-rev2-name">Нурлан М.</div>
-            <div class="lp-review-city" id="lp-rev2-city">Астана</div>
-          </div>
-        </div>
-      </div>
-      <div class="lp-review">
-        <div class="lp-review-stars">★★★★★</div>
-        <p class="lp-review-text" id="lp-rev3-text">«Продаю сейчас на трёх площадках. До курса боялся даже начинать. Business School Amanat реально меняет жизнь!»</p>
-        <div class="lp-review-author">
-          <div class="lp-review-ava" style="background:linear-gradient(135deg,#9d4ed0,#e31e24)">РА</div>
-          <div>
-            <div class="lp-review-name" id="lp-rev3-name">Руслан А.</div>
-            <div class="lp-review-city" id="lp-rev3-city">Шымкент</div>
-          </div>
-        </div>
-      </div>
+      <div class="lp-carousel-dots" id="lp-carousel-dots"></div>
     </div>
   </section>
 
@@ -913,38 +884,78 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <h3 class="modal-h">⚙ Настройки администратора</h3>
-    <p class="modal-sub">Настройте Google Sheets ID для подключения базы данных.</p>
-    <div class="field">
+    <p class="modal-sub">Управление подключением к Google Sheets и базой данных.</p>
+
+    <!-- Диагностика -->
+    <div class="admin-diag-box" id="admin-diag-box">
+      <div class="admin-diag-row">
+        <span class="admin-diag-label">Google Sheets (Лист2)</span>
+        <span class="admin-diag-status" id="diag-sheet2">⏳ не проверено</span>
+      </div>
+      <div class="admin-diag-row">
+        <span class="admin-diag-label">Apps Script (авторизация)</span>
+        <span class="admin-diag-status" id="diag-script">⏳ не проверено</span>
+      </div>
+      <button onclick="runAdminDiag()" class="admin-diag-btn" id="admin-diag-run-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-3.22"/></svg>
+        Проверить соединение
+      </button>
+    </div>
+
+    <!-- Sheet ID -->
+    <div class="field" style="margin-top:16px">
       <label class="field-label">Google Sheets ID</label>
       <div class="field-wrap">
-        <input type="text" id="admin-gs-input" placeholder="ID таблицы" class="field-input" style="padding-left:16px">
+        <input type="text" id="admin-gs-input" placeholder="ID таблицы (из URL)" class="field-input" style="padding-left:16px">
         <div class="field-border-anim"></div>
       </div>
     </div>
-    <button onclick="saveAdmin()" class="login-btn" style="margin-top:8px">
-      <span class="btn-content"><span>Сохранить</span></span>
-    </button>
 
-    <div class="hint-box">
-      <strong>📋 Структура Лист2</strong>
-      <strong style="display:block;margin-top:14px;color:var(--text)">📌 Столбец A — служебный (строго по строкам)</strong>
+    <!-- Apps Script URL -->
+    <div class="field" style="margin-top:10px">
+      <label class="field-label">Apps Script URL (для авторизации)</label>
+      <div class="field-wrap">
+        <input type="text" id="admin-script-input" placeholder="https://script.google.com/macros/s/..." class="field-input" style="padding-left:16px">
+        <div class="field-border-anim"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+      <button onclick="saveAdmin()" class="login-btn" style="flex:1;min-width:140px">
+        <span class="btn-content"><span>💾 Сохранить</span></span>
+      </button>
+      <button onclick="runAdminDiag()" class="login-btn" style="flex:1;min-width:140px;background:var(--surface3)!important;color:var(--text)!important">
+        <span class="btn-content"><span>🔍 Диагностика</span></span>
+      </button>
+    </div>
+
+    <div id="admin-diag-log" class="admin-diag-log" style="display:none"></div>
+
+    <div class="hint-box" style="margin-top:16px">
+      <strong>📋 Структура Google Таблицы</strong>
+      <strong style="display:block;margin-top:14px;color:var(--text)">📌 Лист1 — список студентов</strong>
+      <table class="sheet-table" style="margin-top:6px">
+        <tr><th>A — ИИН</th><th>B — Телефон</th><th>C — Имя</th><th>D — Оплата</th><th>E — Доступ</th></tr>
+        <tr><td>123456789012</td><td>+77771234567</td><td>Нурлан</td><td>да</td><td>да</td></tr>
+      </table>
+      <strong style="display:block;margin-top:14px;color:var(--text)">📌 Лист2 — настройки (столбец A)</strong>
       <table class="sheet-table" style="margin-top:6px">
         <tr><th>Ячейка</th><th>Содержимое</th></tr>
-        <tr><td>A1</td><td>Любое название (пропускается)</td></tr>
-        <tr><td>A2</td><td>Пусто (пропускается)</td></tr>
         <tr><td>A3</td><td>Ссылка каталог Фулфилмент</td></tr>
         <tr><td>A4</td><td>Ссылка каталог Золото / Алтын</td></tr>
         <tr><td>A5</td><td>Ссылка WhatsApp куратора</td></tr>
         <tr><td>A6</td><td>Ссылка Telegram куратора</td></tr>
+        <tr><td>A7</td><td>Ссылка ТГ-канал отзывов</td></tr>
       </table>
       <strong style="display:block;margin-top:14px;color:var(--text)">📌 Курсы: B+C = курс 1, D+E = курс 2...</strong>
       <table class="sheet-table" style="margin-top:6px">
         <tr><th>Строка</th><th>KZ столбец (B,D,F…)</th><th>RU столбец (C,E,G…)</th></tr>
         <tr><td>1</td><td>Название курса на KZ</td><td>Название курса на RU</td></tr>
         <tr><td>2</td><td>Ссылка на иконку курса</td><td>Hex цвет карточки</td></tr>
-        <tr><td>3+</td><td>Урок / img: / file: / header: / link: / text:</td><td>Урок / img: / file: / header: / link: / text:</td></tr>
+        <tr><td>3+</td><td>Урок / img: / file: / header:</td><td>Урок / img: / file: / header:</td></tr>
       </table>
-      <p style="margin-top:10px;font-size:11px;color:var(--text3);line-height:2.2">
+      <p style="margin-top:12px;font-size:12px;color:var(--text2);font-weight:600">⚠️ Обязательно: таблица должна быть открыта — «Все у кого есть ссылка → Читатель»</p>
+      <p style="margin-top:6px;font-size:11px;color:var(--text3);line-height:2.2">
         🎬 Видео: <code class="hint-code">https://youtu.be/xxx|Название урока</code><br>
         🖼 Картинка: <code class="hint-code">img:https://url|Подпись</code><br>
         📝 Заголовок: <code class="hint-code">header:Название раздела</code><br>
@@ -954,6 +965,18 @@
       </p>
     </div>
   </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ FLOATING CONTACT BTNS ══ -->
+<div class="float-contact" id="float-contact">
+  <a class="float-btn float-wa" id="float-wa-btn" href="https://wa.me/77776020216" target="_blank" rel="noopener" title="WhatsApp">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.553 4.116 1.524 5.847L.057 23.882l6.186-1.448A11.952 11.952 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.878 9.878 0 0 1-5.031-1.378l-.361-.214-3.741.875.944-3.643-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.536 6.536 2.106 12 2.106S21.894 6.536 21.894 12 17.464 21.894 12 21.894z"/></svg>
+    <span class="float-btn-label">WhatsApp</span>
+  </a>
+  <a class="float-btn float-tg" id="float-tg-btn" href="#" target="_blank" rel="noopener" title="Telegram">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+    <span class="float-btn-label">Telegram</span>
+  </a>
 </div>
 
 <script src="app.js"></script>
