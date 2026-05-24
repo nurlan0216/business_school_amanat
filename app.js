@@ -100,6 +100,34 @@ const T = {
     imgDownload: 'Скачать', imgOpenOrig: 'Открыть оригинал',
     statusText: 'В сети', userOnline: 'Онлайн',
     courses: 'Курсов', progress: 'Прогресс', watchedStat: 'Уроков',
+    // Лендинг
+    lpH1Gold: 'маркетплейсах',
+    lpH1End: 'с нуля',
+    lpHeroSub: 'Kaspi · Wildberries · Ozon — обучаем с нуля до стабильного дохода.<br>Уже <strong>2 400+</strong> студентов прошли путь и продают.',
+    lpHeroBtnWa: 'Узнать стоимость',
+    lpHeroBtnLogin: 'Уже купили? Войти',
+    lpStatStudents: 'студентов', lpStatOnline: 'онлайн сейчас', lpStatSupport: 'поддержка',
+    lpFeatLabel: 'Что входит в пакет', lpFeatH: 'Всё для старта и роста',
+    lpFeat1Title: 'Видеоуроки', lpFeat1Desc: 'Пошаговые уроки по Kaspi, Wildberries и Ozon. Доступ навсегда — учитесь в своём темпе.',
+    lpFeat2Title: 'Договор фулфилмента', lpFeat2Desc: 'Готовый договор на услуги фулфилмента — хранение, упаковка и доставка ваших товаров.',
+    lpFeat3Title: 'Куратор на связи', lpFeat3Desc: 'Личный куратор отвечает на вопросы в течение 24 часов. Не застрянете на полпути.',
+    lpFeat4Title: 'Каталог товаров', lpFeat4Desc: 'Готовый каталог проверенных товаров для старта продаж — не нужно искать самостоятельно.',
+    lpRevLabel: 'Результаты студентов', lpRevH: 'Они уже продают',
+    lpRev1: '«Запустила магазин на Wildberries через месяц обучения. Поддержка куратора на высшем уровне — всегда на связи и помогает разобраться»',
+    lpRev1Name: 'Айгерим С.', lpRev1City: 'Алматы',
+    lpRev2: '«За 3 месяца вышел на стабильный доход с маркетплейсов. Уроки структурированы логично — всё по делу, без воды»',
+    lpRev2Name: 'Нурлан М.', lpRev2City: 'Астана',
+    lpRev3: '«Продаю сейчас на трёх площадках. До курса боялся даже начинать. Business School Amanat реально меняет жизнь!»',
+    lpRev3Name: 'Руслан А.', lpRev3City: 'Шымкент',
+    lpDemoLabel: 'Попробуйте бесплатно', lpDemoH: 'Первый урок — без регистрации',
+    lpDemoSub: 'Посмотрите вводный урок любого курса прямо сейчас. Бесплатно, без ввода данных.',
+    lpDemoBtn: 'Смотреть бесплатный урок', lpDemoBadge: '60 сек · бесплатно',
+    lpCtaH: 'Готовы начать<br>продавать?', lpCtaSub: 'Напишите куратору — расскажем о программе и условиях доступа',
+    lpCtaWaBtn: 'Написать в WhatsApp', lpCtaLoginBtn: 'Уже купили? Войти',
+    lpBackBtn: 'На главную',
+    // Курсор подсказки
+    cursorEnterPrice: 'Узнать стоимость', cursorLogin: 'Войти в платформу', cursorDemo: 'Бесплатный урок',
+    cursorWatch: 'Смотреть урок', cursorContinue: 'Продолжить',
   },
   kz: {
     eyebrow: 'Білім беру платформасы',
@@ -141,6 +169,34 @@ const T = {
     imgDownload: 'Жүктеу', imgOpenOrig: 'Түпнұсқаны ашу',
     statusText: 'Желіде', userOnline: 'Онлайн',
     courses: 'Курс', progress: 'Барысы', watchedStat: 'Сабақ',
+    // Лендинг KZ
+    lpH1Gold: 'маркетплейстерде',
+    lpH1End: 'нөлден бастай',
+    lpHeroSub: 'Kaspi · Wildberries · Ozon — нөлден тұрақты табысқа дейін үйретеміз.<br>Қазірдің өзінде <strong>2 400+</strong> студент сатып жатыр.',
+    lpHeroBtnWa: 'Құнын білу',
+    lpHeroBtnLogin: 'Сатып алдыңыз ба? Кіру',
+    lpStatStudents: 'студент', lpStatOnline: 'қазір онлайн', lpStatSupport: 'қолдау',
+    lpFeatLabel: 'Пакетке не кіреді', lpFeatH: 'Бастау үшін бәрі бар',
+    lpFeat1Title: 'Бейне сабақтар', lpFeat1Desc: 'Kaspi, Wildberries және Ozon бойынша қадамдық сабақтар. Мәңгілік қол жеткізу — өз қарқынмен оқыңыз.',
+    lpFeat2Title: 'Фулфилмент шарты', lpFeat2Desc: 'Фулфилмент қызметтеріне дайын шарт — тауарларыңызды сақтау, орау және жеткізу.',
+    lpFeat3Title: 'Куратор байланыста', lpFeat3Desc: 'Жеке куратор 24 сағат ішінде сұрақтарға жауап береді. Жолда қалмайсыз.',
+    lpFeat4Title: 'Тауар каталогы', lpFeat4Desc: 'Сату бастауға арналған тексерілген тауарлардың дайын каталогы — өздігінен іздеудің қажеті жоқ.',
+    lpRevLabel: 'Студенттердің нәтижелері', lpRevH: 'Олар қазірдің өзінде сатып жатыр',
+    lpRev1: '«Бір ай оқудан кейін Wildberries-те дүкен ашып алдым. Куратордың қолдауы керемет — әрқашан байланыста және түсінуге көмектеседі»',
+    lpRev1Name: 'Айгерим С.', lpRev1City: 'Алматы',
+    lpRev2: '«3 айда маркетплейстерден тұрақты табысқа шықтым. Сабақтар логикалы құрылған — бос сөзсіз, нақты»',
+    lpRev2Name: 'Нурлан М.', lpRev2City: 'Астана',
+    lpRev3: '«Қазір үш алаңда сатамын. Курсқа дейін бастаудан қорқатынмын. Business School Amanat шынымен өмірді өзгертеді!»',
+    lpRev3Name: 'Руслан А.', lpRev3City: 'Шымкент',
+    lpDemoLabel: 'Тегін көріңіз', lpDemoH: 'Бірінші сабақ — тіркеусіз',
+    lpDemoSub: 'Кез келген курстың кіріспе сабағын қазір қараңыз. Тегін, деректер енгізбестен.',
+    lpDemoBtn: 'Тегін сабақты қарау', lpDemoBadge: '60 сек · тегін',
+    lpCtaH: 'Сатуды бастауға<br>дайынсыз ба?', lpCtaSub: 'Кураторға жазыңыз — бағдарлама мен қол жеткізу шарттары туралы айтамыз',
+    lpCtaWaBtn: 'WhatsApp-қа жазу', lpCtaLoginBtn: 'Сатып алдыңыз ба? Кіру',
+    lpBackBtn: 'Басты бетке',
+    // Курсор подсказки
+    cursorEnterPrice: 'Құнын білу', cursorLogin: 'Платформаға кіру', cursorDemo: 'Тегін сабақ',
+    cursorWatch: 'Сабақты қарау', cursorContinue: 'Жалғастыру',
   }
 };
 
@@ -154,13 +210,18 @@ const sleep   = ms => new Promise(r => setTimeout(r, ms));
 // ══════════════════════════════ CURSOR ════════════════════════════
 (function initCursor() {
   if (window.matchMedia('(hover: none)').matches) return;
-  const cur = $('cursor'), fol = $('cursor-follower');
+  const cur = $('cursor'), fol = $('cursor-follower'), tip = $('cursor-tooltip');
   if (!cur || !fol) return;
   document.body.classList.add('cursor-active');
   let mx = 0, my = 0, fx = 0, fy = 0;
   document.addEventListener('mousemove', e => {
     mx = e.clientX; my = e.clientY;
     cur.style.transform = `translate(${mx - 4}px, ${my - 4}px)`;
+    if (tip) {
+      tip.style.left = (mx + 18) + 'px';
+      tip.style.top  = (my - 10) + 'px';
+    }
+    resetIdleBeacon();
   });
   (function animFol() {
     fx += (mx - fx - 18) * 0.14;
@@ -168,13 +229,74 @@ const sleep   = ms => new Promise(r => setTimeout(r, ms));
     fol.style.transform = `translate(${fx}px, ${fy}px)`;
     requestAnimationFrame(animFol);
   })();
+
+  // Умные подсказки по data-cursor-tip или data-tip атрибутам
+  const tooltipMap = {
+    '#lp-hero-btn-wa':      () => t('cursorEnterPrice'),
+    '.lp-btn-primary':      () => t('cursorEnterPrice'),
+    '.lp-btn-secondary':    () => t('cursorLogin'),
+    '#login-btn':           () => t('cursorLogin'),
+    '.demo-card':           () => t('cursorDemo'),
+    '.lp-demo-preview':     () => t('cursorDemo'),
+    '.platform-card':       () => t('cursorWatch'),
+    '.demo-toggle-btn':     () => t('cursorDemo'),
+    '.resume-beacon':       () => t('cursorContinue'),
+  };
+
   document.addEventListener('mouseover', e => {
     const el = e.target;
     const hoverable = el.closest('a, button, [role="button"], .clickable, .platform-card, .action-card');
     cur.classList.toggle('hovering', !!hoverable);
     fol.classList.toggle('hovering', !!hoverable);
+
+    if (!tip) return;
+    // Check custom data-tip first
+    const dataTip = el.closest('[data-tip]');
+    if (dataTip) { showCursorTip(dataTip.dataset.tip); return; }
+    // Check tooltipMap
+    for (const [sel, fn] of Object.entries(tooltipMap)) {
+      if (el.closest(sel)) { showCursorTip(fn()); return; }
+    }
+    hideCursorTip();
   });
+  document.addEventListener('mouseout', () => hideCursorTip());
 })();
+
+function showCursorTip(text) {
+  const tip = $('cursor-tooltip');
+  if (!tip || !text) return;
+  tip.textContent = text;
+  tip.classList.add('visible');
+}
+function hideCursorTip() {
+  const tip = $('cursor-tooltip');
+  if (tip) tip.classList.remove('visible');
+}
+
+// ── Idle beacon — пульс на главной кнопке после 5 сек бездействия ──
+let _idleBeaconTimer = null;
+let _idleBeaconActive = false;
+function resetIdleBeacon() {
+  clearTimeout(_idleBeaconTimer);
+  if (_idleBeaconActive) removeIdleBeacon();
+  _idleBeaconTimer = setTimeout(showIdleBeacon, 5000);
+}
+function showIdleBeacon() {
+  // Показываем только на лендинге
+  const lp = $('landing-page');
+  if (!lp || lp.style.display === 'none') return;
+  const btn = lp.querySelector('.lp-btn-primary');
+  if (!btn) return;
+  _idleBeaconActive = true;
+  btn.classList.add('idle-beacon');
+}
+function removeIdleBeacon() {
+  _idleBeaconActive = false;
+  document.querySelectorAll('.idle-beacon').forEach(el => el.classList.remove('idle-beacon'));
+}
+document.addEventListener('click', removeIdleBeacon);
+// Запускаем маяк через 5 сек после загрузки
+setTimeout(resetIdleBeacon, 100);
 
 // ══════════════════════════════ THEME ════════════════════════════
 function initTheme() {
@@ -247,6 +369,47 @@ function applyTexts() {
   if (currentUser) setText('user-name-badge', t('hello') + ' ' + currentUser);
   document.querySelectorAll('.deco-lbl').forEach(el => { const v = el.dataset[lang]; if (v) el.textContent = v; });
   document.querySelectorAll('.hstat-lbl').forEach(el => { const v = el.dataset[lang]; if (v) el.textContent = v; });
+
+  // ── Лендинг — все тексты ──
+  setText('lp-hero-h1-gold',    t('lpH1Gold'));
+  setText('lp-hero-h1-end',     t('lpH1End'));
+  setHtml('lp-hero-sub',        t('lpHeroSub'));
+  setText('lp-hero-btn-wa-text',t('lpHeroBtnWa'));
+  setText('lp-hero-btn-login',  t('lpHeroBtnLogin'));
+  setText('lp-stat-students',   t('lpStatStudents'));
+  setText('lp-stat-online',     t('lpStatOnline'));
+  setText('lp-stat-support',    t('lpStatSupport'));
+  setText('lp-feat-label',      t('lpFeatLabel'));
+  setText('lp-feat-h',          t('lpFeatH'));
+  setText('lp-feat1-title',     t('lpFeat1Title'));
+  setText('lp-feat1-desc',      t('lpFeat1Desc'));
+  setText('lp-feat2-title',     t('lpFeat2Title'));
+  setText('lp-feat2-desc',      t('lpFeat2Desc'));
+  setText('lp-feat3-title',     t('lpFeat3Title'));
+  setText('lp-feat3-desc',      t('lpFeat3Desc'));
+  setText('lp-feat4-title',     t('lpFeat4Title'));
+  setText('lp-feat4-desc',      t('lpFeat4Desc'));
+  setText('lp-rev-label',       t('lpRevLabel'));
+  setText('lp-rev-h',           t('lpRevH'));
+  setText('lp-rev1-text',       t('lpRev1'));
+  setText('lp-rev1-name',       t('lpRev1Name'));
+  setText('lp-rev1-city',       t('lpRev1City'));
+  setText('lp-rev2-text',       t('lpRev2'));
+  setText('lp-rev2-name',       t('lpRev2Name'));
+  setText('lp-rev2-city',       t('lpRev2City'));
+  setText('lp-rev3-text',       t('lpRev3'));
+  setText('lp-rev3-name',       t('lpRev3Name'));
+  setText('lp-rev3-city',       t('lpRev3City'));
+  setText('lp-demo-label',      t('lpDemoLabel'));
+  setText('lp-demo-h',          t('lpDemoH'));
+  setText('lp-demo-sub',        t('lpDemoSub'));
+  setText('lp-demo-btn',        t('lpDemoBtn'));
+  setText('lp-demo-badge',      t('lpDemoBadge'));
+  setHtml('lp-cta-h',           t('lpCtaH'));
+  setText('lp-cta-sub',         t('lpCtaSub'));
+  setText('lp-cta-wa-btn',      t('lpCtaWaBtn'));
+  setText('lp-cta-login-btn',   t('lpCtaLoginBtn'));
+  setText('lp-back-btn-text',   t('lpBackBtn'));
 }
 
 // ══════════════════════════════ CSV PARSING ═══════════════════════
@@ -606,10 +769,23 @@ function openDemoLesson(idx) {
       <!-- Bottom CTA -->
       <div class="demo-video-limit">
         Демо-версия: <strong id="demo-seconds">60</strong> сек. —
-        <span class="demo-login-link" onclick="closeDemoLesson();setTimeout(()=>$('inp-name').focus(),200)">Войти и смотреть полностью →</span>
+        <span class="demo-login-link" onclick="closeDemoLesson();setTimeout(()=>showLandingLogin(),250)">Войти и смотреть полностью →</span>
       </div>
+      <!-- Кнопка куратора -->
+      <div class="demo-curator-btns" id="demo-curator-btns" style="display:flex;gap:8px;margin-top:10px;justify-content:center;flex-wrap:wrap"></div>
     </div>`;
   document.body.appendChild(overlay);
+
+  // Заполняем кнопки куратора
+  const curBtns = document.getElementById('demo-curator-btns');
+  if (curBtns) {
+    const lessonRef = encodeURIComponent(`Привет! Смотрю демо-урок курса «${name}», хочу узнать подробнее`);
+    const kzRef     = encodeURIComponent(`Сәлем! «${name}» курсының демо сабағын қараймын, толығырақ білгім келеді`);
+    const ref       = lang === 'kz' ? kzRef : lessonRef;
+    if (waUrl)   curBtns.innerHTML += `<a href="${waUrl}?text=${ref}" target="_blank" rel="noopener" class="demo-curator-btn wa-btn-demo">💬 WhatsApp</a>`;
+    if (tgUrl)   curBtns.innerHTML += `<a href="${tgUrl}" target="_blank" rel="noopener" class="demo-curator-btn tg-btn-demo">✈ Telegram</a>`;
+    if (!waUrl && !tgUrl) curBtns.style.display = 'none';
+  }
 
   // Load YouTube via IFrame API if ready, else plain iframe
   demoIsTheater = false;
@@ -756,6 +932,22 @@ function closeDemoLesson() {
   }
   const ov = $('demo-video-overlay');
   if (ov) ov.remove();
+
+  // Если не авторизован — вернуть на лендинг с плавным переходом
+  if (!currentUser) {
+    const loginPg = $('login-page');
+    const lp = $('landing-page');
+    if (lp && loginPg) {
+      lp.style.display = 'block';
+      lp.classList.add('page-fade-in');
+      loginPg.style.display = 'none';
+      const backBtn = $('lp-back-btn');
+      if (backBtn) backBtn.style.display = 'none';
+      setTimeout(() => { lp.classList.remove('page-fade-in'); }, 400);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      resetIdleBeacon();
+    }
+  }
 }
 
 // ── Update reviews section on login page ──────────────────────────
@@ -1986,7 +2178,10 @@ function showLessons() {
   // Запуск фоновой ежесекундной/10-секундной проверки прав доступа пользователя в Лист1
   startSecurityMonitor();
 
-  setTimeout(() => { document.querySelectorAll('.platform-card').forEach(el => el.style.animation = ''); }, 1000);
+  setTimeout(() => {
+    document.querySelectorAll('.platform-card').forEach(el => el.style.animation = '');
+    showResumeBeacon();
+  }, 1200);
 }
 
 function logout() {
@@ -2158,59 +2353,137 @@ async function tryRestoreSession() {
 }
 
 // ══════════════════════════════ INIT ════════════════════════════
+// ══════════════════════════════ LANDING PAGE ══════════════════════
+function showLanding() {
+  const lp = $('landing-page');
+  const loginPg = $('login-page');
+  if (loginPg) { loginPg.classList.add('page-fade-out'); }
+  setTimeout(() => {
+    if (loginPg) { loginPg.style.display = 'none'; loginPg.classList.remove('page-fade-out'); }
+    if (lp) { lp.style.display = 'block'; lp.classList.add('page-fade-in'); }
+    setTimeout(() => { if (lp) lp.classList.remove('page-fade-in'); }, 400);
+    const backBtn = $('lp-back-btn');
+    if (backBtn) backBtn.style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    resetIdleBeacon();
+  }, 220);
+}
+
+function showLandingLogin() {
+  const lp = $('landing-page');
+  const loginPg = $('login-page');
+  if (lp) { lp.classList.add('page-fade-out'); }
+  setTimeout(() => {
+    if (lp) { lp.style.display = 'none'; lp.classList.remove('page-fade-out'); }
+    if (loginPg) {
+      loginPg.style.display = 'flex';
+      loginPg.classList.add('page-fade-in');
+      loginPg.scrollIntoView({ behavior: 'smooth' });
+    }
+    setTimeout(() => { if (loginPg) loginPg.classList.remove('page-fade-in'); }, 400);
+    // Показываем кнопку «назад»
+    const backBtn = $('lp-back-btn');
+    if (backBtn) backBtn.style.display = 'flex';
+    removeIdleBeacon();
+  }, 220);
+}
+
+function scrollToDemoAndOpen() {
+  const lp = $('landing-page');
+  const loginPg = $('login-page');
+  if (lp) { lp.classList.add('page-fade-out'); }
+  setTimeout(() => {
+    if (lp) { lp.style.display = 'none'; lp.classList.remove('page-fade-out'); }
+    if (loginPg) { loginPg.style.display = 'flex'; loginPg.classList.add('page-fade-in'); }
+    setTimeout(() => { if (loginPg) loginPg.classList.remove('page-fade-in'); }, 400);
+    const backBtn = $('lp-back-btn');
+    if (backBtn) backBtn.style.display = 'flex';
+    setTimeout(() => {
+      const demoSection = $('demo-section');
+      if (demoSection) {
+        demoSection.scrollIntoView({ behavior: 'smooth' });
+        const wrap = $('demo-cards-wrap');
+        if (wrap && wrap.style.display === 'none') toggleDemoSection();
+      }
+    }, 320);
+  }, 220);
+}
+
 (async function init() {
   applyTexts();
+  initOnlineCounter();
   const restored = await tryRestoreSession();
   if (!restored) {
     if (gsSheetId) loadSheet2();
-    $('login-page').style.display   = 'flex';
+    // Show landing page first; login page stays hidden
+    const lp = document.getElementById('landing-page');
+    if (lp) lp.style.display = 'block';
+    $('login-page').style.display   = 'none';
     $('lessons-page').style.display = 'none';
+    resetIdleBeacon();
   }
 })();
 
+// ══════════════════════════════ FOMO ONLINE COUNTER ═══════════════
+function initOnlineCounter() {
+  const el = $('lp-online-count');
+  if (!el) return;
+  // Реалистичный диапазон: 8-24 пользователя
+  const base = 8 + Math.floor(Math.random() * 12);
+  el.textContent = base;
+  // Флуктуация каждые 12-20 секунд
+  setInterval(() => {
+    const current = parseInt(el.textContent) || base;
+    const delta = Math.random() < 0.5 ? 1 : -1;
+    const next = Math.min(28, Math.max(6, current + delta));
+    el.textContent = next;
+  }, 12000 + Math.random() * 8000);
+}
 
-// ══════════════════════════════ GUEST LANDING INTERACTION ═════════════
-document.addEventListener('DOMContentLoaded', () => {
-  const landingScreen = document.getElementById('landing-screen');
-  const loginScreen = document.getElementById('login-screen');
-  const loginBtn = document.getElementById('landing-login-btn');
-  const demoBtn = document.getElementById('landing-demo-btn');
-
-  if (loginBtn && landingScreen && loginScreen) {
-    loginBtn.addEventListener('click', () => {
-      landingScreen.style.display = 'none';
-      loginScreen.style.display = 'flex';
-      
-      const nameInput = document.getElementById('inp-name');
-      if (nameInput) nameInput.focus();
-    });
-  }
-
-  if (demoBtn) {
-    demoBtn.addEventListener('click', () => {
-      const existingDemoBtn = document.querySelector('.demo-toggle-btn') || document.querySelector('[onclick*="demo"]');
-      if (existingDemoBtn) {
-        if (landingScreen) landingScreen.style.display = 'none';
-        if (loginScreen) loginScreen.style.display = 'none';
-        existingDemoBtn.click();
-      } else {
-        if (landingScreen) landingScreen.style.display = 'none';
-        if (loginScreen) loginScreen.style.display = 'flex';
-      }
-    });
-  }
-});
-
-// Дополнительный хук в авто-вход для скрытия лендинга при восстановлении сессии
-const originalTryRestoreSession = typeof tryRestoreSession !== 'undefined' ? tryRestoreSession : null;
-if (originalTryRestoreSession) {
-  tryRestoreSession = async function() {
-    const res = await originalTryRestoreSession.apply(this, arguments);
-    const landing = document.getElementById('landing-screen');
-    // Если сессия успешно восстановилась (пользователь вошел и экран логина скрыт)
-    if (landing && document.getElementById('main-layout') && document.getElementById('main-layout').style.display !== 'none') {
-      landing.style.display = 'none';
+// ══════════════════════════════ RESUME BEACON ═════════════════════
+// Маяк «продолжить» — показываем на карточке курса где студент остановился
+function showResumeBeacon() {
+  if (!currentUser || !courses.length) return;
+  // Ищем курс с незавершёнными уроками
+  for (let ci = 0; ci < courses.length; ci++) {
+    const vl = getVideoLessons(ci);
+    if (!vl.length) continue;
+    // Последний просмотренный урок
+    let lastWatched = -1;
+    for (let vi = vl.length - 1; vi >= 0; vi--) {
+      if (isWatched(ci, vl[vi].absIdx)) { lastWatched = vi; break; }
     }
-    return res;
-  };
+    // Следующий непросмотренный
+    const nextIdx = lastWatched < vl.length - 1 ? lastWatched + 1 : -1;
+    if (nextIdx === -1) continue;
+    const next = vl[nextIdx];
+    const course = courses[ci];
+    const name = lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ);
+    const color = course.hexColor || DEFAULT_COLORS[ci % DEFAULT_COLORS.length];
+    const lessons = lang === 'kz' ? course.lessonsKZ : course.lessonsRU;
+    let vNum = 0;
+    for (let i = 0; i < next.absIdx; i++) if (lessons[i].type === 'video') vNum++;
+    vNum++;
+    const lessonName = next.lesson.name || (lang === 'kz' ? `Сабақ ${vNum}` : `Урок ${vNum}`);
+
+    // Создаём плавающий маяк
+    const old = $('resume-beacon-el');
+    if (old) old.remove();
+    const beacon = document.createElement('div');
+    beacon.id = 'resume-beacon-el';
+    beacon.className = 'resume-beacon';
+    beacon.style.setProperty('--rb-color', color);
+    beacon.innerHTML = `
+      <div class="rb-inner" onclick="openLesson(${ci});setTimeout(()=>playLesson(${ci},${next.absIdx}),400)">
+        <div class="rb-icon" style="background:${color}">▶</div>
+        <div class="rb-text">
+          <div class="rb-course">${escHtml(name)}</div>
+          <div class="rb-lesson">${escHtml(lessonName)}</div>
+        </div>
+        <div class="rb-close" onclick="event.stopPropagation();this.closest('.resume-beacon').remove()">✕</div>
+      </div>`;
+    document.body.appendChild(beacon);
+    setTimeout(() => beacon.classList.add('rb-visible'), 100);
+    return; // показываем только один маяк
+  }
 }
