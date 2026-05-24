@@ -72,7 +72,7 @@ const T = {
     loginHint: 'Введите имя, ИИН и номер телефона, которые вы указывали при заключении договора с Business School Amanat.',
     labelName: 'Ваше имя', labelIin: 'ИИН', labelPhone: 'Номер телефона',
     btnText: 'Войти в платформу', logout: 'Выйти',
-    tgNote: 'Есть вопросы? <a href="__TG__" target="_blank" rel="noopener">Написать куратору</a>',
+    tgNote: 'Тех. поддержка: <a href="__WA__" target="_blank" rel="noopener">WhatsApp</a> · Куратор: <a href="__TG__" target="_blank" rel="noopener">Telegram</a>',
     heroBadge: 'Обучение',
     heroH: 'Начните продавать<br>на <em>маркетплейсах</em>',
     heroSub: 'Выберите платформу и начните обучение прямо сейчас',
@@ -142,7 +142,7 @@ const T = {
     loginHint: 'Business School Amanat-пен шарт жасасқанда көрсеткен аты-жөнінiзді, ЖСН-іңізді және телефон нөміріңізді енгізіңіз.',
     labelName: 'Аты-жөніңіз', labelIin: 'ЖСН', labelPhone: 'Телефон нөмірі',
     btnText: 'Платформаға кіру', logout: 'Шығу',
-    tgNote: 'Сұрақ бар ма? <a href="__TG__" target="_blank" rel="noopener">Кураторға жазу</a>',
+    tgNote: 'Тех. қолдау: <a href="__WA__" target="_blank" rel="noopener">WhatsApp</a> · Куратор: <a href="__TG__" target="_blank" rel="noopener">Telegram</a>',
     heroBadge: 'Оқыту',
     heroH: 'Маркетплейстерде<br><em>сатуды бастаңыз</em>',
     heroSub: 'Платформаны таңдаңыз және қазір оқуды бастаңыз',
@@ -229,49 +229,57 @@ const REVIEWS = {
   ]
 };
 
-let _carouselIdx      = 0;
-let _carouselTimer    = null;
+// ═══ REVIEWS GRID (4-в-ряд, авторотация) ═══
+let _revGridIdx  = 0;
+let _revSlotNext = 0;
+let _revGridTimer = null;
 
-function renderLandingCarousel() {
-  const track = document.getElementById('lp-carousel-track');
-  const dots  = document.getElementById('lp-carousel-dots');
-  if (!track || !dots) return;
+function renderReviewsGrid() {
   const reviews = REVIEWS[lang] || REVIEWS.ru;
-  track.innerHTML = reviews.map((r, i) => `
-    <div class="lp-carousel-slide${i === _carouselIdx ? ' active' : ''}">
-      <div class="lp-review-stars">★★★★★</div>
-      <p class="lp-review-text">${escHtml(r.text)}</p>
-      <div class="lp-review-author">
-        <div class="lp-review-ava" style="background:${r.grad}">${r.init}</div>
-        <div>
-          <div class="lp-review-name">${escHtml(r.name)}</div>
-          <div class="lp-review-city">${escHtml(r.city)}</div>
-        </div>
-      </div>
-    </div>`).join('');
-  dots.innerHTML = reviews.map((_, i) =>
-    `<button class="lp-carousel-dot${i === _carouselIdx ? ' active' : ''}" onclick="goCarousel(${i})" aria-label="Отзыв ${i+1}"></button>`
-  ).join('');
-  startCarouselTimer();
+  for (let s = 0; s < 4; s++) {
+    const r = reviews[s % reviews.length];
+    _fillRevSlot(s, r, false);
+  }
+  _revGridIdx  = 4 % reviews.length;
+  _revSlotNext = 0;
+  _startRevRotation();
 }
 
-function goCarousel(idx) {
+function _fillRevSlot(slotIdx, review, animate) {
+  const slot = document.getElementById('lp-rev-slot-' + slotIdx);
+  if (!slot) return;
+  const html = `<div class="lp-review-card">
+    <div class="lp-review-stars">★★★★★</div>
+    <p class="lp-review-text">${escHtml(review.text)}</p>
+    <div class="lp-review-author">
+      <div class="lp-review-ava" style="background:${review.grad}">${review.init}</div>
+      <div><div class="lp-review-name">${escHtml(review.name)}</div>
+      <div class="lp-review-city">${escHtml(review.city)}</div></div>
+    </div></div>`;
+  if (!animate) { slot.innerHTML = html; return; }
+  slot.style.opacity = '0';
+  slot.style.transition = 'opacity 0.35s ease';
+  setTimeout(() => {
+    slot.innerHTML = html;
+    slot.style.opacity = '';
+  }, 350);
+}
+
+function _startRevRotation() {
+  if (_revGridTimer) clearInterval(_revGridTimer);
   const reviews = REVIEWS[lang] || REVIEWS.ru;
-  _carouselIdx = (idx + reviews.length) % reviews.length;
-  const slides = document.querySelectorAll('.lp-carousel-slide');
-  const dotEls = document.querySelectorAll('.lp-carousel-dot');
-  slides.forEach((s, i) => s.classList.toggle('active', i === _carouselIdx));
-  dotEls.forEach((d, i) => d.classList.toggle('active', i === _carouselIdx));
-  startCarouselTimer();
+  if (reviews.length <= 4) return;
+  _revGridTimer = setInterval(() => {
+    const rv = REVIEWS[lang] || REVIEWS.ru;
+    _fillRevSlot(_revSlotNext, rv[_revGridIdx], true);
+    _revSlotNext = (_revSlotNext + 1) % 4;
+    _revGridIdx  = (_revGridIdx + 1) % rv.length;
+  }, 3000);
 }
 
-function startCarouselTimer() {
-  if (_carouselTimer) clearInterval(_carouselTimer);
-  _carouselTimer = setInterval(() => {
-    const reviews = REVIEWS[lang] || REVIEWS.ru;
-    goCarousel((_carouselIdx + 1) % reviews.length);
-  }, 4500);
-}
+function renderLandingCarousel() { renderReviewsGrid(); }
+function goCarousel() {}
+function startCarouselTimer() {}
 const $       = id => document.getElementById(id);
 const setText = (id, v) => { const e=$(id); if(e) e.textContent = v; };
 const setHtml = (id, v) => { const e=$(id); if(e) e.innerHTML = v; };
@@ -407,7 +415,7 @@ function applyTexts() {
   setText('label-phone',      t('labelPhone'));
   setText('btn-text',         t('btnText'));
   setText('logout-label',     t('logout'));
-  setHtml('tg-note',          t('tgNote').replace('__TG__', tgUrl || '#'));
+  setHtml('tg-note',          t('tgNote').replace('__WA__', waUrl || '#').replace('__TG__', tgUrl || '#'));
   setHtml('hero-badge',       `<span class="badge-pulse"></span>${t('heroBadge')}`);
   setHtml('hero-h',           t('heroH'));
   setText('hero-sub',         t('heroSub'));
@@ -688,8 +696,8 @@ function applyLinks() {
     tgCh.style.display = tgChannelUrl ? 'inline-flex' : 'none';
   }
   const tn = $('tg-note');
-  if (tn) tn.innerHTML = t('tgNote').replace('__TG__', tgUrl || '#');
-  // Плавающие кнопки WA/TG — WA всегда виден, TG только если URL задан
+  if (tn) tn.innerHTML = t('tgNote').replace('__WA__', waUrl || '#').replace('__TG__', tgUrl || '#');
+  // Плавающая кнопка WA — всегда видна
   const floatWa = $('float-wa-btn');
   const floatTg = $('float-tg-btn');
   if (floatWa) {
@@ -697,12 +705,7 @@ function applyLinks() {
     floatWa.style.display = '';
   }
   if (floatTg) {
-    if (tgUrl) { 
-      floatTg.href = tgUrl; 
-      floatTg.style.display = ''; 
-    } else { 
-      floatTg.style.display = 'none'; 
-    }
+    floatTg.style.display = 'none'; // TG убран с плавающих кнопок
   }
   applyLoginPageReviews();
 }
@@ -2051,8 +2054,8 @@ function mobileNavTo(section, btn) {
   if (section === 'catalog') {
     $('catalog-page-modal').classList.add('show');
   } else if (section === 'help') {
-    if (tgUrl) window.open(tgUrl, '_blank');
-    else if (waUrl) window.open(waUrl, '_blank');
+    if (waUrl) window.open(waUrl, '_blank'); // тех поддержка через WA
+    else if (tgUrl) window.open(tgUrl, '_blank');
     else showToast(t('linkNotSet'), 'error');
   } else {
     document.querySelector('.platforms-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2609,7 +2612,7 @@ async function tryRestoreSession() {
       const raw = localStorage.getItem('bs_session');
       if (raw) {
         const parsed = JSON.parse(raw);
-        const TTL = 8 * 60 * 60 * 1000; // 8 часов
+        const TTL = 30 * 24 * 60 * 60 * 1000; // 30 дней (для PWA на мобильном)
         if (parsed && parsed.user && parsed.iin && (Date.now() - (parsed.ts || 0)) < TTL) {
           savedUser  = parsed.user;
           savedIin   = parsed.iin;
@@ -2975,11 +2978,52 @@ function openCertModal() {
   const sub = $('cert-modal-sub');
   if (sub) sub.textContent = `Курс: «${courseName}»`;
 
+  // Сбрасываем состояние — показываем только кнопку "Получить сертификат"
   const canvas = $('cert-canvas');
-  if (!canvas) return;
-  drawCertificate(canvas, currentUser || 'Студент', courseName);
+  if (canvas) canvas.style.display = 'none';
+  const getBtn = $('cert-get-btn');
+  if (getBtn) getBtn.style.display = '';
+  const dlBtn = $('cert-download-btn');
+  if (dlBtn) dlBtn.style.display = 'none';
+  const prog = $('cert-gen-progress');
+  if (prog) prog.style.display = 'none';
 
   $('cert-modal').classList.add('show');
+}
+
+function generateCertificateWithProgress() {
+  const getBtn = $('cert-get-btn');
+  const dlBtn = $('cert-download-btn');
+  const prog = $('cert-gen-progress');
+  const fill = $('cert-gen-fill');
+  const label = $('cert-gen-label');
+  const canvas = $('cert-canvas');
+
+  if (getBtn) getBtn.style.display = 'none';
+  if (prog) prog.style.display = 'block';
+
+  const steps = ['Формируем данные...', 'Рисуем оформление...', 'Добавляем имя...', 'Финальная обработка...', 'Готово! 🎉'];
+  let pct = 0;
+  let stepIdx = 0;
+  const interval = setInterval(() => {
+    pct += 20 + Math.random() * 10;
+    if (pct > 100) pct = 100;
+    if (fill) fill.style.width = pct + '%';
+    if (label && steps[stepIdx]) { label.textContent = steps[stepIdx++]; }
+    if (pct >= 100) {
+      clearInterval(interval);
+      setTimeout(() => {
+        if (prog) prog.style.display = 'none';
+        const course = courses[certCourseIdx];
+        const courseName = course ? (lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ)) : 'Курс';
+        if (canvas) {
+          drawCertificate(canvas, currentUser || 'Студент', courseName);
+          canvas.style.display = '';
+        }
+        if (dlBtn) dlBtn.style.display = '';
+      }, 300);
+    }
+  }, 280);
 }
 
 function closeCertModal() {
