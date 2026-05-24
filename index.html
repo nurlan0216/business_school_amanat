@@ -95,8 +95,172 @@
   </div>
 </header>
 
+<!-- ═══════════════════════════════════════════ LANDING PAGE ══════════ -->
+<div id="landing-page" class="landing-page">
+
+  <!-- HERO -->
+  <section class="lp-hero">
+    <div class="lp-hero-glow" aria-hidden="true"></div>
+    <div class="lp-hero-inner">
+      <div class="lp-badge">
+        <span class="lp-badge-dot"></span>
+        <span>Business School Amanat</span>
+      </div>
+      <h1 class="lp-h1" id="lp-hero-h1">Зарабатывай на<br><span class="lp-h1-gold" id="lp-hero-h1-gold">маркетплейсах</span><br><span id="lp-hero-h1-end">с нуля</span></h1>
+      <p class="lp-sub" id="lp-hero-sub">Kaspi · Wildberries · Ozon — обучаем с нуля до стабильного дохода.<br>Уже <strong>2 400+</strong> студентов прошли путь и продают.</p>
+      <div class="lp-hero-btns">
+        <a class="lp-btn-primary" id="lp-hero-btn-wa" href="https://wa.me/77776020216?text=Здравствуйте%2C%20хочу%20узнать%20о%20доступе%20к%20платформе" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.553 4.116 1.524 5.847L.057 23.882l6.186-1.448A11.952 11.952 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.878 9.878 0 0 1-5.031-1.378l-.361-.214-3.741.875.944-3.643-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.536 6.536 2.106 12 2.106S21.894 6.536 21.894 12 17.464 21.894 12 21.894z"/></svg>
+          <span id="lp-hero-btn-wa-text">Узнать стоимость</span>
+        </a>
+        <button class="lp-btn-secondary" onclick="showLandingLogin()">
+          <span id="lp-hero-btn-login">Уже купили? Войти</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats bar — Live counter -->
+    <div class="lp-stats">
+      <div class="lp-stat">
+        <span class="lp-stat-num">2 400+</span>
+        <span class="lp-stat-lbl" id="lp-stat-students">студентов</span>
+      </div>
+      <div class="lp-stat-div"></div>
+      <div class="lp-stat">
+        <span class="lp-stat-num"><span id="lp-online-count">12</span> <span id="lp-online-pulse" class="lp-online-dot"></span></span>
+        <span class="lp-stat-lbl" id="lp-stat-online">онлайн сейчас</span>
+      </div>
+      <div class="lp-stat-div"></div>
+      <div class="lp-stat">
+        <span class="lp-stat-num">100%</span>
+        <span class="lp-stat-lbl" id="lp-stat-support">поддержка</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЧТО ВХОДИТ -->
+  <section class="lp-section">
+    <div class="lp-section-label" id="lp-feat-label">Что входит в пакет</div>
+    <h2 class="lp-section-h" id="lp-feat-h">Всё для старта и роста</h2>
+    <div class="lp-features">
+      <div class="lp-feat">
+        <div class="lp-feat-icon">🎓</div>
+        <h3 class="lp-feat-title" id="lp-feat1-title">Видеоуроки</h3>
+        <p class="lp-feat-desc" id="lp-feat1-desc">Пошаговые уроки по Kaspi, Wildberries и Ozon. Доступ навсегда — учитесь в своём темпе.</p>
+      </div>
+      <div class="lp-feat">
+        <div class="lp-feat-icon">📄</div>
+        <h3 class="lp-feat-title" id="lp-feat2-title">Договор фулфилмента</h3>
+        <p class="lp-feat-desc" id="lp-feat2-desc">Готовый договор на услуги фулфилмента — хранение, упаковка и доставка ваших товаров.</p>
+      </div>
+      <div class="lp-feat">
+        <div class="lp-feat-icon">💬</div>
+        <h3 class="lp-feat-title" id="lp-feat3-title">Куратор на связи</h3>
+        <p class="lp-feat-desc" id="lp-feat3-desc">Личный куратор отвечает на вопросы в течение 24 часов. Не застрянете на полпути.</p>
+      </div>
+      <div class="lp-feat">
+        <div class="lp-feat-icon">📦</div>
+        <h3 class="lp-feat-title" id="lp-feat4-title">Каталог товаров</h3>
+        <p class="lp-feat-desc" id="lp-feat4-desc">Готовый каталог проверенных товаров для старта продаж — не нужно искать самостоятельно.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ОТЗЫВЫ -->
+  <section class="lp-section">
+    <div class="lp-section-label" id="lp-rev-label">Результаты студентов</div>
+    <h2 class="lp-section-h" id="lp-rev-h">Они уже продают</h2>
+    <div class="lp-reviews">
+      <div class="lp-review">
+        <div class="lp-review-stars">★★★★★</div>
+        <p class="lp-review-text" id="lp-rev1-text">«Запустила магазин на Wildberries через месяц обучения. Поддержка куратора на высшем уровне — всегда на связи и помогает разобраться»</p>
+        <div class="lp-review-author">
+          <div class="lp-review-ava" style="background:linear-gradient(135deg,#f5c842,#ff9800)">АС</div>
+          <div>
+            <div class="lp-review-name" id="lp-rev1-name">Айгерим С.</div>
+            <div class="lp-review-city" id="lp-rev1-city">Алматы</div>
+          </div>
+        </div>
+      </div>
+      <div class="lp-review">
+        <div class="lp-review-stars">★★★★★</div>
+        <p class="lp-review-text" id="lp-rev2-text">«За 3 месяца вышел на стабильный доход с маркетплейсов. Уроки структурированы логично — всё по делу, без воды»</p>
+        <div class="lp-review-author">
+          <div class="lp-review-ava" style="background:linear-gradient(135deg,#22c48a,#0055ff)">НМ</div>
+          <div>
+            <div class="lp-review-name" id="lp-rev2-name">Нурлан М.</div>
+            <div class="lp-review-city" id="lp-rev2-city">Астана</div>
+          </div>
+        </div>
+      </div>
+      <div class="lp-review">
+        <div class="lp-review-stars">★★★★★</div>
+        <p class="lp-review-text" id="lp-rev3-text">«Продаю сейчас на трёх площадках. До курса боялся даже начинать. Business School Amanat реально меняет жизнь!»</p>
+        <div class="lp-review-author">
+          <div class="lp-review-ava" style="background:linear-gradient(135deg,#9d4ed0,#e31e24)">РА</div>
+          <div>
+            <div class="lp-review-name" id="lp-rev3-name">Руслан А.</div>
+            <div class="lp-review-city" id="lp-rev3-city">Шымкент</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- БЕСПЛАТНЫЙ УРОК -->
+  <section class="lp-section lp-demo-section">
+    <div class="lp-demo-inner">
+      <div class="lp-demo-left">
+        <div class="lp-section-label" id="lp-demo-label">Попробуйте бесплатно</div>
+        <h2 class="lp-section-h" style="margin-bottom:12px" id="lp-demo-h">Первый урок — без регистрации</h2>
+        <p id="lp-demo-sub" style="color:var(--text3);font-size:15px;line-height:1.6;margin-bottom:24px">Посмотрите вводный урок любого курса прямо сейчас. Бесплатно, без ввода данных.</p>
+        <button class="lp-btn-primary" onclick="scrollToDemoAndOpen()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>
+          <span id="lp-demo-btn">Смотреть бесплатный урок</span>
+        </button>
+      </div>
+      <div class="lp-demo-right">
+        <div class="lp-demo-preview">
+          <div class="lp-demo-play">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>
+          </div>
+          <div class="lp-demo-badge" id="lp-demo-badge">60 сек · бесплатно</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ФИНАЛЬНЫЙ CTA -->
+  <section class="lp-cta">
+    <div class="lp-cta-glow" aria-hidden="true"></div>
+    <h2 class="lp-cta-h" id="lp-cta-h">Готовы начать<br>продавать?</h2>
+    <p class="lp-cta-sub" id="lp-cta-sub">Напишите куратору — расскажем о программе и условиях доступа</p>
+    <div class="lp-hero-btns" style="justify-content:center">
+      <a class="lp-btn-primary" href="https://wa.me/77776020216?text=Здравствуйте%2C%20хочу%20купить%20доступ%20к%20Business%20School%20Amanat" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.553 4.116 1.524 5.847L.057 23.882l6.186-1.448A11.952 11.952 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.878 9.878 0 0 1-5.031-1.378l-.361-.214-3.741.875.944-3.643-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.536 6.536 2.106 12 2.106S21.894 6.536 21.894 12 17.464 21.894 12 21.894z"/></svg>
+        <span id="lp-cta-wa-btn">Написать в WhatsApp</span>
+      </a>
+      <button class="lp-btn-secondary" onclick="showLandingLogin()">
+        <span id="lp-cta-login-btn">Уже купили? Войти</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </section>
+
+</div>
+<!-- ═══════════════════════════════════════════ / LANDING PAGE ═════════ -->
+
+<!-- ═══════════════════════════════════════════ CURSOR TOOLTIP ════ -->
+<div class="cursor-tooltip" id="cursor-tooltip"></div>
+
 <!-- ═══════════════════════════════════════════ LOGIN PAGE ════════════ -->
-<div class="page" id="login-page">
+<div class="page" id="login-page" style="display:none">
+  <!-- Кнопка назад на лендинг -->
+  <button class="lp-back-btn" id="lp-back-btn" onclick="showLanding()" style="display:none">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    <span id="lp-back-btn-text">На главную</span>
+  </button>
   <div class="login-scene">
 
     <!-- Floating decorative elements -->
