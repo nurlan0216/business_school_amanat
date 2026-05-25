@@ -55,6 +55,7 @@ let catalogFulfillmentUrl = '';
 let catalogGoldUrl        = '';
 let waUrl                 = '';
 let tgUrl                 = '';
+let waAccessUrl           = '';  // A8 — ссылка WA "Получить доступ" (до авторизации)
 let tgChannelUrl          = '';  // A7 — ссылка на ТГ-канал с отзывами
 
 // Переменная для хранения фонового интервала проверки блокировки
@@ -588,6 +589,7 @@ async function loadSheet2() {
     waUrl                 = strip((rows[4] || [])[0]) || '';
     tgUrl                 = strip((rows[5] || [])[0]) || '';
     tgChannelUrl          = strip((rows[6] || [])[0]) || '';  // A7 — ТГ-канал отзывов
+    waAccessUrl           = strip((rows[7] || [])[0]) || '';  // A8 — WA "Получить доступ" (до авторизации)
 
     courses = [];
     let maxCol = 0;
@@ -685,8 +687,24 @@ function applyLinks() {
   setLink('submenu-gold',        catalogGoldUrl, true);
   setLink('wa-action-link',      waUrl, true);
   setLink('tg-action-link',      tgUrl, true);
-  setLink('wa-btn',              waUrl);
-  setLink('tg-btn',              tgUrl);
+
+  // WA кнопка: до авторизации — "Получить доступ" (A8), после — "Тех. поддержка сайта" (A5)
+  const waBtnEl   = $('wa-btn');
+  const waBtnText = $('wa-btn-text');
+  if (currentUser) {
+    // После авторизации
+    setLink('wa-btn', waUrl);
+    if (waBtnText) waBtnText.textContent = 'Тех. поддержка сайта';
+  } else {
+    // До авторизации
+    if (waBtnEl) { waBtnEl.href = waAccessUrl || '#'; waBtnEl.onclick = null; }
+    if (waBtnText) waBtnText.textContent = 'Получить доступ';
+  }
+
+  // TG кнопка: только после авторизации — "Написать куратору" (A6)
+  setLink('tg-btn', tgUrl);
+  const tgBtnText = $('tg-btn-text');
+  if (tgBtnText) tgBtnText.textContent = 'Написать куратору';
   setLink('cat-modal-ff',        catalogFulfillmentUrl);
   setLink('cat-modal-gold',      catalogGoldUrl);
   // Кнопка ТГ-канала с отзывами
@@ -697,16 +715,9 @@ function applyLinks() {
   }
   const tn = $('tg-note');
   if (tn) tn.innerHTML = t('tgNote').replace('__WA__', waUrl || '#').replace('__TG__', tgUrl || '#');
-  // Плавающая кнопка WA — всегда видна
+  // Плавающие кнопки полностью убраны
   const floatWa = $('float-wa-btn');
   const floatTg = $('float-tg-btn');
-  if (floatWa) {
-    if (waUrl) floatWa.href = waUrl;
-    floatWa.style.display = '';
-  }
-  if (floatTg) {
-    floatTg.style.display = 'none'; // TG убран с плавающих кнопок
-  }
   applyLoginPageReviews();
 }
 
@@ -3253,33 +3264,6 @@ function checkCourseCompletion(courseIdx) {
     const name = course ? (lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ)) : 'Курс';
     showAchievementBadge(`Курс «${name}» завершён!`);
   }
-}
-
-// ── 9. PWA ────────────────────────────────────────────────────
-let pwaInstallPrompt = null;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  pwaInstallPrompt = e;
-  const btn = $('pwa-install-btn');
-  if (btn) btn.style.display = 'flex';
-});
-
-function installPWA() {
-  if (!pwaInstallPrompt) return;
-  pwaInstallPrompt.prompt();
-  pwaInstallPrompt.userChoice.then(() => {
-    pwaInstallPrompt = null;
-    const btn = $('pwa-install-btn');
-    if (btn) btn.style.display = 'none';
-  });
-}
-
-// Register service worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW registration failed:', e));
-  });
 }
 
 // ── 10. Авто тёмная тема ──────────────────────────────────────
