@@ -3635,7 +3635,7 @@ logout = function() {
 // ── INIT new features ─────────────────────────────────────────
 (function initFeatures() {
   // Social proof toast — только на лендинге, с задержкой 10 сек
-  setTimeout(initSocialProofToast, 10000);
+  setTimeout(initSocialProofToast, 15000);
 
   // Auto theme check (без вывода toast при первой загрузке)
   const manualTheme = localStorage.getItem('manualTheme');

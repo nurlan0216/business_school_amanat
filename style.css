@@ -88,7 +88,7 @@ body.cursor-active * { cursor: none !important; }
   position: fixed; top: 0; left: 0;
   width: 8px; height: 8px; border-radius: 50%;
   background: var(--gold);
-  pointer-events: none; z-index: 9999;
+  pointer-events: none; z-index: 99999;
   transform: translate(-50%, -50%);
   transition: width .15s var(--ease), height .15s var(--ease), background .2s;
   mix-blend-mode: difference;
@@ -97,7 +97,7 @@ body.cursor-active * { cursor: none !important; }
   position: fixed; top: 0; left: 0;
   width: 36px; height: 36px; border-radius: 50%;
   border: 1px solid rgba(245,200,66,0.4);
-  pointer-events: none; z-index: 9998;
+  pointer-events: none; z-index: 99998;
   transform: translate(-50%, -50%);
   transition: transform .12s var(--ease), width .25s var(--ease), height .25s var(--ease), opacity .3s, border-color .2s;
 }
@@ -1880,6 +1880,7 @@ body.video-theater #theater-esc {
   display: flex; align-items: center; justify-content: center;
   padding: 20px;
   animation: fade-in 0.2s ease;
+  pointer-events: none; /* не перехватывать mousemove — курсор остаётся видимым */
 }
 @keyframes fade-in { from { opacity:0; } to { opacity:1; } }
 .demo-video-inner {
@@ -1891,6 +1892,7 @@ body.video-theater #theater-esc {
   max-width: 680px;
   position: relative;
   box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+  pointer-events: auto; /* восстанавливаем клики внутри карточки */
 }
 .demo-video-close {
   position: absolute; top: 14px; right: 14px;
@@ -3059,6 +3061,7 @@ body.video-theater #theater-esc {
 .sp-toast.sp-visible {
   opacity: 1;
   transform: translateX(0);
+  pointer-events: none;
 }
 .sp-toast-avatar {
   width: 36px;
