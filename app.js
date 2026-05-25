@@ -108,6 +108,7 @@ const T = {
     courses: 'Курсов', progress: 'Прогресс', watchedStat: 'Уроков',
     // Лендинг
     lpH1Verb: 'Зарабатывай',
+    lpH1Prep: ' на',
     lpH1Gold: 'маркетплейсах',
     lpH1End: 'с нуля',
     lpHeroSub: 'Kaspi · Wildberries · Ozon — обучаем с нуля до стабильного дохода.<br>Уже <strong>2 400+</strong> студентов прошли путь и продают.',
@@ -178,6 +179,7 @@ const T = {
     courses: 'Курс', progress: 'Барысы', watchedStat: 'Сабақ',
     // Лендинг KZ
     lpH1Verb: 'Табыс тап',
+    lpH1Prep: '',
     lpH1Gold: 'маркетплейстерде',
     lpH1End: 'нөлден бастай',
     lpHeroSub: 'Kaspi · Wildberries · Ozon — нөлден тұрақты табысқа дейін үйретеміз.<br>Қазірдің өзінде <strong>2 400+</strong> студент сатып жатыр.',
@@ -521,6 +523,12 @@ function applyTexts() {
   setText('lp-hero-h1-verb',     t('lpH1Verb'));
   setText('lp-hero-h1-gold',    t('lpH1Gold'));
   setText('lp-hero-h1-end',     t('lpH1End'));
+  // Скрываем предлог "на" в казахском — он не нужен
+  const prepEl = document.getElementById('lp-hero-h1-prep');
+  if (prepEl) {
+    prepEl.textContent = t('lpH1Prep') || '';
+    prepEl.style.display = lang === 'kz' ? 'none' : '';
+  }
   setHtml('lp-hero-sub',        t('lpHeroSub'));
   setText('lp-hero-btn-wa-text',t('lpHeroBtnWa'));
   setText('lp-hero-btn-login',  t('lpHeroBtnLogin'));
