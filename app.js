@@ -178,10 +178,10 @@ const T = {
     statusText: 'Желіде', userOnline: 'Онлайн',
     courses: 'Курс', progress: 'Барысы', watchedStat: 'Сабақ',
     // Лендинг KZ
-    lpH1Verb: 'Табыс тап',
+    lpH1Verb: 'нөлден бастай',
     lpH1Prep: '',
     lpH1Gold: 'маркетплейстерде',
-    lpH1End: 'нөлден бастай',
+    lpH1End: 'табыс тап',
     lpHeroSub: 'Kaspi · Wildberries · Ozon — нөлден тұрақты табысқа дейін үйретеміз.<br>Қазірдің өзінде <strong>2 400+</strong> студент сатып жатыр.',
     lpHeroBtnWa: 'Құнын білу',
     lpHeroBtnLogin: 'Сатып алдыңыз ба? Кіру',
