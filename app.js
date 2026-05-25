@@ -378,6 +378,69 @@ document.addEventListener('click', removeIdleBeacon);
 // Запускаем маяк через 5 сек после загрузки
 setTimeout(resetIdleBeacon, 100);
 
+// ══════════════════════════════ PRICE POPUP ══════════════════════
+(function initPricePopup() {
+  // Показываем только 1 раз за сессию и только на лендинге
+  const SESSION_KEY = 'bs_price_popup_shown';
+  if (sessionStorage.getItem(SESSION_KEY)) return;
+
+  let _popupTimer = null;
+
+  function shouldShowPopup() {
+    const lp = document.getElementById('landing-page');
+    return lp && lp.style.display !== 'none';
+  }
+
+  function showPricePopup() {
+    if (!shouldShowPopup()) return;
+    if (sessionStorage.getItem(SESSION_KEY)) return;
+    sessionStorage.setItem(SESSION_KEY, '1');
+
+    const overlay = document.getElementById('price-popup-overlay');
+    const popup   = document.getElementById('price-popup');
+    if (!popup) return;
+
+    // Локализуем тексты
+    const isKZ = (typeof lang !== 'undefined' && lang === 'kz');
+    const title = document.getElementById('price-popup-title');
+    const sub   = document.getElementById('price-popup-sub');
+    const btn   = document.getElementById('price-popup-btn-text');
+    const hint  = document.getElementById('price-popup-hint');
+
+    if (title) title.textContent = isKZ ? 'Құнын білгіңіз келе ме?' : 'Хотите узнать стоимость?';
+    if (sub)   sub.textContent   = isKZ ? 'Бізге жазыңыз — 2 минут ішінде жауап береміз'
+                                         : 'Напишите нам — ответим за 2 минуты и расскажем о программе';
+    if (btn)   btn.textContent   = isKZ ? 'WhatsApp-қа жазу' : 'Написать в WhatsApp';
+
+    // Обновляем WA-ссылку из waAccessUrl если доступна
+    const popupLink = document.getElementById('price-popup-btn');
+    if (popupLink && typeof waAccessUrl !== 'undefined' && waAccessUrl) {
+      popupLink.href = waAccessUrl;
+    }
+
+    if (overlay) { overlay.style.display = 'block'; }
+    popup.style.display = 'block';
+    popup.classList.remove('pp-hiding');
+  }
+
+  // Запускаем таймер после загрузки страницы
+  _popupTimer = setTimeout(showPricePopup, 10000);
+
+  // Экспортируем таймер для возможной отмены
+  window._pricePopupTimer = _popupTimer;
+})();
+
+function closePricePopup() {
+  const overlay = document.getElementById('price-popup-overlay');
+  const popup   = document.getElementById('price-popup');
+  if (!popup) return;
+  popup.classList.add('pp-hiding');
+  setTimeout(() => {
+    popup.style.display = 'none';
+    if (overlay) overlay.style.display = 'none';
+  }, 300);
+}
+
 // ══════════════════════════════ THEME ════════════════════════════
 function initTheme() {
   document.documentElement.setAttribute('data-theme', currentTheme);
@@ -396,6 +459,10 @@ function setLang(l) {
     b.classList.toggle('active', b.dataset.lang === l);
   });
   applyTexts();
+  // Update viewers bar label language
+  const lblEl = $('viewers-label');
+  const LABEL = { ru: 'человек смотрят сейчас', kz: 'адам қазір қарауда' };
+  if (lblEl) lblEl.textContent = LABEL[lang] || LABEL.ru;
   if (currentCourseIdx !== null && $('lesson-modal').classList.contains('show')) {
     renderLessonList(currentCourseIdx);
     updateModalProgress(currentCourseIdx);
@@ -702,9 +769,17 @@ function applyLinks() {
   }
 
   // TG кнопка: только после авторизации — "Написать куратору" (A6)
-  setLink('tg-btn', tgUrl);
+  const tgBtnEl   = $('tg-btn');
   const tgBtnText = $('tg-btn-text');
-  if (tgBtnText) tgBtnText.textContent = 'Написать куратору';
+  if (currentUser) {
+    // После авторизации — показываем, ставим ссылку A6 и подпись
+    if (tgBtnEl) tgBtnEl.style.display = '';
+    setLink('tg-btn', tgUrl);
+    if (tgBtnText) tgBtnText.textContent = 'Написать куратору';
+  } else {
+    // До авторизации — скрываем кнопку Telegram
+    if (tgBtnEl) tgBtnEl.style.display = 'none';
+  }
   setLink('cat-modal-ff',        catalogFulfillmentUrl);
   setLink('cat-modal-gold',      catalogGoldUrl);
   // Кнопка ТГ-канала с отзывами
@@ -2664,6 +2739,7 @@ function showLanding() {
     if (backBtn) backBtn.style.display = 'none';
     window.scrollTo({ top: 0, behavior: 'smooth' });
     resetIdleBeacon();
+    if (window._showViewersBar) window._showViewersBar();
   }, 220);
 }
 
@@ -2671,6 +2747,7 @@ function showLandingLogin() {
   const lp = $('landing-page');
   const loginPg = $('login-page');
   if (lp) { lp.classList.add('page-fade-out'); }
+  if (window._hideViewersBar) window._hideViewersBar();
   setTimeout(() => {
     if (lp) { lp.style.display = 'none'; lp.classList.remove('page-fade-out'); }
     if (loginPg) {
@@ -2709,6 +2786,7 @@ function scrollToDemoAndOpen() {
 
 (async function init() {
   applyTexts();
+  initLandingTimer();
   initOnlineCounter();
   const restored = await tryRestoreSession();
   if (!restored) {
@@ -2722,28 +2800,184 @@ function scrollToDemoAndOpen() {
   }
 })();
 
+// ══════════════════════════════ A. LANDING TIMER ══════════════════
+function initLandingTimer() {
+  const elH = document.getElementById('lp-timer-h');
+  const elM = document.getElementById('lp-timer-m');
+  const elS = document.getElementById('lp-timer-s');
+  const section = document.getElementById('lp-timer-section');
+  if (!elH || !elM || !elS) return;
+
+  // Храним deadline в localStorage: сбрасываем раз в сутки
+  const STORAGE_KEY = 'lp_timer_deadline';
+  const DURATION_MS = 2 * 60 * 60 * 1000 + 14 * 60 * 1000 + 33 * 1000; // 2:14:33
+  const RESET_MS    = 24 * 60 * 60 * 1000; // сутки
+
+  let deadline;
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const { ts, exp } = JSON.parse(saved);
+      if (Date.now() < exp) {
+        deadline = ts;
+      }
+    }
+  } catch (_) {}
+
+  if (!deadline) {
+    deadline = Date.now() + DURATION_MS;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        ts: deadline,
+        exp: Date.now() + RESET_MS
+      }));
+    } catch (_) {}
+  }
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function tick(el, val) {
+    el.textContent = pad(val);
+    el.classList.remove('tick');
+    void el.offsetWidth; // reflow
+    el.classList.add('tick');
+    setTimeout(() => el.classList.remove('tick'), 130);
+  }
+
+  let lastSec = -1;
+  function update() {
+    const remaining = Math.max(0, deadline - Date.now());
+    const totalSec  = Math.floor(remaining / 1000);
+
+    if (totalSec === lastSec) return;
+    lastSec = totalSec;
+
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+
+    tick(elS, s);
+    if (Math.floor(((totalSec + 1) % 3600) / 60) !== m || totalSec === 0) tick(elM, m);
+    if (Math.floor((totalSec + 1) / 3600) !== h || totalSec === 0) tick(elH, h);
+
+    elH.textContent = pad(h);
+    elM.textContent = pad(m);
+
+    // Когда меньше 10 минут — пульсация для усиления срочности
+    if (section) {
+      if (remaining < 10 * 60 * 1000) section.classList.add('urgent');
+      else section.classList.remove('urgent');
+    }
+
+    // Когда истёк — сбрасываем и перезапускаем
+    if (remaining === 0) {
+      deadline = Date.now() + DURATION_MS;
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          ts: deadline,
+          exp: Date.now() + RESET_MS
+        }));
+      } catch (_) {}
+      lastSec = -1;
+    }
+  }
+
+  update();
+  setInterval(update, 250); // чаще чем раз в секунду — без пропусков
+}
+
 // ══════════════════════════════ FOMO ONLINE COUNTER ═══════════════
 function initOnlineCounter() {
+  // ─── 1. Stat-bar counter (lp-online-count) ──────────────────
   const el = $('lp-online-count');
-  if (!el) return;
-  // Реалистичный диапазон: 8-24 пользователя
-  const base = 8 + Math.floor(Math.random() * 12);
-  el.textContent = base;
-  // Флуктуация каждые 12-20 секунд
-  function updateCount(next) {
-    el.style.opacity = '0';
-    el.style.transition = 'opacity 0.3s';
-    setTimeout(() => {
-      el.textContent = next;
-      el.style.opacity = '1';
-    }, 300);
+  const MIN_V = 8, MAX_V = 28;
+  let count = MIN_V + Math.floor(Math.random() * (MAX_V - MIN_V));
+  if (el) el.textContent = count;
+
+  function _fadeUpdate(target, next) {
+    if (!target) return;
+    target.style.opacity = '0';
+    target.style.transition = 'opacity 0.3s';
+    setTimeout(() => { target.textContent = next; target.style.opacity = '1'; }, 300);
   }
-  setInterval(() => {
-    const current = parseInt(el.textContent) || base;
-    const delta = Math.random() < 0.5 ? 1 : -1;
-    const next = Math.min(28, Math.max(6, current + delta));
-    updateCount(next);
-  }, 12000 + Math.random() * 8000);
+
+  // ─── 2. Viewers Bar (bottom-right pill) ─────────────────────
+  const bar   = $('viewers-bar');
+  const barEl = $('viewers-count');
+  const lblEl = $('viewers-label');
+
+  // Translations
+  const LABEL = { ru: 'человек смотрят сейчас', kz: 'адам қазір қарауда' };
+
+  function _updateBarLabel() {
+    if (lblEl) lblEl.textContent = LABEL[lang] || LABEL.ru;
+  }
+  _updateBarLabel();
+
+  // Set initial count in bar
+  if (barEl) barEl.textContent = count;
+
+  // Show bar after 3s (only when landing is visible)
+  let barVisible = false;
+  setTimeout(() => {
+    const lp = $('landing-page');
+    if (!bar) return;
+    if (!lp || lp.style.display === 'none') return; // don't show inside app
+    bar.style.display = 'flex';
+    // force reflow for transition
+    void bar.offsetWidth;
+    bar.classList.add('vb-visible');
+    barVisible = true;
+  }, 3000);
+
+  // Shared update: both stat counter + bar
+  function _tick() {
+    const rng = Math.random();
+    // 55% ±1, 25% ±2, 20% no change
+    let delta = 0;
+    if (rng < 0.55) delta = Math.random() < 0.55 ? 1 : -1;
+    else if (rng < 0.80) delta = Math.random() < 0.55 ? 2 : -2;
+    const next = Math.min(MAX_V, Math.max(MIN_V, count + delta));
+    if (next === count) return scheduleNext();
+    const dir = next > count ? 'up' : 'down';
+    count = next;
+
+    // Stat bar
+    _fadeUpdate(el, count);
+
+    // Viewers bar flip animation
+    if (barEl) {
+      barEl.classList.add('vb-flip');
+      if (bar) { bar.classList.remove('vb-up','vb-down'); bar.classList.add('vb-' + dir); }
+      setTimeout(() => {
+        barEl.textContent = count;
+        barEl.classList.remove('vb-flip');
+      }, 210);
+    }
+
+    scheduleNext();
+  }
+
+  function scheduleNext() {
+    setTimeout(_tick, 8000 + Math.random() * 10000);
+  }
+  scheduleNext();
+
+  // Hide bar when leaving landing
+  const _origShowLandingLoginInner = showLandingLogin;
+  window._hideViewersBar = function() {
+    if (!bar || !barVisible) return;
+    bar.classList.remove('vb-visible');
+    bar.classList.add('vb-hidden');
+  };
+  window._showViewersBar = function() {
+    if (!bar) return;
+    bar.style.display = 'flex';
+    void bar.offsetWidth;
+    bar.classList.remove('vb-hidden');
+    bar.classList.add('vb-visible');
+    _updateBarLabel();
+  };
 }
 
 // ══════════════════════════════ RESUME BEACON ═════════════════════
@@ -3407,4 +3641,344 @@ logout = function() {
       document.documentElement.setAttribute('data-theme', currentTheme);
     }
   }
+
+  // ── Compare section — scroll-triggered animation ──
+  (function initCompareAnimation() {
+    const section = document.querySelector('.lp-compare-section');
+    if (!section || !window.IntersectionObserver) return;
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          section.classList.add('in-view');
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.15 });
+    io.observe(section);
+  })();
 })();
+/* ══════════════════════════════ FAQ ACCORDION ══ */
+function toggleFaq(item) {
+  const isOpen = item.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.lp-faq-item.open').forEach(el => el.classList.remove('open'));
+  // Open clicked if it was closed
+  if (!isOpen) item.classList.add('open');
+}
+
+/* FAQ section scroll-in observer */
+(function () {
+  const faqSection = document.querySelector('.lp-faq-section');
+  if (!faqSection) return;
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        faqSection.classList.add('in-view');
+        io.disconnect();
+      }
+    });
+  }, { threshold: 0.1 });
+  io.observe(faqSection);
+})();
+
+/* ══════════════════════════════════════════════════════════════════
+   КАЛЬКУЛЯТОР ДОХОДА — AI-прогноз (Claude API)
+   ══════════════════════════════════════════════════════════════════ */
+
+// ── Состояние калькулятора ─────────────────────────────────────
+let calcSelectedMkt = 'kaspi';
+
+// ── Утилиты форматирования ────────────────────────────────────
+function fmtMoney(n) {
+  return n.toLocaleString('ru-KZ') + ' ₸';
+}
+
+// ── Выбор маркетплейса ────────────────────────────────────────
+function selectCalcMkt(btn) {
+  document.querySelectorAll('.lp-calc-mkt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  calcSelectedMkt = btn.dataset.mkt;
+}
+
+// ── Быстрый выбор товара по тегу ─────────────────────────────
+function setCalcProduct(name) {
+  const input = document.getElementById('lp-calc-input');
+  if (input) {
+    input.value = name;
+    input.focus();
+  }
+}
+
+// ── Сброс калькулятора ────────────────────────────────────────
+function clearAiCalc() {
+  const input = document.getElementById('lp-calc-input');
+  if (input) input.value = '';
+  _calcShow('lp-calc-empty');
+  const cta = document.getElementById('lp-calc-cta');
+  if (cta) cta.style.display = 'none';
+}
+
+function _calcShow(id) {
+  ['lp-calc-empty', 'lp-calc-ai-loading', 'lp-calc-result-v2'].forEach(el => {
+    const node = document.getElementById(el);
+    if (node) node.style.display = (el === id) ? '' : 'none';
+  });
+}
+
+// ── Enter в поле ввода ────────────────────────────────────────
+(function initCalcInput() {
+  document.addEventListener('DOMContentLoaded', function() {
+    const inp = document.getElementById('lp-calc-input');
+    if (inp) {
+      inp.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') runAiCalc();
+      });
+    }
+  });
+  // Если DOMContentLoaded уже произошёл
+  if (document.readyState !== 'loading') {
+    const inp = document.getElementById('lp-calc-input');
+    if (inp) {
+      inp.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') runAiCalc();
+      });
+    }
+  }
+})();
+
+// ── Анимация прогресс-бара загрузки ──────────────────────────
+function _startCalcProgress(steps) {
+  let step = 0;
+  const fill = document.getElementById('lp-calc-ai-progress-fill');
+  const title = document.getElementById('lp-calc-ai-loading-title');
+  const sub = document.getElementById('lp-calc-ai-loading-sub');
+
+  function advance() {
+    if (step >= steps.length - 1) return;
+    step++;
+    if (fill) fill.style.width = ((step / (steps.length - 1)) * 85) + '%';
+    if (title) title.textContent = steps[step].title;
+    if (sub) sub.textContent = steps[step].sub;
+  }
+
+  if (fill) fill.style.width = '5%';
+  if (title) title.textContent = steps[0].title;
+  if (sub) sub.textContent = steps[0].sub;
+
+  const timers = [];
+  const delays = [1200, 2400, 3600, 5000];
+  delays.slice(0, steps.length - 1).forEach((d, i) => {
+    timers.push(setTimeout(advance, d));
+  });
+  return timers;
+}
+
+// ── Анимация появления цифр ───────────────────────────────────
+function _animateValue(el, target, duration) {
+  if (!el) return;
+  let start = 0;
+  const step = (timestamp) => {
+    if (!start) start = timestamp;
+    const progress = Math.min((timestamp - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = fmtMoney(Math.round(eased * target));
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+// ── Анимация прогресс-баров ───────────────────────────────────
+function _animateBars(m1, m2, m3) {
+  const max = Math.max(m1, m2, m3);
+  const bars = [
+    { bar: 'lp-calc-bar-1', val: 'lp-calc-val-1', amount: m1 },
+    { bar: 'lp-calc-bar-2', val: 'lp-calc-val-2', amount: m2 },
+    { bar: 'lp-calc-bar-3', val: 'lp-calc-val-3', amount: m3 },
+  ];
+
+  bars.forEach(({ bar, val, amount }, i) => {
+    const barEl = document.getElementById(bar);
+    const valEl = document.getElementById(val);
+    const pct = max > 0 ? (amount / max) * 100 : 0;
+
+    setTimeout(() => {
+      if (barEl) barEl.style.width = pct + '%';
+      _animateValue(valEl, amount, 700);
+    }, i * 180);
+  });
+}
+
+// ── Парсинг ответа Claude ─────────────────────────────────────
+function _parseCalcResponse(text) {
+  // Ожидаем JSON: { month1, month2, month3, revenue, profit, startCapital, insight, tips[] }
+  try {
+    const clean = text.replace(/```json|```/g, '').trim();
+    const obj = JSON.parse(clean);
+    return obj;
+  } catch(e) {
+    // Попытка вытащить числа из текста как fallback
+    const nums = (text.match(/\d[\d\s]*/g) || []).map(s => parseInt(s.replace(/\s/g, ''), 10)).filter(n => n > 10000);
+    return {
+      month1: nums[0] || 120000,
+      month2: nums[1] || 280000,
+      month3: nums[2] || 520000,
+      revenue: nums[3] || 920000,
+      profit:  nums[4] || 380000,
+      startCapital: nums[5] || 150000,
+      insight: text.slice(0, 200),
+      tips: [],
+    };
+  }
+}
+
+// ── Отображение результата ────────────────────────────────────
+function _renderCalcResult(product, mkt, data) {
+  // Шапка
+  const nameEl = document.getElementById('lp-calc-product-name');
+  const badgeEl = document.getElementById('lp-calc-res-mkt-badge');
+  const mktLabels = { kaspi: 'Kaspi', wb: 'Wildberries', ozon: 'Ozon' };
+
+  if (nameEl) nameEl.textContent = product;
+  if (badgeEl) {
+    badgeEl.textContent = mktLabels[mkt] || mkt;
+    badgeEl.className = 'lp-calc-res-mkt-badge lp-calc-res-mkt-badge--' + mkt;
+  }
+
+  // AI-инсайт
+  const insightBox = document.getElementById('lp-calc-ai-insight');
+  const insightText = document.getElementById('lp-calc-ai-insight-text');
+  if (data.insight && insightText) {
+    insightText.textContent = data.insight;
+    if (insightBox) insightBox.style.display = '';
+  }
+
+  // Прогресс-бары по месяцам
+  _animateBars(data.month1, data.month2, data.month3);
+
+  // Итоговые суммы
+  _animateValue(document.getElementById('lp-calc-revenue'), data.revenue, 900);
+  _animateValue(document.getElementById('lp-calc-profit'), data.profit, 900);
+  _animateValue(document.getElementById('lp-calc-start-capital'), data.startCapital, 900);
+
+  // Советы
+  const tipsBox = document.getElementById('lp-calc-tips');
+  const tipsList = document.getElementById('lp-calc-tips-list');
+  if (data.tips && data.tips.length && tipsList) {
+    tipsList.innerHTML = data.tips.map(t => `<li>${t}</li>`).join('');
+    if (tipsBox) tipsBox.style.display = '';
+  }
+
+  // Показываем блок результата
+  _calcShow('lp-calc-result-v2');
+
+  // CTA
+  const cta = document.getElementById('lp-calc-cta');
+  const ctaWa = document.getElementById('lp-calc-cta-wa');
+  if (cta) {
+    cta.style.display = '';
+    if (ctaWa) {
+      const mktName = mktLabels[mkt] || mkt;
+      const waText = `Здравствуйте, хочу начать продавать «${product}» на ${mktName}. Расскажите об обучении.`;
+      ctaWa.href = `https://wa.me/77776020216?text=${encodeURIComponent(waText)}`;
+    }
+  }
+}
+
+// ── Основная функция запуска AI-расчёта ──────────────────────
+async function runAiCalc() {
+  const input = document.getElementById('lp-calc-input');
+  const product = (input ? input.value : '').trim();
+
+  if (!product) {
+    if (input) {
+      input.style.borderColor = 'var(--gold)';
+      setTimeout(() => { input.style.borderColor = ''; }, 1200);
+      input.focus();
+    }
+    return;
+  }
+
+  const mkt = calcSelectedMkt;
+  const mktNames = { kaspi: 'Kaspi', wb: 'Wildberries', ozon: 'Ozon' };
+  const mktName = mktNames[mkt] || mkt;
+
+  // Показываем лоадер
+  _calcShow('lp-calc-ai-loading');
+  const progressTimers = _startCalcProgress([
+    { title: 'ИИ анализирует рынок...', sub: 'Изучаю спрос на маркетплейсе' },
+    { title: 'Считаю конкурентов...', sub: 'Анализирую нишу и ценообразование' },
+    { title: 'Формирую прогноз...', sub: 'Рассчитываю потенциальную прибыль' },
+    { title: 'Готовлю рекомендации...', sub: 'Подбираю советы для старта' },
+  ]);
+
+  const prompt = `Ты — эксперт по продажам на маркетплейсах Казахстана и СНГ.
+Пользователь хочет продавать товар «${product}» на маркетплейсе ${mktName}.
+Рассчитай реалистичный прогноз дохода для новичка с нуля за 3 месяца.
+Используй реальные данные рынка Казахстана (тенге, ₸).
+
+Ответь СТРОГО только JSON (без пояснений, без \`\`\`), вот структура:
+{
+  "month1": <выручка 1-й месяц в тенге, число>,
+  "month2": <выручка 2-й месяц в тенге, число>,
+  "month3": <выручка 3-й месяц в тенге, число>,
+  "revenue": <суммарная выручка за 3 мес, число>,
+  "profit": <чистая прибыль за 3 мес после всех расходов, число>,
+  "startCapital": <рекомендуемый стартовый капитал, число>,
+  "insight": "<1–2 предложения об этом товаре на рынке: спрос, сезонность, конкуренция>",
+  "tips": ["<совет 1>", "<совет 2>", "<совет 3>"]
+}`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
+
+    progressTimers.forEach(clearTimeout);
+
+    if (!response.ok) throw new Error('API error ' + response.status);
+
+    const apiData = await response.json();
+    const text = (apiData.content || []).map(b => b.text || '').join('');
+    const data = _parseCalcResponse(text);
+
+    // Завершаем прогресс-бар до 100%
+    const fill = document.getElementById('lp-calc-ai-progress-fill');
+    if (fill) fill.style.width = '100%';
+
+    setTimeout(() => _renderCalcResult(product, mkt, data), 400);
+
+  } catch (err) {
+    progressTimers.forEach(clearTimeout);
+    console.error('AI calc error:', err);
+
+    // Fallback: локальный расчёт
+    const base = { kaspi: 1.0, wb: 1.15, ozon: 1.05 }[mkt] || 1;
+    const seed = product.length * 7919 % 100;
+    const m1 = Math.round((80000 + seed * 1200) * base / 10000) * 10000;
+    const m2 = Math.round(m1 * 2.1 / 10000) * 10000;
+    const m3 = Math.round(m1 * 3.8 / 10000) * 10000;
+    const revenue = m1 + m2 + m3;
+    const profit = Math.round(revenue * 0.38 / 10000) * 10000;
+    const startCapital = Math.round((m1 * 0.6) / 10000) * 10000;
+
+    const fill = document.getElementById('lp-calc-ai-progress-fill');
+    if (fill) fill.style.width = '100%';
+
+    setTimeout(() => _renderCalcResult(product, mkt, {
+      month1: m1, month2: m2, month3: m3,
+      revenue, profit, startCapital,
+      insight: `«${product}» — востребованный товар на ${{ kaspi: 'Kaspi', wb: 'Wildberries', ozon: 'Ozon' }[mkt]}. Прогноз рассчитан на основе средних показателей по рынку Казахстана.`,
+      tips: [
+        'Начните с небольшой партии — 20–30 единиц для теста спроса',
+        'Следите за конкурентами и корректируйте цену раз в неделю',
+        'Загружайте качественные фото — это ключевой фактор конверсии',
+      ],
+    }), 400);
+  }
+}

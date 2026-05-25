@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
 <meta charset="UTF-8">
@@ -43,6 +43,29 @@
     <div class="sp-toast-action">только что купил доступ</div>
   </div>
   <div class="sp-toast-badge">🔥</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PRICE POPUP ══════════ -->
+<div id="price-popup" class="price-popup" style="display:none" role="dialog" aria-modal="true" aria-label="Узнать стоимость курса">
+  <button class="price-popup-close" onclick="closePricePopup()" aria-label="Закрыть">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <div class="price-popup-emoji">💬</div>
+  <div class="price-popup-title" id="price-popup-title">Хотите узнать стоимость?</div>
+  <div class="price-popup-sub" id="price-popup-sub">Напишите нам — ответим за 2 минуты и расскажем о программе</div>
+  <a class="price-popup-btn" id="price-popup-btn" href="https://wa.me/77776020216?text=Здравствуйте%2C%20хочу%20узнать%20стоимость%20курса" target="_blank" rel="noopener" onclick="closePricePopup()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.553 4.116 1.524 5.847L.057 23.882l6.186-1.448A11.952 11.952 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.878 9.878 0 0 1-5.031-1.378l-.361-.214-3.741.875.944-3.643-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.536 6.536 2.106 12 2.106S21.894 6.536 21.894 12 17.464 21.894 12 21.894z"/></svg>
+    <span id="price-popup-btn-text">Написать в WhatsApp</span>
+  </a>
+  <div class="price-popup-hint" id="price-popup-hint">Уже купили? <button onclick="closePricePopup();showLandingLogin()" class="price-popup-link">Войти →</button></div>
+</div>
+<div id="price-popup-overlay" class="price-popup-overlay" style="display:none" onclick="closePricePopup()"></div>
+
+<!-- ═══════════════════════════════════════════ VIEWERS BAR ══════════ -->
+<div id="viewers-bar" class="viewers-bar" role="status" aria-live="polite">
+  <span class="viewers-dot"></span>
+  <span class="viewers-count" id="viewers-count">17</span>
+  <span class="viewers-label" id="viewers-label">человек смотрят сейчас</span>
 </div>
 
 <!-- ═══════════════════════════════════════════ STICKY CTA BAR ═══════ -->
@@ -194,7 +217,7 @@
         <span class="lp-badge-dot"></span>
         <span>Business School Amanat</span>
       </div>
-      <h1 class="lp-h1" id="lp-hero-h1"><span id="lp-hero-h1-verb">Зарабатывай</span> на<br><span class="lp-h1-gold" id="lp-hero-h1-gold">маркетплейсах</span><br><span id="lp-hero-h1-end">с нуля</span></h1>
+      <h1 class="lp-h1" id="lp-hero-h1"><span id="lp-hero-h1-verb">Зарабатывай</span><span id="lp-hero-h1-prep"> на</span><br><span class="lp-h1-gold" id="lp-hero-h1-gold">маркетплейсах</span><br><span id="lp-hero-h1-end">с нуля</span></h1>
       <p class="lp-sub" id="lp-hero-sub">Kaspi · Wildberries · Ozon — обучаем с нуля до стабильного дохода.<br>Уже <strong>2 400+</strong> студентов прошли путь и продают.</p>
       <div class="lp-hero-btns">
         <a class="lp-btn-primary" id="lp-hero-btn-wa" href="https://wa.me/77776020216?text=Здравствуйте%2C%20хочу%20узнать%20о%20доступе%20к%20платформе" target="_blank" rel="noopener">
@@ -293,12 +316,355 @@
   </section>
 
   <!-- ФИНАЛЬНЫЙ CTA -->
+  <!-- A. ТАЙМЕР ОБРАТНОГО ОТСЧЁТА -->
+  <section class="lp-section lp-timer-section" id="lp-timer-section">
+    <div class="lp-timer-inner">
+      <div class="lp-timer-badge" id="lp-timer-badge">🔥 Специальное предложение</div>
+      <p class="lp-timer-label" id="lp-timer-label">Акция заканчивается через:</p>
+      <div class="lp-timer-blocks">
+        <div class="lp-timer-block"><span class="lp-timer-num" id="lp-timer-h">00</span><span class="lp-timer-unit" id="lp-timer-unit-h">часов</span></div>
+        <div class="lp-timer-sep">:</div>
+        <div class="lp-timer-block"><span class="lp-timer-num" id="lp-timer-m">00</span><span class="lp-timer-unit" id="lp-timer-unit-m">минут</span></div>
+        <div class="lp-timer-sep">:</div>
+        <div class="lp-timer-block"><span class="lp-timer-num" id="lp-timer-s">00</span><span class="lp-timer-unit" id="lp-timer-unit-s">секунд</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- C. СЧЁТЧИК ПРОСМАТРИВАЮЩИХ -->
+  <div class="lp-viewers-bar" id="lp-viewers-bar">
+    <span class="lp-viewers-dot"></span>
+    <span id="lp-viewers-text">14 человек смотрят сейчас</span>
+  </div>
+
+  <!-- B. КАЛЬКУЛЯТОР ДОХОДА — AI-версия -->
+  <section class="lp-section lp-calc-section" style="max-width:700px">
+    <div class="lp-section-label" id="lp-calc-label">Потенциальный доход</div>
+    <h2 class="lp-section-h" id="lp-calc-h">Сколько можно зарабатывать?</h2>
+    <p class="lp-calc-desc" id="lp-calc-desc">Введите товар — ИИ сделает персональный прогноз на 3 месяца</p>
+
+    <div class="lp-calc-wrap">
+
+      <!-- Шаг 1: Ввод товара + маркетплейс -->
+      <div class="lp-calc-step">
+        <div class="lp-calc-step-label">
+          <span class="lp-calc-step-num">1</span>
+          <span>Ваш товар</span>
+        </div>
+
+        <!-- Поле ввода товара -->
+        <div class="lp-calc-product-wrap" id="lp-calc-product-wrap">
+          <div class="lp-calc-product-input-row">
+            <input
+              type="text"
+              id="lp-calc-product"
+              class="lp-calc-product-input"
+              placeholder="Например: детские носки, чехол для телефона, крем для рук..."
+              maxlength="120"
+              autocomplete="off"
+            >
+            <button class="lp-calc-ai-btn" id="lp-calc-ai-btn" onclick="runAiCalc()" type="button">
+              <span class="lp-calc-ai-btn-icon">✦</span>
+              <span class="lp-calc-ai-btn-text">Рассчитать</span>
+            </button>
+          </div>
+          <!-- Быстрые теги -->
+          <div class="lp-calc-quick-tags">
+            <button class="lp-calc-tag" onclick="setCalcProduct('Детские носки')">🧦 Детские носки</button>
+            <button class="lp-calc-tag" onclick="setCalcProduct('Крем для рук')">🧴 Крем для рук</button>
+            <button class="lp-calc-tag" onclick="setCalcProduct('Чехол для телефона')">📱 Чехол для телефона</button>
+            <button class="lp-calc-tag" onclick="setCalcProduct('Постельное бельё')">🛏 Постельное бельё</button>
+            <button class="lp-calc-tag" onclick="setCalcProduct('Игрушка антистресс')">🧸 Антистресс</button>
+            <button class="lp-calc-tag" onclick="setCalcProduct('Спортивная бутылка')">🥤 Бутылка для воды</button>
+          </div>
+        </div>
+
+        <!-- Выбор маркетплейса -->
+        <div class="lp-calc-field" style="margin-top:16px">
+          <label class="lp-calc-lbl" id="lp-calc-lbl-market">Маркетплейс</label>
+          <div class="lp-calc-market-btns">
+            <button class="lp-calc-mkt active" data-mkt="kaspi" onclick="selectCalcMkt(this)">
+              <span class="lp-calc-mkt-icon">🟠</span> Kaspi
+            </button>
+            <button class="lp-calc-mkt" data-mkt="wb" onclick="selectCalcMkt(this)">
+              <span class="lp-calc-mkt-icon">🟣</span> Wildberries
+            </button>
+            <button class="lp-calc-mkt" data-mkt="ozon" onclick="selectCalcMkt(this)">
+              <span class="lp-calc-mkt-icon">🔵</span> Ozon
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Loading state -->
+      <div class="lp-calc-ai-loading" id="lp-calc-ai-loading" style="display:none">
+        <div class="lp-calc-ai-loading-inner">
+          <div class="lp-calc-ai-spinner">
+            <div class="lp-calc-ai-spinner-ring"></div>
+            <span class="lp-calc-ai-spinner-icon">✦</span>
+          </div>
+          <div class="lp-calc-ai-loading-text">
+            <div class="lp-calc-ai-loading-title" id="lp-calc-ai-loading-title">ИИ анализирует рынок...</div>
+            <div class="lp-calc-ai-loading-sub" id="lp-calc-ai-loading-sub">Изучаю спрос на маркетплейсе</div>
+          </div>
+        </div>
+        <div class="lp-calc-ai-progress">
+          <div class="lp-calc-ai-progress-fill" id="lp-calc-ai-progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Результат — появляется после AI-анализа -->
+      <div class="lp-calc-result-v2" id="lp-calc-result-v2" style="display:none">
+        <!-- Шапка с товаром -->
+        <div class="lp-calc-res-header">
+          <span class="lp-calc-res-header-icon">✦</span>
+          <span class="lp-calc-res-header-text">AI-прогноз для: <strong id="lp-calc-product-name">—</strong></span>
+          <span class="lp-calc-res-mkt-badge" id="lp-calc-res-mkt-badge">Kaspi</span>
+        </div>
+
+        <!-- AI-инсайт -->
+        <div class="lp-calc-ai-insight" id="lp-calc-ai-insight" style="display:none">
+          <div class="lp-calc-ai-insight-label">
+            <span>✦</span> AI-анализ
+          </div>
+          <div class="lp-calc-ai-insight-text" id="lp-calc-ai-insight-text"></div>
+        </div>
+
+        <!-- Прогресс-бары по месяцам -->
+        <div class="lp-calc-bars">
+          <div class="lp-calc-bar-row">
+            <span class="lp-calc-bar-lbl">1-й месяц</span>
+            <div class="lp-calc-bar-track">
+              <div class="lp-calc-bar-fill" id="lp-calc-bar-1" style="width:0%"></div>
+            </div>
+            <span class="lp-calc-bar-val" id="lp-calc-val-1">—</span>
+          </div>
+          <div class="lp-calc-bar-row">
+            <span class="lp-calc-bar-lbl">2-й месяц</span>
+            <div class="lp-calc-bar-track">
+              <div class="lp-calc-bar-fill lp-calc-bar-fill-2" id="lp-calc-bar-2" style="width:0%"></div>
+            </div>
+            <span class="lp-calc-bar-val" id="lp-calc-val-2">—</span>
+          </div>
+          <div class="lp-calc-bar-row">
+            <span class="lp-calc-bar-lbl">3-й месяц</span>
+            <div class="lp-calc-bar-track">
+              <div class="lp-calc-bar-fill lp-calc-bar-fill-3" id="lp-calc-bar-3" style="width:0%"></div>
+            </div>
+            <span class="lp-calc-bar-val lp-calc-bar-val-gold" id="lp-calc-val-3">—</span>
+          </div>
+        </div>
+
+        <!-- Итоговая строка -->
+        <div class="lp-calc-summary">
+          <div class="lp-calc-summary-item">
+            <span class="lp-calc-summary-lbl">Выручка за 3 мес.</span>
+            <span class="lp-calc-summary-val" id="lp-calc-revenue">—</span>
+          </div>
+          <div class="lp-calc-summary-div"></div>
+          <div class="lp-calc-summary-item">
+            <span class="lp-calc-summary-lbl">Чистая прибыль</span>
+            <span class="lp-calc-summary-val lp-calc-summary-gold" id="lp-calc-profit">—</span>
+          </div>
+          <div class="lp-calc-summary-div"></div>
+          <div class="lp-calc-summary-item">
+            <span class="lp-calc-summary-lbl">Стартовый капитал</span>
+            <span class="lp-calc-summary-val lp-calc-summary-muted" id="lp-calc-start-capital">—</span>
+          </div>
+        </div>
+
+        <!-- Советы по товару -->
+        <div class="lp-calc-tips" id="lp-calc-tips" style="display:none">
+          <div class="lp-calc-tips-title">📌 Советы для этого товара</div>
+          <ul class="lp-calc-tips-list" id="lp-calc-tips-list"></ul>
+        </div>
+
+        <div class="lp-calc-res-footer">
+          <p class="lp-calc-disclaimer">* AI-прогноз на основе средних данных рынка. Реальный результат зависит от качества работы.</p>
+          <button class="lp-calc-retry-btn" onclick="clearAiCalc()" type="button">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-3.22"/></svg>
+            Другой товар
+          </button>
+        </div>
+      </div>
+
+      <!-- Пустое состояние до запроса -->
+      <div class="lp-calc-empty" id="lp-calc-empty">
+        <div class="lp-calc-empty-icon">✦</div>
+        <div class="lp-calc-empty-text">Введите любой товар — ИИ проанализирует спрос,<br>конкуренцию и рассчитает реальный прогноз дохода</div>
+      </div>
+
+      <!-- CTA под калькулятором -->
+      <div class="lp-calc-cta" id="lp-calc-cta" style="display:none">
+        <a class="lp-btn-primary lp-calc-cta-btn" id="lp-calc-cta-wa" href="https://wa.me/77776020216?text=Здравствуйте%2C%20хочу%20начать%20продавать%20на%20маркетплейсе" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.553 4.116 1.524 5.847L.057 23.882l6.186-1.448A11.952 11.952 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.878 9.878 0 0 1-5.031-1.378l-.361-.214-3.741.875.944-3.643-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.536 6.536 2.106 12 2.106S21.894 6.536 21.894 12 17.464 21.894 12 21.894z"/></svg>
+          <span id="lp-calc-cta-text">Хочу такой доход — узнать условия</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- E. СРАВНЕНИЕ С НАМИ / БЕЗ НАС -->
+  <section class="lp-section lp-compare-section">
+    <div class="lp-section-label" id="lp-cmp-label">Разница очевидна</div>
+    <h2 class="lp-section-h" id="lp-cmp-h">С нами или без нас?</h2>
+    <p class="lp-cmp-intro" id="lp-cmp-intro">Посмотрите, как выглядят два пути к маркетплейсам — честно и без прикрас</p>
+
+    <!-- Две карточки с заголовками -->
+    <div class="lp-cmp-cards">
+      <!-- Карточка «С нами» -->
+      <div class="lp-cmp-card lp-cmp-card-yes">
+        <div class="lp-cmp-card-hdr">
+          <span class="lp-cmp-card-icon">🚀</span>
+          <div>
+            <div class="lp-cmp-card-title" id="lp-cmp-with-hdr">С Business School Amanat</div>
+            <div class="lp-cmp-card-sub" id="lp-cmp-with-sub">Структурированный старт</div>
+          </div>
+        </div>
+        <ul class="lp-cmp-list">
+          <li class="lp-cmp-item lp-cmp-item-yes"><span class="lp-cmp-check">✓</span><div><strong id="lp-cmp-y1t">Пошаговый план</strong> <span id="lp-cmp-y1d">— от регистрации до первой продажи за 30 дней</span></div></li>
+          <li class="lp-cmp-item lp-cmp-item-yes"><span class="lp-cmp-check">✓</span><div><strong id="lp-cmp-y2t">Личный куратор 24/7</strong> <span id="lp-cmp-y2d">— всегда ответит на вопрос, не даст застрять</span></div></li>
+          <li class="lp-cmp-item lp-cmp-item-yes"><span class="lp-cmp-check">✓</span><div><strong id="lp-cmp-y3t">Готовый каталог товаров</strong> <span id="lp-cmp-y3d">— не нужно тратить недели на поиск поставщиков</span></div></li>
+          <li class="lp-cmp-item lp-cmp-item-yes"><span class="lp-cmp-check">✓</span><div><strong id="lp-cmp-y4t">Договор фулфилмента</strong> <span id="lp-cmp-y4d">— хранение, упаковка и доставка уже организованы</span></div></li>
+          <li class="lp-cmp-item lp-cmp-item-yes"><span class="lp-cmp-check">✓</span><div><strong id="lp-cmp-y5t">Сообщество 2400+ продавцов</strong> <span id="lp-cmp-y5d">— опыт, советы и живые кейсы каждый день</span></div></li>
+          <li class="lp-cmp-item lp-cmp-item-yes"><span class="lp-cmp-check">✓</span><div><strong id="lp-cmp-y6t">Первый доход за 1–2 месяца</strong> <span id="lp-cmp-y6d">— реалистичный срок благодаря структуре курса</span></div></li>
+          <li class="lp-cmp-item lp-cmp-item-yes"><span class="lp-cmp-check">✓</span><div><strong id="lp-cmp-y7t">Доступ навсегда</strong> <span id="lp-cmp-y7d">— обновления курса включены без доплат</span></div></li>
+        </ul>
+        <div class="lp-cmp-card-footer">
+          <a class="lp-btn-primary lp-cmp-cta-btn" href="https://wa.me/77776020216?text=Здравствуйте%2C%20хочу%20узнать%20стоимость%20курса" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.553 4.116 1.524 5.847L.057 23.882l6.186-1.448A11.952 11.952 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.878 9.878 0 0 1-5.031-1.378l-.361-.214-3.741.875.944-3.643-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.536 6.536 2.106 12 2.106S21.894 6.536 21.894 12 17.464 21.894 12 21.894z"/></svg>
+            <span id="lp-cmp-cta-text">Хочу так же — узнать стоимость</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Карточка «Без нас» -->
+      <div class="lp-cmp-card lp-cmp-card-no">
+        <div class="lp-cmp-card-hdr">
+          <span class="lp-cmp-card-icon">😓</span>
+          <div>
+            <div class="lp-cmp-card-title" id="lp-cmp-without-hdr">Самостоятельный старт</div>
+            <div class="lp-cmp-card-sub" id="lp-cmp-without-sub">Методом проб и ошибок</div>
+          </div>
+        </div>
+        <ul class="lp-cmp-list">
+          <li class="lp-cmp-item lp-cmp-item-no"><span class="lp-cmp-cross">✗</span><div><strong id="lp-cmp-n1t">Хаотичный поиск информации</strong> <span id="lp-cmp-n1d">— часы в YouTube без гарантии актуальности</span></div></li>
+          <li class="lp-cmp-item lp-cmp-item-no"><span class="lp-cmp-cross">✗</span><div><strong id="lp-cmp-n2t">Нет наставника</strong> <span id="lp-cmp-n2d">— каждый вопрос решается самостоятельно неделями</span></div></li>
+          <li class="lp-cmp-item lp-cmp-item-no"><span class="lp-cmp-cross">✗</span><div><strong id="lp-cmp-n3t">Поиск товаров — с нуля</strong> <span id="lp-cmp-n3d">— риск вложить бюджет в неликвид</span></div></li>
+          <li class="lp-cmp-item lp-cmp-item-no"><span class="lp-cmp-cross">✗</span><div><strong id="lp-cmp-n4t">Логистика своими силами</strong> <span id="lp-cmp-n4d">— поиск склада, упаковка, курьеры — всё сам</span></div></li>
+          <li class="lp-cmp-item lp-cmp-item-no"><span class="lp-cmp-cross">✗</span><div><strong id="lp-cmp-n5t">Никакого комьюнити</strong> <span id="lp-cmp-n5d">— нет возможности учиться на чужих ошибках</span></div></li>
+          <li class="lp-cmp-item lp-cmp-item-no"><span class="lp-cmp-cross">⚠</span><div><strong id="lp-cmp-n6t">Первый доход — когда повезёт</strong> <span id="lp-cmp-n6d">— в среднем 4–6 месяцев без системы</span></div></li>
+          <li class="lp-cmp-item lp-cmp-item-no"><span class="lp-cmp-cross">✗</span><div><strong id="lp-cmp-n7t">Платные курсы по частям</strong> <span id="lp-cmp-n7d">— каждое обновление снова за деньги</span></div></li>
+        </ul>
+        <div class="lp-cmp-card-footer lp-cmp-footer-muted">
+          <div class="lp-cmp-no-cta" id="lp-cmp-no-cta">😬 Долго, дорого и рискованно</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- F. FAQ -->
+  <section class="lp-section lp-faq-section">
+    <div class="lp-section-label" id="lp-faq-label">Частые вопросы</div>
+    <h2 class="lp-section-h" id="lp-faq-h">Вопросы и ответы</h2>
+    <p class="lp-faq-intro" id="lp-faq-intro">Собрали самые популярные вопросы от будущих студентов</p>
+    <div class="lp-faq-list" id="lp-faq-list">
+
+      <div class="lp-faq-item" onclick="toggleFaq(this)">
+        <div class="lp-faq-q">
+          <span class="lp-faq-icon">🎯</span>
+          <span class="lp-faq-q-text" id="lp-faq-q1">Нужен ли опыт в торговле?</span>
+          <span class="lp-faq-arrow" aria-hidden="true"></span>
+        </div>
+        <div class="lp-faq-a" id="lp-faq-a1">
+          <div class="lp-faq-a-inner">Нет. Курс разработан с нуля — мы объясняем каждый шаг: от регистрации на маркетплейсе до первой продажи. <strong>Более половины наших студентов начинали без какого-либо опыта</strong> в торговле или интернет-бизнесе.</div>
+        </div>
+      </div>
+
+      <div class="lp-faq-item" onclick="toggleFaq(this)">
+        <div class="lp-faq-q">
+          <span class="lp-faq-icon">💰</span>
+          <span class="lp-faq-q-text" id="lp-faq-q2">Сколько зарабатывают студенты?</span>
+          <span class="lp-faq-arrow" aria-hidden="true"></span>
+        </div>
+        <div class="lp-faq-a" id="lp-faq-a2">
+          <div class="lp-faq-a-inner">В среднем студенты выходят на <strong>150 000–500 000 ₸ в месяц к 3-му месяцу</strong>. Результат зависит от вложенного бюджета, выбранной площадки и личных усилий. Лучшие результаты — у тех, кто прошёл весь курс и работает с куратором.</div>
+        </div>
+      </div>
+
+      <div class="lp-faq-item" onclick="toggleFaq(this)">
+        <div class="lp-faq-q">
+          <span class="lp-faq-icon">💳</span>
+          <span class="lp-faq-q-text" id="lp-faq-q3">Какой нужен стартовый капитал?</span>
+          <span class="lp-faq-arrow" aria-hidden="true"></span>
+        </div>
+        <div class="lp-faq-a" id="lp-faq-a3">
+          <div class="lp-faq-a-inner">Минимальный бюджет для старта — <strong>от 100 000 ₸</strong>. Мы учим выбирать товары с максимальной маржой, чтобы вложения окупились быстро. Фулфилмент снижает расходы на логистику — вам не нужен свой склад.</div>
+        </div>
+      </div>
+
+      <div class="lp-faq-item" onclick="toggleFaq(this)">
+        <div class="lp-faq-q">
+          <span class="lp-faq-icon">⏱️</span>
+          <span class="lp-faq-q-text" id="lp-faq-q4">Сколько времени нужно в день?</span>
+          <span class="lp-faq-arrow" aria-hidden="true"></span>
+        </div>
+        <div class="lp-faq-a" id="lp-faq-a4">
+          <div class="lp-faq-a-inner"><strong>1–2 часа в день</strong> достаточно для обучения. После запуска бизнеса на фулфилменте управление магазином занимает минимум времени — логистика и хранение берём на себя. Совмещать с основной работой — реально.</div>
+        </div>
+      </div>
+
+      <div class="lp-faq-item" onclick="toggleFaq(this)">
+        <div class="lp-faq-q">
+          <span class="lp-faq-icon">🔓</span>
+          <span class="lp-faq-q-text" id="lp-faq-q5">Как долго длится доступ к платформе?</span>
+          <span class="lp-faq-arrow" aria-hidden="true"></span>
+        </div>
+        <div class="lp-faq-a" id="lp-faq-a5">
+          <div class="lp-faq-a-inner">Доступ предоставляется <strong>бессрочно</strong> — учитесь в своём темпе, возвращайтесь к урокам в любое время. Все обновления курса включены без доплат. Изменились алгоритмы площадки — обновили урок, вы получаете автоматически.</div>
+        </div>
+      </div>
+
+      <div class="lp-faq-item" onclick="toggleFaq(this)">
+        <div class="lp-faq-q">
+          <span class="lp-faq-icon">🤝</span>
+          <span class="lp-faq-q-text" id="lp-faq-q6">Что если не получится?</span>
+          <span class="lp-faq-arrow" aria-hidden="true"></span>
+        </div>
+        <div class="lp-faq-a" id="lp-faq-a6">
+          <div class="lp-faq-a-inner">Куратор поддерживает вас на каждом этапе — от первого урока до первой продажи. Мы не бросаем студентов: <strong>100% сопровождение до результата</strong>. Если где-то застряли — пишете куратору, получаете ответ в течение 24 часов.</div>
+        </div>
+      </div>
+
+      <div class="lp-faq-item" onclick="toggleFaq(this)">
+        <div class="lp-faq-q">
+          <span class="lp-faq-icon">🏪</span>
+          <span class="lp-faq-q-text" id="lp-faq-q7">На каких маркетплейсах можно работать?</span>
+          <span class="lp-faq-arrow" aria-hidden="true"></span>
+        </div>
+        <div class="lp-faq-a" id="lp-faq-a7">
+          <div class="lp-faq-a-inner">Курс охватывает три ключевые платформы: <strong>Kaspi</strong> (самый быстрый старт в Казахстане), <strong>Wildberries</strong> и <strong>Ozon</strong> (масштабирование на Россию и СНГ). Вы сами выбираете, с какой начать, исходя из бюджета и целей.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FAQ bottom CTA -->
+    <div class="lp-faq-cta">
+      <span class="lp-faq-cta-text" id="lp-faq-cta-text">Остался вопрос?</span>
+      <a class="lp-faq-cta-btn" href="https://wa.me/77776020216?text=Здравствуйте%2C%20у%20меня%20есть%20вопрос%20о%20курсе" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.553 4.116 1.524 5.847L.057 23.882l6.186-1.448A11.952 11.952 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.878 9.878 0 0 1-5.031-1.378l-.361-.214-3.741.875.944-3.643-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.536 6.536 2.106 12 2.106S21.894 6.536 21.894 12 17.464 21.894 12 21.894z"/></svg>
+        <span id="lp-faq-cta-btn-text">Написать в WhatsApp</span>
+      </a>
+    </div>
+  </section>
   <section class="lp-cta">
     <div class="lp-cta-glow" aria-hidden="true"></div>
     <h2 class="lp-cta-h" id="lp-cta-h">Готовы начать<br>продавать?</h2>
     <p class="lp-cta-sub" id="lp-cta-sub">Напишите нам в WhatsApp — расскажем о программе и условиях доступа</p>
     <div class="lp-hero-btns" style="justify-content:center">
-      <a class="lp-btn-primary" href="https://wa.me/77776020216?text=Здравствуйте%2C%20хочу%20купить%20доступ%20к%20Business%20School%20Amanat" target="_blank" rel="noopener">
+      <a class="lp-btn-primary" id="lp-cta-wa-link" href="https://wa.me/77776020216?text=Здравствуйте%2C%20хочу%20купить%20доступ%20к%20Business%20School%20Amanat" target="_blank" rel="noopener">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.553 4.116 1.524 5.847L.057 23.882l6.186-1.448A11.952 11.952 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.878 9.878 0 0 1-5.031-1.378l-.361-.214-3.741.875.944-3.643-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.536 6.536 2.106 12 2.106S21.894 6.536 21.894 12 17.464 21.894 12 21.894z"/></svg>
         <span id="lp-cta-wa-btn">Написать в WhatsApp</span>
       </a>
@@ -311,6 +677,21 @@
 
 </div>
 <!-- ═══════════════════════════════════════════ / LANDING PAGE ═════════ -->
+
+<!-- D. POP-UP через 10 сек -->
+<div id="lp-popup-overlay" class="lp-popup-overlay" style="display:none" onclick="closeLpPopup(event)">
+  <div class="lp-popup-box">
+    <button class="lp-popup-close" onclick="closeLpPopup(null,true)">✕</button>
+    <div class="lp-popup-icon">💬</div>
+    <h3 class="lp-popup-h" id="lp-popup-h">Хотите узнать стоимость?</h3>
+    <p class="lp-popup-sub" id="lp-popup-sub">Напишите нам в WhatsApp — ответим в течение 5 минут</p>
+    <a class="lp-popup-wa" id="lp-popup-wa-btn" href="#" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.553 4.116 1.524 5.847L.057 23.882l6.186-1.448A11.952 11.952 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.878 9.878 0 0 1-5.031-1.378l-.361-.214-3.741.875.944-3.643-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.536 6.536 2.106 12 2.106S21.894 6.536 21.894 12 17.464 21.894 12 21.894z"/></svg>
+      <span id="lp-popup-wa-text">Написать в WhatsApp</span>
+    </a>
+    <button class="lp-popup-skip" onclick="closeLpPopup(null,true)" id="lp-popup-skip">Нет, спасибо</button>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════ CURSOR TOOLTIP ════ -->
 <div class="cursor-tooltip" id="cursor-tooltip"></div>
@@ -675,7 +1056,7 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           <span id="wa-btn-text">WhatsApp</span>
         </a>
-        <a class="c-btn tg" id="tg-btn" href="#" target="_blank" rel="noopener">
+        <a class="c-btn tg" id="tg-btn" href="#" target="_blank" rel="noopener" style="display:none">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
           <span id="tg-btn-text">Telegram</span>
         </a>
