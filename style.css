@@ -3850,3 +3850,97 @@ body.video-theater #theater-esc {
   .lp-faq-item.open .lp-faq-a-inner { padding: 0 16px 14px 50px; }
   .lp-faq-cta { flex-direction: column; text-align: center; gap: 10px; }
 }
+/* ── Landing popup (lp-popup-overlay) ─────────────────────────── */
+.lp-popup-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(5px);
+  z-index: 10001;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: lpPopFadeIn .25s var(--ease);
+}
+@keyframes lpPopFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.lp-popup-overlay.lp-popup-hiding {
+  animation: lpPopFadeOut .3s var(--ease) forwards;
+}
+@keyframes lpPopFadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+.lp-popup-box {
+  position: relative;
+  width: min(400px, calc(100vw - 32px));
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-xl);
+  padding: 36px 28px 28px;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(245,200,66,0.08);
+  text-align: center;
+  animation: lpPopSlideUp .35s var(--spring);
+}
+@keyframes lpPopSlideUp {
+  from { opacity: 0; transform: translateY(28px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.lp-popup-overlay.lp-popup-hiding .lp-popup-box {
+  animation: lpPopSlideDown .3s var(--ease) forwards;
+}
+@keyframes lpPopSlideDown {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(20px) scale(0.96); }
+}
+
+.lp-popup-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--surface3); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text2); font-size: 16px;
+  transition: background .2s, color .2s;
+}
+.lp-popup-close:hover { background: var(--border2); color: var(--text); }
+
+.lp-popup-icon {
+  font-size: 40px; margin-bottom: 12px;
+  animation: lpPopBounce 1.2s var(--bounce) .3s both;
+}
+@keyframes lpPopBounce {
+  0%   { transform: scale(0); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.lp-popup-h {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px; font-weight: 800;
+  color: var(--text); margin: 0 0 10px;
+}
+
+.lp-popup-sub {
+  font-size: 14px; color: var(--text2); line-height: 1.55;
+  margin: 0 0 20px;
+}
+
+.lp-popup-wa {
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  background: var(--wa, #25D366); color: #fff;
+  padding: 14px 22px; border-radius: var(--r-md);
+  font-weight: 700; font-size: 15px;
+  text-decoration: none; width: 100%;
+  box-sizing: border-box;
+  transition: transform .2s var(--ease), box-shadow .2s;
+  box-shadow: 0 4px 22px rgba(37,211,102,0.35);
+}
+.lp-popup-wa:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(37,211,102,0.45);
+}
+
+.lp-popup-skip {
+  display: block; margin: 14px auto 0;
+  background: none; border: none; cursor: pointer;
+  font-size: 13px; color: var(--text3);
+  font-family: inherit; padding: 4px 8px;
+  transition: color .2s;
+}
+.lp-popup-skip:hover { color: var(--text2); }

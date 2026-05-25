@@ -342,8 +342,8 @@
       <!-- Шаг 1: Ввод товара + маркетплейс -->
       <div class="lp-calc-step">
         <div class="lp-calc-step-label">
-          <span class="lp-calc-step-num">1</span>
-          <span>Ваш товар</span>
+          <span class="lp-calc-step-num" id="lp-calc-step-num">1</span>
+          <span id="lp-calc-step-label-text">Ваш товар</span>
         </div>
 
         <!-- Поле ввода товара -->
@@ -351,7 +351,7 @@
           <div class="lp-calc-product-input-row">
             <input
               type="text"
-              id="lp-calc-product"
+              id="lp-calc-input"
               class="lp-calc-product-input"
               placeholder="Например: детские носки, чехол для телефона, крем для рук..."
               maxlength="120"
@@ -359,7 +359,7 @@
             >
             <button class="lp-calc-ai-btn" id="lp-calc-ai-btn" onclick="runAiCalc()" type="button">
               <span class="lp-calc-ai-btn-icon">✦</span>
-              <span class="lp-calc-ai-btn-text">Рассчитать</span>
+              <span class="lp-calc-ai-btn-text" id="lp-calc-ai-btn-text">Рассчитать</span>
             </button>
           </div>
           <!-- Быстрые теги -->
@@ -412,13 +412,13 @@
         <!-- Шапка с товаром -->
         <div class="lp-calc-res-header">
           <span class="lp-calc-res-header-icon">✦</span>
-          <span class="lp-calc-res-header-text">AI-прогноз для: <strong id="lp-calc-product-name">—</strong></span>
+          <span class="lp-calc-res-header-text" id="lp-calc-res-header-text">AI-прогноз для: <strong id="lp-calc-product-name">—</strong></span>
           <span class="lp-calc-res-mkt-badge" id="lp-calc-res-mkt-badge">Kaspi</span>
         </div>
 
         <!-- AI-инсайт -->
         <div class="lp-calc-ai-insight" id="lp-calc-ai-insight" style="display:none">
-          <div class="lp-calc-ai-insight-label">
+          <div class="lp-calc-ai-insight-label" id="lp-calc-ai-insight-label">
             <span>✦</span> AI-анализ
           </div>
           <div class="lp-calc-ai-insight-text" id="lp-calc-ai-insight-text"></div>
@@ -427,21 +427,21 @@
         <!-- Прогресс-бары по месяцам -->
         <div class="lp-calc-bars">
           <div class="lp-calc-bar-row">
-            <span class="lp-calc-bar-lbl">1-й месяц</span>
+            <span class="lp-calc-bar-lbl" id="lp-calc-bar-lbl-1">1-й месяц</span>
             <div class="lp-calc-bar-track">
               <div class="lp-calc-bar-fill" id="lp-calc-bar-1" style="width:0%"></div>
             </div>
             <span class="lp-calc-bar-val" id="lp-calc-val-1">—</span>
           </div>
           <div class="lp-calc-bar-row">
-            <span class="lp-calc-bar-lbl">2-й месяц</span>
+            <span class="lp-calc-bar-lbl" id="lp-calc-bar-lbl-2">2-й месяц</span>
             <div class="lp-calc-bar-track">
               <div class="lp-calc-bar-fill lp-calc-bar-fill-2" id="lp-calc-bar-2" style="width:0%"></div>
             </div>
             <span class="lp-calc-bar-val" id="lp-calc-val-2">—</span>
           </div>
           <div class="lp-calc-bar-row">
-            <span class="lp-calc-bar-lbl">3-й месяц</span>
+            <span class="lp-calc-bar-lbl" id="lp-calc-bar-lbl-3">3-й месяц</span>
             <div class="lp-calc-bar-track">
               <div class="lp-calc-bar-fill lp-calc-bar-fill-3" id="lp-calc-bar-3" style="width:0%"></div>
             </div>
@@ -452,29 +452,29 @@
         <!-- Итоговая строка -->
         <div class="lp-calc-summary">
           <div class="lp-calc-summary-item">
-            <span class="lp-calc-summary-lbl">Выручка за 3 мес.</span>
+            <span class="lp-calc-summary-lbl" id="lp-calc-summary-lbl-1">Выручка за 3 мес.</span>
             <span class="lp-calc-summary-val" id="lp-calc-revenue">—</span>
           </div>
           <div class="lp-calc-summary-div"></div>
           <div class="lp-calc-summary-item">
-            <span class="lp-calc-summary-lbl">Чистая прибыль</span>
+            <span class="lp-calc-summary-lbl" id="lp-calc-summary-lbl-2">Чистая прибыль</span>
             <span class="lp-calc-summary-val lp-calc-summary-gold" id="lp-calc-profit">—</span>
           </div>
           <div class="lp-calc-summary-div"></div>
           <div class="lp-calc-summary-item">
-            <span class="lp-calc-summary-lbl">Стартовый капитал</span>
+            <span class="lp-calc-summary-lbl" id="lp-calc-summary-lbl-3">Стартовый капитал</span>
             <span class="lp-calc-summary-val lp-calc-summary-muted" id="lp-calc-start-capital">—</span>
           </div>
         </div>
 
         <!-- Советы по товару -->
         <div class="lp-calc-tips" id="lp-calc-tips" style="display:none">
-          <div class="lp-calc-tips-title">📌 Советы для этого товара</div>
+          <div class="lp-calc-tips-title" id="lp-calc-tips-title">📌 Советы для этого товара</div>
           <ul class="lp-calc-tips-list" id="lp-calc-tips-list"></ul>
         </div>
 
         <div class="lp-calc-res-footer">
-          <p class="lp-calc-disclaimer">* AI-прогноз на основе средних данных рынка. Реальный результат зависит от качества работы.</p>
+          <p class="lp-calc-disclaimer" id="lp-calc-disclaimer">* AI-прогноз на основе средних данных рынка. Реальный результат зависит от качества работы.</p>
           <button class="lp-calc-retry-btn" onclick="clearAiCalc()" type="button">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-3.22"/></svg>
             Другой товар
@@ -485,7 +485,7 @@
       <!-- Пустое состояние до запроса -->
       <div class="lp-calc-empty" id="lp-calc-empty">
         <div class="lp-calc-empty-icon">✦</div>
-        <div class="lp-calc-empty-text">Введите любой товар — ИИ проанализирует спрос,<br>конкуренцию и рассчитает реальный прогноз дохода</div>
+        <div class="lp-calc-empty-text" id="lp-calc-empty-text">Введите любой товар — ИИ проанализирует спрос,<br>конкуренцию и рассчитает реальный прогноз дохода</div>
       </div>
 
       <!-- CTA под калькулятором -->

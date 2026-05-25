@@ -136,6 +136,114 @@ const T = {
     // Курсор подсказки
     cursorEnterPrice: 'Узнать стоимость', cursorLogin: 'Войти в платформу', cursorDemo: 'Бесплатный урок',
     cursorWatch: 'Смотреть урок', cursorContinue: 'Продолжить',
+
+    // ── Таймер ──
+    lpTimerBadge: '🔥 Специальное предложение',
+    lpTimerLabel: 'Акция заканчивается через:',
+    lpTimerUnitH: 'часов',
+    lpTimerUnitM: 'минут',
+    lpTimerUnitS: 'секунд',
+
+    // ── Калькулятор ──
+    lpCalcLabel: 'Потенциальный доход',
+    lpCalcH: 'Сколько можно зарабатывать?',
+    lpCalcDesc: 'Введите товар — ИИ сделает персональный прогноз на 3 месяца',
+    lpCalcStepLabel: 'Ваш товар',
+    lpCalcInputPlaceholder: 'Например: детские носки, чехол для телефона, крем для рук...',
+    lpCalcBtnText: 'Рассчитать',
+    lpCalcLblMarket: 'Маркетплейс',
+    lpCalcEmptyText: 'Введите любой товар — ИИ проанализирует спрос,\nконкуренцию и рассчитает реальный прогноз дохода',
+    lpCalcCtaText: 'Хочу такой доход — узнать условия',
+    lpCalcDisc: '* AI-прогноз на основе средних данных рынка. Реальный результат зависит от качества работы.',
+    lpCalcRetry: 'Другой товар',
+    lpCalcResHeader: 'AI-прогноз для: ',
+    lpCalcAiLabel: 'AI-анализ',
+    lpCalcMonth1: '1-й месяц',
+    lpCalcMonth2: '2-й месяц',
+    lpCalcMonth3: '3-й месяц',
+    lpCalcRevenueLbl: 'Выручка за 3 мес.',
+    lpCalcProfitLbl: 'Чистая прибыль',
+    lpCalcCapitalLbl: 'Стартовый капитал',
+    lpCalcTipsTitle: '📌 Советы для этого товара',
+    lpCalcLoadStep1Title: 'ИИ анализирует рынок...',
+    lpCalcLoadStep1Sub: 'Изучаю спрос на маркетплейсе',
+    lpCalcLoadStep2Title: 'Считаю конкурентов...',
+    lpCalcLoadStep2Sub: 'Анализирую нишу и ценообразование',
+    lpCalcLoadStep3Title: 'Формирую прогноз...',
+    lpCalcLoadStep3Sub: 'Рассчитываю потенциальную прибыль',
+    lpCalcLoadStep4Title: 'Готовлю рекомендации...',
+    lpCalcLoadStep4Sub: 'Подбираю советы для старта',
+    lpCalcWaText: 'Здравствуйте, хочу начать продавать «__PRODUCT__» на __MKT__. Расскажите об обучении.',
+    // Быстрые теги
+    lpCalcTag1: '🧦 Детские носки',
+    lpCalcTag2: '🧴 Крем для рук',
+    lpCalcTag3: '📱 Чехол для телефона',
+    lpCalcTag4: '🛏 Постельное бельё',
+    lpCalcTag5: '🧸 Антистресс',
+    lpCalcTag6: '🥤 Бутылка для воды',
+    lpCalcFallbackInsight: '«__PRODUCT__» — востребованный товар на __MKT__. Прогноз рассчитан на основе средних показателей по рынку Казахстана.',
+    lpCalcFallbackTip1: 'Начните с небольшой партии — 20–30 единиц для теста спроса',
+    lpCalcFallbackTip2: 'Следите за конкурентами и корректируйте цену раз в неделю',
+    lpCalcFallbackTip3: 'Загружайте качественные фото — это ключевой фактор конверсии',
+
+    // ── Сравнение С нами / Без нас ──
+    lpCmpLabel: 'Разница очевидна',
+    lpCmpH: 'С нами или без нас?',
+    lpCmpIntro: 'Посмотрите, как выглядят два пути к маркетплейсам — честно и без прикрас',
+    lpCmpWithHdr: 'С Business School Amanat',
+    lpCmpWithSub: 'Структурированный старт',
+    lpCmpY1t: 'Пошаговый план', lpCmpY1d: '— от регистрации до первой продажи за 30 дней',
+    lpCmpY2t: 'Личный куратор 24/7', lpCmpY2d: '— всегда ответит на вопрос, не даст застрять',
+    lpCmpY3t: 'Готовый каталог товаров', lpCmpY3d: '— не нужно тратить недели на поиск поставщиков',
+    lpCmpY4t: 'Договор фулфилмента', lpCmpY4d: '— хранение, упаковка и доставка уже организованы',
+    lpCmpY5t: 'Сообщество 2400+ продавцов', lpCmpY5d: '— опыт, советы и живые кейсы каждый день',
+    lpCmpY6t: 'Первый доход за 1–2 месяца', lpCmpY6d: '— реалистичный срок благодаря структуре курса',
+    lpCmpY7t: 'Доступ навсегда', lpCmpY7d: '— обновления курса включены без доплат',
+    lpCmpCtaText: 'Хочу так же — узнать стоимость',
+    lpCmpWithoutHdr: 'Самостоятельный старт',
+    lpCmpWithoutSub: 'Методом проб и ошибок',
+    lpCmpN1t: 'Хаотичный поиск информации', lpCmpN1d: '— часы в YouTube без гарантии актуальности',
+    lpCmpN2t: 'Нет наставника', lpCmpN2d: '— каждый вопрос решается самостоятельно неделями',
+    lpCmpN3t: 'Поиск товаров — с нуля', lpCmpN3d: '— риск вложить бюджет в неликвид',
+    lpCmpN4t: 'Логистика своими силами', lpCmpN4d: '— поиск склада, упаковка, курьеры — всё сам',
+    lpCmpN5t: 'Никакого комьюнити', lpCmpN5d: '— нет возможности учиться на чужих ошибках',
+    lpCmpN6t: 'Первый доход — когда повезёт', lpCmpN6d: '— в среднем 4–6 месяцев без системы',
+    lpCmpN7t: 'Платные курсы по частям', lpCmpN7d: '— каждое обновление снова за деньги',
+    lpCmpNoCta: '😬 Долго, дорого и рискованно',
+
+    // ── FAQ ──
+    lpFaqLabel: 'Частые вопросы',
+    lpFaqH: 'Вопросы и ответы',
+    lpFaqIntro: 'Собрали самые популярные вопросы от будущих студентов',
+    lpFaqQ1: 'Нужен ли опыт в торговле?',
+    lpFaqA1: 'Нет. Курс разработан с нуля — мы объясняем каждый шаг: от регистрации на маркетплейсе до первой продажи. <strong>Более половины наших студентов начинали без какого-либо опыта</strong> в торговле или интернет-бизнесе.',
+    lpFaqQ2: 'Сколько зарабатывают студенты?',
+    lpFaqA2: 'В среднем студенты выходят на <strong>150 000–500 000 ₸ в месяц к 3-му месяцу</strong>. Результат зависит от вложенного бюджета, выбранной площадки и личных усилий. Лучшие результаты — у тех, кто прошёл весь курс и работает с куратором.',
+    lpFaqQ3: 'Какой нужен стартовый капитал?',
+    lpFaqA3: 'Минимальный бюджет для старта — <strong>от 100 000 ₸</strong>. Мы учим выбирать товары с максимальной маржой, чтобы вложения окупились быстро. Фулфилмент снижает расходы на логистику — вам не нужен свой склад.',
+    lpFaqQ4: 'Сколько времени нужно в день?',
+    lpFaqA4: '<strong>1–2 часа в день</strong> достаточно для обучения. После запуска бизнеса на фулфилменте управление магазином занимает минимум времени — логистика и хранение берём на себя. Совмещать с основной работой — реально.',
+    lpFaqQ5: 'Как долго длится доступ к платформе?',
+    lpFaqA5: 'Доступ предоставляется <strong>бессрочно</strong> — учитесь в своём темпе, возвращайтесь к урокам в любое время. Все обновления курса включены без доплат. Изменились алгоритмы площадки — обновили урок, вы получаете автоматически.',
+    lpFaqQ6: 'Что если не получится?',
+    lpFaqA6: 'Куратор поддерживает вас на каждом этапе — от первого урока до первой продажи. Мы не бросаем студентов: <strong>100% сопровождение до результата</strong>. Если где-то застряли — пишете куратору, получаете ответ в течение 24 часов.',
+    lpFaqQ7: 'На каких маркетплейсах можно работать?',
+    lpFaqA7: 'Курс охватывает три ключевые платформы: <strong>Kaspi</strong> (самый быстрый старт в Казахстане), <strong>Wildberries</strong> и <strong>Ozon</strong> (масштабирование на Россию и СНГ). Вы сами выбираете, с какой начать, исходя из бюджета и целей.',
+    lpFaqCtaText: 'Остался вопрос?',
+    lpFaqCtaBtnText: 'Написать в WhatsApp',
+
+    // ── Финальный popup (lp-popup-overlay) ──
+    lpPopupH: 'Хотите узнать стоимость?',
+    lpPopupSub: 'Напишите нам в WhatsApp — ответим в течение 5 минут',
+    lpPopupWaText: 'Написать в WhatsApp',
+    lpPopupSkip: 'Нет, спасибо',
+
+    // ── Social proof toast ──
+    spToastAction: 'только что купил доступ',
+
+    // ── Sticky CTA bar ──
+    stickyCta: 'Узнать стоимость',
+    stickyLogin: 'Войти →',
   },
   kz: {
     eyebrow: 'Білім беру платформасы',
@@ -178,7 +286,7 @@ const T = {
     statusText: 'Желіде', userOnline: 'Онлайн',
     courses: 'Курс', progress: 'Барысы', watchedStat: 'Сабақ',
     // Лендинг KZ
-    lpH1Verb: 'нөлден бастай',
+    lpH1Verb: 'нөлден бастап',
     lpH1Prep: '',
     lpH1Gold: 'маркетплейстерде',
     lpH1End: 'табыс тап',
@@ -207,6 +315,115 @@ const T = {
     // Курсор подсказки
     cursorEnterPrice: 'Құнын білу', cursorLogin: 'Платформаға кіру', cursorDemo: 'Тегін сабақ',
     cursorWatch: 'Сабақты қарау', cursorContinue: 'Жалғастыру',
+
+    // ── Таймер ──
+    lpTimerBadge: '🔥 Арнайы ұсыныс',
+    lpTimerLabel: 'Акция аяқталуына қалды:',
+    lpTimerUnitH: 'сағат',
+    lpTimerUnitM: 'минут',
+    lpTimerUnitS: 'секунд',
+
+    // ── Калькулятор ──
+    lpCalcLabel: 'Мүмкін табыс',
+    lpCalcH: 'Қанша табуға болады?',
+    lpCalcDesc: 'Тауар енгізіңіз — ЖИ 3 айға жеке болжам жасайды',
+    lpCalcStepLabel: 'Сіздің тауарыңыз',
+    lpCalcInputPlaceholder: 'Мысалы: балалар шұлықтары, телефон қапшығы, қол кремі...',
+    lpCalcBtnText: 'Есептеу',
+    lpCalcLblMarket: 'Маркетплейс',
+    lpCalcEmptyText: 'Кез келген тауарды енгізіңіз — ЖИ сұранысты,\nбәсекелестікті талдап, нақты табыс болжамын жасайды',
+    lpCalcCtaText: 'Осындай табыс алғым келеді — шарттарын білу',
+    lpCalcDisc: '* Нарықтың орташа деректері негізіндегі ЖИ болжамы. Нақты нәтиже жұмыс сапасына байланысты.',
+    lpCalcRetry: 'Басқа тауар',
+    lpCalcResHeader: 'ЖИ болжамы: ',
+    lpCalcAiLabel: 'ЖИ талдауы',
+    lpCalcMonth1: '1-ші ай',
+    lpCalcMonth2: '2-ші ай',
+    lpCalcMonth3: '3-ші ай',
+    lpCalcRevenueLbl: '3 айдағы айналым',
+    lpCalcProfitLbl: 'Таза пайда',
+    lpCalcCapitalLbl: 'Бастапқы капитал',
+    lpCalcTipsTitle: '📌 Осы тауар бойынша кеңестер',
+    lpCalcLoadStep1Title: 'ЖИ нарықты талдауда...',
+    lpCalcLoadStep1Sub: 'Маркетплейстегі сұранысты зерттеуде',
+    lpCalcLoadStep2Title: 'Бәсекелестерді санауда...',
+    lpCalcLoadStep2Sub: 'Ниша мен баға белгілеуді талдауда',
+    lpCalcLoadStep3Title: 'Болжам жасауда...',
+    lpCalcLoadStep3Sub: 'Мүмкін пайданы есептеуде',
+    lpCalcLoadStep4Title: 'Кеңестер дайындауда...',
+    lpCalcLoadStep4Sub: 'Старт үшін ұсыныстар іріктеуде',
+    lpCalcWaText: 'Сәлеметсіз бе, «__PRODUCT__» тауарын __MKT__ маркетплейсінде сатқым келеді. Оқыту туралы айтыңыз.',
+    // Быстрые теги — тауар атаулары
+    lpCalcTag1: '🧦 Балалар шұлықтары',
+    lpCalcTag2: '🧴 Қол кремі',
+    lpCalcTag3: '📱 Телефон қапшығы',
+    lpCalcTag4: '🛏 Төсек-орын жабдықтары',
+    lpCalcTag5: '🧸 Антистресс',
+    lpCalcTag6: '🥤 Су бутылкасы',
+    // Fallback insight
+    lpCalcFallbackInsight: '«__PRODUCT__» — __MKT__ маркетплейсінде сұранысты тауар. Болжам Қазақстан нарығының орташа көрсеткіштері негізінде есептелген.',
+    lpCalcFallbackTip1: 'Кіші партиядан бастаңыз — сұранысты тексеру үшін 20–30 дана',
+    lpCalcFallbackTip2: 'Бәсекелестерді қадағалап, бағаны аптасына бір рет түзетіп отырыңыз',
+    lpCalcFallbackTip3: 'Сапалы фото жүктеңіз — бұл конверсияның негізгі факторы',
+
+    // ── Сравнение С нами / Без нас ──
+    lpCmpLabel: 'Айырмашылығы айқын',
+    lpCmpH: 'Бізбен бе, жоқпа?',
+    lpCmpIntro: 'Маркетплейстерге екі жолды қараңыз — адал, сылтаусыз',
+    lpCmpWithHdr: 'Business School Amanat-пен',
+    lpCmpWithSub: 'Құрылымды старт',
+    lpCmpY1t: 'Қадамдық жоспар', lpCmpY1d: '— тіркеуден 30 күнде алғашқы сатылымға дейін',
+    lpCmpY2t: 'Жеке куратор 24/7', lpCmpY2d: '— сұрақтарыңызға жауап береді, жолда қалдырмайды',
+    lpCmpY3t: 'Дайын тауар каталогы', lpCmpY3d: '— жеткізушілерді іздеуге апта жұмсаудың қажеті жоқ',
+    lpCmpY4t: 'Фулфилмент шарты', lpCmpY4d: '— сақтау, орау және жеткізу ұйымдастырылған',
+    lpCmpY5t: '2400+ сатушы қауымдастығы', lpCmpY5d: '— тәжірибе, кеңес және нақты кейстер күн сайын',
+    lpCmpY6t: '1–2 айда алғашқы табыс', lpCmpY6d: '— курс құрылымы арқасында реалистік мерзім',
+    lpCmpY7t: 'Мәңгілік қол жеткізу', lpCmpY7d: '— курс жаңартулары қосымша төлемсіз кіреді',
+    lpCmpCtaText: 'Сондай болғым келеді — құнын білу',
+    lpCmpWithoutHdr: 'Өз бетіңше старт',
+    lpCmpWithoutSub: 'Сынақ пен қателік арқылы',
+    lpCmpN1t: 'Ақпаратты хаотты іздеу', lpCmpN1d: '— YouTube-та сағаттар, өзектілік кепілсіз',
+    lpCmpN2t: 'Тәлімгер жоқ', lpCmpN2d: '— әр сұрақ апта бойы өз бетімен шешіледі',
+    lpCmpN3t: 'Тауар іздеу — нөлден', lpCmpN3d: '— бюджетті өтпейтін тауарға жұмсау тәуекелі',
+    lpCmpN4t: 'Логистика өз күшімен', lpCmpN4d: '— қойма іздеу, орау, курьерлер — бәрі өзіңіз',
+    lpCmpN5t: 'Ешқандай қауымдастық жоқ', lpCmpN5d: '— басқалардың қателігінен үйрену мүмкіндігі жоқ',
+    lpCmpN6t: 'Алғашқы табыс — бақытта', lpCmpN6d: '— жүйесіз орта есеппен 4–6 ай',
+    lpCmpN7t: 'Курстар бөлек-бөлек ақылы', lpCmpN7d: '— әр жаңарту үшін қайтадан ақша',
+    lpCmpNoCta: '😬 Ұзақ, қымбат және тәуекелді',
+
+    // ── FAQ ──
+    lpFaqLabel: 'Жиі қойылатын сұрақтар',
+    lpFaqH: 'Сұрақтар мен жауаптар',
+    lpFaqIntro: 'Болашақ студенттердің ең танымал сұрақтарын жинадық',
+    lpFaqQ1: 'Сауда тәжірибесі керек пе?',
+    lpFaqA1: 'Жоқ. Курс нөлден әзірленген — маркетплейсте тіркеуден алғашқы сатылымға дейін әр қадамды түсіндіреміз. <strong>Студенттерімiздiң жартысынан астамы сауда немесе интернет-бизнестің ешқандай тәжірибесінсіз бастады.</strong>',
+    lpFaqQ2: 'Студенттер қанша табады?',
+    lpFaqA2: 'Орта есеппен студенттер <strong>3-ші айда айына 150 000–500 000 ₸ табысқа шығады.</strong> Нәтиже салынған бюджетке, таңдалған алаңға және жеке еңбекке байланысты. Ең жақсы нәтижелер — бүкіл курсты өтіп, куратормен жұмыс жасағандарда.',
+    lpFaqQ3: 'Қандай бастапқы капитал керек?',
+    lpFaqA3: 'Старт үшін минималды бюджет — <strong>100 000 ₸-дан.</strong> Салымдар тезірек өтелуі үшін максималды маржасы бар тауарларды таңдауды үйретеміз. Фулфилмент логистика шығынын азайтады — өз қойманыз қажет емес.',
+    lpFaqQ4: 'Күніне қанша уақыт керек?',
+    lpFaqA4: 'Оқу үшін <strong>күніне 1–2 сағат</strong> жеткілікті. Фулфилментте бизнесті іске қосқаннан кейін дүкенді басқару минималды уақыт алады — логистика мен сақтауды біз аламыз. Негізгі жұмыспен қатар жүргізу — шынайы.',
+    lpFaqQ5: 'Платформаға қол жеткізу қанша уақытқа?',
+    lpFaqA5: 'Қол жеткізу <strong>мерзімсіз</strong> беріледі — өз қарқыныңызбен оқып, кез келген уақытта сабақтарға оралыңыз. Курстың барлық жаңартулары қосымша төлемсіз кіреді. Алаң алгоритмдері өзгерді — сабақты жаңарттық, сіз автоматты аласыз.',
+    lpFaqQ6: 'Нәтиже шықпаса не болады?',
+    lpFaqA6: 'Куратор сізді алғашқы сабақтан алғашқы сатылымға дейін қолдайды. Студенттерді тастамаймыз: <strong>нәтижеге дейін 100% сүйемелдеу.</strong> Жолда қалсаңыз — кураторға жазасыз, 24 сағат ішінде жауап аласыз.',
+    lpFaqQ7: 'Қандай маркетплейстерде жұмыс жасауға болады?',
+    lpFaqA7: 'Курс үш негізгі платформаны қамтиды: <strong>Kaspi</strong> (Қазақстандағы ең жылдам старт), <strong>Wildberries</strong> және <strong>Ozon</strong> (Ресей мен ТМД-ға масштабтау). Бюджет пен мақсатыңызға қарай қайсысынан бастауды өзіңіз таңдайсыз.',
+    lpFaqCtaText: 'Сұрақ қалды ма?',
+    lpFaqCtaBtnText: 'WhatsApp-қа жазу',
+
+    // ── Финальный popup (lp-popup-overlay) ──
+    lpPopupH: 'Құнын білгіңіз келе ме?',
+    lpPopupSub: 'WhatsApp-қа жазыңыз — 5 минут ішінде жауап береміз',
+    lpPopupWaText: 'WhatsApp-қа жазу',
+    lpPopupSkip: 'Жоқ, рақмет',
+
+    // ── Social proof toast ──
+    spToastAction: 'жаңа ғана қол жеткізу сатып алды',
+
+    // ── Sticky CTA bar ──
+    stickyCta: 'Құнын білу',
+    stickyLogin: 'Кіру →',
   }
 };
 
@@ -443,6 +660,44 @@ function closePricePopup() {
   }, 300);
 }
 
+// ── Финальный popup лендинга (lp-popup-overlay) ──────────────────
+function closeLpPopup(e, force) {
+  if (e && e.target && !e.target.classList.contains('lp-popup-overlay') && !force) return;
+  const overlay = document.getElementById('lp-popup-overlay');
+  if (!overlay) return;
+  overlay.classList.add('lp-popup-hiding');
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    overlay.classList.remove('lp-popup-hiding');
+  }, 300);
+}
+
+function showLpPopup() {
+  const lp = document.getElementById('landing-page');
+  if (!lp || lp.style.display === 'none') return;
+  const overlay = document.getElementById('lp-popup-overlay');
+  if (!overlay) return;
+  // Обновляем WA-ссылку
+  const waBtn = document.getElementById('lp-popup-wa-btn');
+  if (waBtn && typeof waAccessUrl !== 'undefined' && waAccessUrl) {
+    waBtn.href = waAccessUrl;
+  }
+  overlay.style.display = 'flex';
+}
+
+// Показываем финальный popup через 15 сек (один раз за сессию)
+(function initLpPopup() {
+  const SESSION_KEY = 'bs_lp_popup_shown';
+  if (sessionStorage.getItem(SESSION_KEY)) return;
+  setTimeout(() => {
+    if (sessionStorage.getItem(SESSION_KEY)) return;
+    sessionStorage.setItem(SESSION_KEY, '1');
+    showLpPopup();
+  }, 15000);
+})();
+
+
+
 // ══════════════════════════════ THEME ════════════════════════════
 function initTheme() {
   document.documentElement.setAttribute('data-theme', currentTheme);
@@ -558,6 +813,223 @@ function applyTexts() {
   setText('lp-cta-wa-btn',      t('lpCtaWaBtn'));
   setText('lp-cta-login-btn',   t('lpCtaLoginBtn'));
   setText('lp-back-btn-text',   t('lpBackBtn'));
+
+  // ── Таймер ──
+  setText('lp-timer-badge',     t('lpTimerBadge'));
+  setText('lp-timer-label',     t('lpTimerLabel'));
+  setText('lp-timer-unit-h',    t('lpTimerUnitH'));
+  setText('lp-timer-unit-m',    t('lpTimerUnitM'));
+  setText('lp-timer-unit-s',    t('lpTimerUnitS'));
+
+  // ── Калькулятор — заголовки и лейблы ──
+  setText('lp-calc-label',      t('lpCalcLabel'));
+  setText('lp-calc-h',          t('lpCalcH'));
+  setText('lp-calc-desc',       t('lpCalcDesc'));
+  setText('lp-calc-lbl-market', t('lpCalcLblMarket'));
+  setText('lp-calc-cta-text',   t('lpCalcCtaText'));
+
+  // Кнопка "Рассчитать" — ищем внутри кнопки по классу
+  const calcBtnEl = document.querySelector('#lp-calc-ai-btn .lp-calc-ai-btn-text');
+  if (calcBtnEl) calcBtnEl.textContent = t('lpCalcBtnText');
+
+  // Placeholder поля ввода
+  const calcInput = document.getElementById('lp-calc-input');
+  if (calcInput) calcInput.placeholder = t('lpCalcInputPlaceholder');
+
+  // Step label "Ваш товар" — второй span (первый — номер шага "1")
+  const calcStepLabel = document.querySelector('.lp-calc-step-label');
+  if (calcStepLabel) {
+    const spans = calcStepLabel.querySelectorAll('span');
+    if (spans.length >= 2) spans[1].textContent = t('lpCalcStepLabel');
+  }
+
+  // Пустое состояние — innerHTML чтобы сохранить <br>
+  const calcEmptyText = document.querySelector('.lp-calc-empty-text');
+  if (calcEmptyText) calcEmptyText.innerHTML = t('lpCalcEmptyText').replace('\n', '<br>');
+
+  // Шапка результата — безопасно обновляем только текстовую часть, не трогая #lp-calc-product-name
+  const calcResHeaderText = document.querySelector('.lp-calc-res-header-text');
+  if (calcResHeaderText) {
+    // Сохраняем существующий <strong> если уже есть, иначе создаём пустой
+    let prodStrong = calcResHeaderText.querySelector('#lp-calc-product-name');
+    if (!prodStrong) {
+      prodStrong = document.createElement('strong');
+      prodStrong.id = 'lp-calc-product-name';
+      prodStrong.textContent = '—';
+    } else {
+      prodStrong.remove(); // временно вынимаем чтобы не потерять при innerHTML
+    }
+    calcResHeaderText.textContent = t('lpCalcResHeader');
+    calcResHeaderText.appendChild(prodStrong);
+  }
+
+  // AI-инсайт лейбл — innerHTML для иконки ✦
+  const aiInsightLabel = document.querySelector('.lp-calc-ai-insight-label');
+  if (aiInsightLabel) {
+    aiInsightLabel.innerHTML = '<span aria-hidden="true">✦</span> ' + escHtml(t('lpCalcAiLabel'));
+  }
+
+  // Прогресс-бары: метки месяцев
+  const barLbls = document.querySelectorAll('.lp-calc-bar-lbl');
+  const monthKeys = ['lpCalcMonth1', 'lpCalcMonth2', 'lpCalcMonth3'];
+  barLbls.forEach((el, i) => { if (monthKeys[i]) el.textContent = t(monthKeys[i]); });
+
+  // Итоговые лейблы
+  const summaryLbls = document.querySelectorAll('.lp-calc-summary-lbl');
+  const summaryKeys = ['lpCalcRevenueLbl', 'lpCalcProfitLbl', 'lpCalcCapitalLbl'];
+  summaryLbls.forEach((el, i) => { if (summaryKeys[i]) el.textContent = t(summaryKeys[i]); });
+
+  // Советы — заголовок (содержит эмодзи — сохраняем через textContent)
+  const calcTipsTitle = document.querySelector('.lp-calc-tips-title');
+  if (calcTipsTitle) calcTipsTitle.textContent = t('lpCalcTipsTitle');
+
+  // Дисклеймер
+  const calcDisc = document.querySelector('.lp-calc-disclaimer');
+  if (calcDisc) calcDisc.textContent = t('lpCalcDisc');
+
+  // Кнопка "Другой товар" — сохраняем SVG-иконку при перезаписи текста
+  const calcRetryBtn = document.querySelector('.lp-calc-retry-btn');
+  if (calcRetryBtn) {
+    const retrySvg = calcRetryBtn.querySelector('svg');
+    const retrySvgClone = retrySvg ? retrySvg.cloneNode(true) : null;
+    calcRetryBtn.textContent = t('lpCalcRetry');
+    if (retrySvgClone) calcRetryBtn.insertBefore(retrySvgClone, calcRetryBtn.firstChild);
+  }
+
+  // Быстрые теги — текст + onclick с правильным значением товара
+  const calcTagEls = document.querySelectorAll('.lp-calc-tag');
+  const tagKeys = ['lpCalcTag1', 'lpCalcTag2', 'lpCalcTag3', 'lpCalcTag4', 'lpCalcTag5', 'lpCalcTag6'];
+  const tagRawKz = [
+    'Балалар шұлықтары',
+    'Қол кремі',
+    'Телефон қапшығы',
+    'Төсек-орын жабдықтары',
+    'Антистресс',
+    'Су бутылкасы',
+  ];
+  const tagRawRu = [
+    'Детские носки',
+    'Крем для рук',
+    'Чехол для телефона',
+    'Постельное бельё',
+    'Игрушка антистресс',
+    'Спортивная бутылка',
+  ];
+  calcTagEls.forEach((btn, i) => {
+    if (i >= tagKeys.length) return;
+    btn.textContent = t(tagKeys[i]);
+    const raw = (lang === 'kz' ? tagRawKz[i] : tagRawRu[i]) || '';
+    if (raw) btn.setAttribute('onclick', `setCalcProduct('${raw.replace(/'/g, "\\'")}')`);
+  });
+
+  // ── Сравнение С нами / Без нас ──
+  setText('lp-cmp-label',       t('lpCmpLabel'));
+  setText('lp-cmp-h',           t('lpCmpH'));
+  setText('lp-cmp-intro',       t('lpCmpIntro'));
+  setText('lp-cmp-with-hdr',    t('lpCmpWithHdr'));
+  setText('lp-cmp-with-sub',    t('lpCmpWithSub'));
+  setText('lp-cmp-y1t',  t('lpCmpY1t'));  setText('lp-cmp-y1d',  t('lpCmpY1d'));
+  setText('lp-cmp-y2t',  t('lpCmpY2t'));  setText('lp-cmp-y2d',  t('lpCmpY2d'));
+  setText('lp-cmp-y3t',  t('lpCmpY3t'));  setText('lp-cmp-y3d',  t('lpCmpY3d'));
+  setText('lp-cmp-y4t',  t('lpCmpY4t'));  setText('lp-cmp-y4d',  t('lpCmpY4d'));
+  setText('lp-cmp-y5t',  t('lpCmpY5t'));  setText('lp-cmp-y5d',  t('lpCmpY5d'));
+  setText('lp-cmp-y6t',  t('lpCmpY6t'));  setText('lp-cmp-y6d',  t('lpCmpY6d'));
+  setText('lp-cmp-y7t',  t('lpCmpY7t'));  setText('lp-cmp-y7d',  t('lpCmpY7d'));
+  setText('lp-cmp-cta-text',    t('lpCmpCtaText'));
+  setText('lp-cmp-without-hdr', t('lpCmpWithoutHdr'));
+  setText('lp-cmp-without-sub', t('lpCmpWithoutSub'));
+  setText('lp-cmp-n1t',  t('lpCmpN1t'));  setText('lp-cmp-n1d',  t('lpCmpN1d'));
+  setText('lp-cmp-n2t',  t('lpCmpN2t'));  setText('lp-cmp-n2d',  t('lpCmpN2d'));
+  setText('lp-cmp-n3t',  t('lpCmpN3t'));  setText('lp-cmp-n3d',  t('lpCmpN3d'));
+  setText('lp-cmp-n4t',  t('lpCmpN4t'));  setText('lp-cmp-n4d',  t('lpCmpN4d'));
+  setText('lp-cmp-n5t',  t('lpCmpN5t'));  setText('lp-cmp-n5d',  t('lpCmpN5d'));
+  setText('lp-cmp-n6t',  t('lpCmpN6t'));  setText('lp-cmp-n6d',  t('lpCmpN6d'));
+  setText('lp-cmp-n7t',  t('lpCmpN7t'));  setText('lp-cmp-n7d',  t('lpCmpN7d'));
+  setText('lp-cmp-no-cta', t('lpCmpNoCta'));
+
+  // ── FAQ ──
+  setText('lp-faq-label',        t('lpFaqLabel'));
+  setText('lp-faq-h',            t('lpFaqH'));
+  setText('lp-faq-intro',        t('lpFaqIntro'));
+  setText('lp-faq-q1', t('lpFaqQ1')); setHtml('lp-faq-a1', t('lpFaqA1'));
+  setText('lp-faq-q2', t('lpFaqQ2')); setHtml('lp-faq-a2', t('lpFaqA2'));
+  setText('lp-faq-q3', t('lpFaqQ3')); setHtml('lp-faq-a3', t('lpFaqA3'));
+  setText('lp-faq-q4', t('lpFaqQ4')); setHtml('lp-faq-a4', t('lpFaqA4'));
+  setText('lp-faq-q5', t('lpFaqQ5')); setHtml('lp-faq-a5', t('lpFaqA5'));
+  setText('lp-faq-q6', t('lpFaqQ6')); setHtml('lp-faq-a6', t('lpFaqA6'));
+  setText('lp-faq-q7', t('lpFaqQ7')); setHtml('lp-faq-a7', t('lpFaqA7'));
+  setText('lp-faq-cta-text',     t('lpFaqCtaText'));
+  setText('lp-faq-cta-btn-text', t('lpFaqCtaBtnText'));
+
+  // ── Финальный popup (lp-popup-overlay) ──
+  setText('lp-popup-h',       t('lpPopupH'));
+  setText('lp-popup-sub',     t('lpPopupSub'));
+  setText('lp-popup-wa-text', t('lpPopupWaText'));
+  setText('lp-popup-skip',    t('lpPopupSkip'));
+
+  // ── Калькулятор — элементы по ID (дополняют querySelector-вызовы выше) ──
+  setText('lp-calc-empty-text',    t('lpCalcEmptyText').replace('\n', ' '));
+  setText('lp-calc-disclaimer',    t('lpCalcDisc'));
+  setText('lp-calc-retry-btn',     t('lpCalcRetry'));
+  setText('lp-calc-ai-btn-text',   t('lpCalcBtnText'));
+
+  // Номер шага и его текстовая подпись (если верстка использует отдельные ID)
+  const calcStepNumEl = document.getElementById('lp-calc-step-num');
+  if (calcStepNumEl) calcStepNumEl.textContent = '1';
+  const calcStepLabelById = document.getElementById('lp-calc-step-label-text');
+  if (calcStepLabelById) calcStepLabelById.textContent = t('lpCalcStepLabel');
+
+  // Прогресс-бары по ID — индексы 1/2/3 совпадают с HTML (id="lp-calc-bar-lbl-1/2/3")
+  setText('lp-calc-bar-lbl-1',     t('lpCalcMonth1'));
+  setText('lp-calc-bar-lbl-2',     t('lpCalcMonth2'));
+  setText('lp-calc-bar-lbl-3',     t('lpCalcMonth3'));
+
+  // Итоговые лейблы по ID — индексы 1/2/3 совпадают с HTML (id="lp-calc-summary-lbl-1/2/3")
+  setText('lp-calc-summary-lbl-1', t('lpCalcRevenueLbl'));
+  setText('lp-calc-summary-lbl-2', t('lpCalcProfitLbl'));
+  setText('lp-calc-summary-lbl-3', t('lpCalcCapitalLbl'));
+
+  // AI-инсайт лейбл по ID
+  const aiInsightLabelById = document.getElementById('lp-calc-ai-insight-label');
+  if (aiInsightLabelById) {
+    aiInsightLabelById.innerHTML = '<span aria-hidden="true">✦</span> ' + escHtml(t('lpCalcAiLabel'));
+  }
+
+  // Советы — заголовок по ID
+  setText('lp-calc-tips-title', t('lpCalcTipsTitle'));
+
+  // Шапка результата по ID — сохраняем <strong> с именем товара
+  const calcResHeaderById = document.getElementById('lp-calc-res-header-text');
+  if (calcResHeaderById) {
+    let prodStrong = calcResHeaderById.querySelector('#lp-calc-product-name');
+    if (!prodStrong) {
+      prodStrong = document.createElement('strong');
+      prodStrong.id = 'lp-calc-product-name';
+      prodStrong.textContent = '—';
+    } else {
+      prodStrong.remove();
+    }
+    calcResHeaderById.textContent = t('lpCalcResHeader');
+    calcResHeaderById.appendChild(prodStrong);
+  }
+
+  // ── Social proof toast ──
+  const spToastActionEl = document.querySelector('.sp-toast-action');
+  if (spToastActionEl) spToastActionEl.textContent = t('spToastAction');
+
+  // ── Sticky CTA bar — ищем текстовый span напрямую, не childNodes ──
+  const stickyCta = document.querySelector('.sticky-cta-wa .sticky-cta-label');
+  if (stickyCta) {
+    stickyCta.textContent = t('stickyCta');
+  } else {
+    // fallback: перебираем childNodes только текстового типа
+    const stickyCtaBtn = document.querySelector('.sticky-cta-wa');
+    if (stickyCtaBtn) stickyCtaBtn.childNodes.forEach(n => {
+      if (n.nodeType === Node.TEXT_NODE && n.textContent.trim()) n.textContent = ' ' + t('stickyCta');
+    });
+  }
+  const stickyLogin = document.querySelector('.sticky-cta-login');
+  if (stickyLogin) stickyLogin.textContent = t('stickyLogin');
 }
 
 // ══════════════════════════════ CSV PARSING ═══════════════════════
@@ -3886,7 +4358,7 @@ function _renderCalcResult(product, mkt, data) {
     cta.style.display = '';
     if (ctaWa) {
       const mktName = mktLabels[mkt] || mkt;
-      const waText = `Здравствуйте, хочу начать продавать «${product}» на ${mktName}. Расскажите об обучении.`;
+      const waText = t('lpCalcWaText').replace('__PRODUCT__', product).replace('__MKT__', mktName);
       ctaWa.href = `https://wa.me/77776020216?text=${encodeURIComponent(waText)}`;
     }
   }
@@ -3913,10 +4385,10 @@ async function runAiCalc() {
   // Показываем лоадер
   _calcShow('lp-calc-ai-loading');
   const progressTimers = _startCalcProgress([
-    { title: 'ИИ анализирует рынок...', sub: 'Изучаю спрос на маркетплейсе' },
-    { title: 'Считаю конкурентов...', sub: 'Анализирую нишу и ценообразование' },
-    { title: 'Формирую прогноз...', sub: 'Рассчитываю потенциальную прибыль' },
-    { title: 'Готовлю рекомендации...', sub: 'Подбираю советы для старта' },
+    { title: t('lpCalcLoadStep1Title'), sub: t('lpCalcLoadStep1Sub') },
+    { title: t('lpCalcLoadStep2Title'), sub: t('lpCalcLoadStep2Sub') },
+    { title: t('lpCalcLoadStep3Title'), sub: t('lpCalcLoadStep3Sub') },
+    { title: t('lpCalcLoadStep4Title'), sub: t('lpCalcLoadStep4Sub') },
   ]);
 
   const prompt = `Ты — эксперт по продажам на маркетплейсах Казахстана и СНГ.
@@ -3981,11 +4453,11 @@ async function runAiCalc() {
     setTimeout(() => _renderCalcResult(product, mkt, {
       month1: m1, month2: m2, month3: m3,
       revenue, profit, startCapital,
-      insight: `«${product}» — востребованный товар на ${{ kaspi: 'Kaspi', wb: 'Wildberries', ozon: 'Ozon' }[mkt]}. Прогноз рассчитан на основе средних показателей по рынку Казахстана.`,
+      insight: t('lpCalcFallbackInsight').replace('__PRODUCT__', product).replace('__MKT__', { kaspi: 'Kaspi', wb: 'Wildberries', ozon: 'Ozon' }[mkt] || mkt),
       tips: [
-        'Начните с небольшой партии — 20–30 единиц для теста спроса',
-        'Следите за конкурентами и корректируйте цену раз в неделю',
-        'Загружайте качественные фото — это ключевой фактор конверсии',
+        t('lpCalcFallbackTip1'),
+        t('lpCalcFallbackTip2'),
+        t('lpCalcFallbackTip3'),
       ],
     }), 400);
   }
