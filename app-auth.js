@@ -127,8 +127,10 @@ async function loadSheet2() {
       const nameKZ = strip((rows[0] || [])[colKZ]);
       const nameRU = strip((rows[0] || [])[colRU]);
       if (!nameKZ && !nameRU) break;
-      const iconUrl  = strip((rows[1] || [])[colKZ]);
-      const hexColor = strip((rows[1] || [])[colRU]);
+      // Иконка берётся из KZ-колонки, фоллбэк — из RU-колонки (на случай если только там)
+      const iconUrl  = strip((rows[1] || [])[colKZ]) || strip((rows[1] || [])[colRU]);
+      // hexColor берётся из RU-колонки; если там иконка — следующая RU-колонка
+      const hexColor = strip((rows[1] || [])[colRU + 1]) || strip((rows[1] || [])[colRU]);
       const lessonsKZ = [], lessonsRU = [];
       for (let r = 2; r < rows.length; r++) {
         const row   = rows[r] || [];

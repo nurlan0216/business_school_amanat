@@ -256,6 +256,8 @@ const T = {
     waTextPrice:   'Здравствуйте, хочу узнать стоимость курса',
     waTextBuy:     'Здравствуйте, хочу купить доступ к Business School Amanat',
     waTextQuestion:'Здравствуйте, у меня есть вопрос о курсе',
+    demoBtnText: 'Попробовать бесплатно',
+    demoHintText: 'Посмотрите первый урок каждого курса бесплатно — без регистрации',
   },
   kz: {
     eyebrow: 'Білім беру платформасы',
@@ -363,8 +365,8 @@ const T = {
     lpTimerBadge: '🔥 Арнайы ұсыныс',
     lpTimerLabel: 'Акция аяқталуына қалды:',
     lpTimerUnitH: 'сағат',
-    lpTimerUnitM: 'минөт',
-    lpTimerUnitS: 'секунт',
+    lpTimerUnitM: 'минут',
+    lpTimerUnitS: 'секунд',
 
     // ── Калькулятор ──
     lpCalcLabel: 'Мүмкін табыс',
@@ -516,6 +518,8 @@ const T = {
     waTextPrice:   'Сәлеметсіз бе, курстың құнын білгім келеді',
     waTextBuy:     'Сәлеметсіз бе, Business School Amanat-қа қол жеткізу алғым келеді',
     waTextQuestion:'Сәлеметсіз бе, курс туралы сұрағым бар',
+    demoBtnText: 'Тегін көру',
+    demoHintText: 'Тіркеусіз кез келген курстың бірінші сабағын тегін қараңыз',
   }
 };
 

@@ -15,7 +15,10 @@ function updateHeaderProgressBar() {
   const prog = getTotalProgress();
   fill.style.width = prog.pct + '%';
   if (tooltip) {
-    tooltip.textContent = `${prog.pct}% — ${prog.watched} из ${prog.total} уроков просмотрено`;
+    const tooltipText = lang === 'kz'
+      ? `${prog.pct}% — ${prog.watched} / ${prog.total} сабақ көрілді`
+      : `${prog.pct}% — ${prog.watched} из ${prog.total} уроков просмотрено`;
+    tooltip.textContent = tooltipText;
   }
 }
 

@@ -66,12 +66,22 @@ function animNumber(id, to) {
 // ══ COURSES GRID ═════════════════════════════════════════════════
 const BONUS_COURSES = ['shopify','ebay','таргет','target','китай','china','турция','turkey','америка','america'];
 const BONUS_SUBTITLES = {
-  'таргет': 'TikTok Реклама + Instagram Реклама',
-  'target': 'TikTok Ads + Instagram Ads',
-  'китай': '1688 · Taobao · Pinduoduo · WeChat · Alipay',
-  'china': '1688 · Taobao · Pinduoduo · WeChat · Alipay',
-  'америка': 'Америка сабақтары · На казахском языке',
-  'america': 'Америка сабақтары · На казахском языке',
+  ru: {
+    'таргет': 'TikTok Реклама + Instagram Реклама',
+    'target': 'TikTok Ads + Instagram Ads',
+    'китай': '1688 · Taobao · Pinduoduo · WeChat · Alipay',
+    'china': '1688 · Taobao · Pinduoduo · WeChat · Alipay',
+    'америка': 'На казахском языке',
+    'america': 'На казахском языке',
+  },
+  kz: {
+    'таргет': 'TikTok Жарнамасы + Instagram Жарнамасы',
+    'target': 'TikTok Ads + Instagram Ads',
+    'китай': '1688 · Taobao · Pinduoduo · WeChat · Alipay',
+    'china': '1688 · Taobao · Pinduoduo · WeChat · Alipay',
+    'америка': 'Қазақ тілінде',
+    'america': 'Қазақ тілінде',
+  }
 };
 
 function renderCoursesGrid() {
@@ -105,12 +115,15 @@ function renderCoursesGrid() {
     const prog       = getCourseProgress(idx);
     const nameKey    = name.toLowerCase();
     const isBonus    = BONUS_COURSES.some(k => nameKey.includes(k));
-    const bonusBadge = isBonus ? `<span class="pc-bonus-badge">🎁 Бонус</span>` : '';
-    const subtitle   = BONUS_SUBTITLES[nameKey] || '';
+    const bonusWord  = lang === 'kz' ? 'Сыйлық' : 'Бонус';
+    const bonusBadge = isBonus ? `<span class="pc-bonus-badge">🎁 ${bonusWord}</span>` : '';
+    const subtitleMap = BONUS_SUBTITLES[lang] || BONUS_SUBTITLES.ru;
+    const subtitle   = subtitleMap[nameKey] || '';
     const subtitleHtml = subtitle ? `<p class="pc-subtitle">${subtitle}</p>` : '';
-    const kzBadge    = (nameKey.includes('амери') || nameKey.includes('america')) ? `<span class="pc-kz-badge">На казах. языке</span>` : '';
+    const kzBadgeText = lang === 'kz' ? 'Қазақ тілінде' : 'На казах. языке';
+    const kzBadge    = (nameKey.includes('амери') || nameKey.includes('america')) ? `<span class="pc-kz-badge">${kzBadgeText}</span>` : '';
     const iconHtml   = course.iconUrl
-      ? `<img src="${course.iconUrl}" alt="${name}" onerror="this.style.display='none';this.parentNode.textContent='${initials}'">`
+      ? `<img src="${course.iconUrl}" alt="${escHtml(name)}" loading="lazy" onerror="this.style.display='none'">`
       : initials;
     const progressBlock = videoCount > 0 ? `
       <div class="pc-progress-wrap">
@@ -805,7 +818,7 @@ function renderDemoCards() {
     const color = course.hexColor || DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
     const initials = name.substring(0, 2).toUpperCase();
     const iconHtml = course.iconUrl
-      ? `<img src="${course.iconUrl}" alt="${escHtml(name)}" onerror="this.style.display='none';this.parentNode.textContent='${initials}'">`
+      ? `<img src="${course.iconUrl}" alt="${escHtml(name)}" loading="lazy" onerror="this.style.display='none'">`
       : initials;
     const lessons = lang === 'kz' ? course.lessonsKZ : course.lessonsRU;
     return `<div class="demo-card" style="--demo-accent:${color};--demo-glow:${hexToRgba(color,0.05)}" onclick="openDemoLesson(${idx})">
@@ -1271,10 +1284,7 @@ document.querySelectorAll('.overlay').forEach(o => {
 });
 
 // ══ INPUT HELPERS ════════════════════════════════════════════════
-$('inp-iin').addEventListener('input',   function () { this.value = this.value.replace(/\D/g, ''); });
-$('inp-iin').addEventListener('keydown', e => { if (e.key === 'Enter') $('inp-phone').focus(); });
-$('inp-name').addEventListener('keydown',  e => { if (e.key === 'Enter') $('inp-iin').focus(); });
-$('inp-phone').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
 
 // ══ MODALS HELPERS ═══════════════════════════════════════════════
 function closeModal(id) { $(id)?.classList.remove('show'); }

@@ -277,7 +277,12 @@ function showLpPopup() {
   const overlay = document.getElementById('lp-popup-overlay');
   if (!overlay) return;
   const waBtn = document.getElementById('lp-popup-wa-btn');
-  if (waBtn && typeof waAccessUrl !== 'undefined' && waAccessUrl) waBtn.href = waAccessUrl;
+  if (waBtn) {
+    const waNum = (waAccessUrl && waAccessUrl.match(/wa\.me\/(\d+)/))
+      ? waAccessUrl.match(/wa\.me\/(\d+)/)[1]
+      : '77776020216';
+    waBtn.href = `https://wa.me/${waNum}?text=${encodeURIComponent(t('waTextPrice'))}`;
+  }
   overlay.style.display = 'flex';
 }
 
@@ -389,7 +394,7 @@ function applyTexts() {
   setText('label-phone',      t('labelPhone'));
   setText('btn-text',         t('btnText'));
   setText('logout-label',     t('logout'));
-  setHtml('tg-note',          t('tgNote').replace('__WA__', waUrl || '#'));
+  setHtml('tg-note',          t('tgNote').replace('__WA__', waUrl || 'https://wa.me/77776020216'));
   setHtml('hero-badge',       `<span class="badge-pulse"></span>${t('heroBadge')}`);
   setHtml('hero-h',           t('heroH'));
   setText('hero-sub',         t('heroSub'));
@@ -437,6 +442,8 @@ function applyTexts() {
   setText('lp-stat-students',    t('lpStatStudents'));
   setText('lp-stat-online',      t('lpStatOnline'));
   setText('lp-stat-support',     t('lpStatSupport'));
+  const daysNumEl = document.getElementById('lp-stat-days-num');
+  if (daysNumEl) daysNumEl.textContent = lang === 'kz' ? '18 күн' : '18 дней';
   setText('lp-feat-label',       t('lpFeatLabel'));
   setText('lp-feat-h',           t('lpFeatH'));
   setText('lp-feat1-title',      t('lpFeat1Title'));
@@ -456,6 +463,8 @@ function applyTexts() {
   setText('lp-demo-sub',         t('lpDemoSub'));
   setText('lp-demo-btn',         t('lpDemoBtn'));
   setText('lp-demo-badge',       t('lpDemoBadge'));
+  setText('demo-btn-text',     t('demoBtnText'));
+  setText('demo-hint',         t('demoHintText'));
   setHtml('lp-cta-h',            t('lpCtaH'));
   setText('lp-cta-sub',          t('lpCtaSub'));
   setText('lp-cta-wa-btn',       t('lpCtaWaBtn'));
@@ -585,10 +594,9 @@ function applyTexts() {
   setText('lp-popup-skip',    t('lpPopupSkip'));
 
   // ── Калькулятор — ID-based ──
-  setText('lp-calc-empty-text',   t('lpCalcEmptyText').replace('\n', ' '));
-  setText('lp-calc-disclaimer',   t('lpCalcDisc'));
-  setText('lp-calc-retry-btn',    t('lpCalcRetry'));
-  setText('lp-calc-ai-btn-text',  t('lpCalcBtnText'));
+  // Примечание: lp-calc-empty-text, lp-calc-disclaimer, lp-calc-ai-btn-text
+  // обновляются выше через querySelector (строки 505–539).
+  // lp-calc-retry-btn не имеет id — обновляется через querySelector на строке 533.
   const calcStepNumEl = document.getElementById('lp-calc-step-num');
   if (calcStepNumEl) calcStepNumEl.textContent = '1';
   const calcStepLabelById = document.getElementById('lp-calc-step-label-text');
@@ -642,6 +650,7 @@ function applyTexts() {
     buildHref(document.querySelector('.lp-faq-cta-btn'), 'waTextQuestion');
     buildHref(document.getElementById('lp-cta-wa-link'), 'waTextBuy');
     buildHref(document.getElementById('mob-wa-btn'),      'waTextAccess');
+    buildHref(document.getElementById('lp-price-btn'),    'waTextBuy');
   })();
 
   const mobWaText = document.getElementById('mob-wa-text');
@@ -723,7 +732,7 @@ function applyLinks() {
   const tgCh = $('tg-channel-btn');
   if (tgCh) { tgCh.href = tgChannelUrl || '#'; tgCh.style.display = tgChannelUrl ? 'inline-flex' : 'none'; }
   const tn = $('tg-note');
-  if (tn) tn.innerHTML = t('tgNote').replace('__WA__', waUrl || '#');
+  if (tn) tn.innerHTML = t('tgNote').replace('__WA__', waUrl || 'https://wa.me/77776020216');
   applyLoginPageReviews();
 }
 
