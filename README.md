@@ -1,1 +1,1 @@
-# gimini
+# business_school_amanat
