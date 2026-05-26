@@ -188,6 +188,74 @@
       </div>
     </div>
 
+    <!-- ══ ТАЙМЕР АКЦИИ ════════════════════════════════════════════ -->
+    <div class="admin-video-block" id="admin-timer-block" style="margin-top:20px">
+      <div class="admin-video-block-header">
+        <span class="admin-video-block-icon">⏱️</span>
+        <div>
+          <div class="admin-video-block-title">Таймер акции</div>
+          <div class="admin-video-block-sub">Управляет обратным отсчётом на лендинге</div>
+        </div>
+        <div class="admin-video-status" id="admin-timer-status">
+          <span class="admin-video-status-dot" id="admin-timer-status-dot"></span>
+          <span id="admin-timer-status-text">загрузка...</span>
+        </div>
+      </div>
+
+      <!-- Режим -->
+      <div style="display:flex;gap:16px;margin-top:16px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:var(--text)">
+          <input type="radio" name="timer-mode" id="timer-mode-float" value="float"
+                 onchange="onTimerModeChange()" style="accent-color:var(--gold);width:16px;height:16px">
+          Плавающий (X дней от визита)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:var(--text)">
+          <input type="radio" name="timer-mode" id="timer-mode-fixed" value="fixed"
+                 onchange="onTimerModeChange()" style="accent-color:var(--gold);width:16px;height:16px">
+          Фиксированная дата
+        </label>
+      </div>
+
+      <!-- Плавающий: количество дней -->
+      <div id="timer-float-row" class="field" style="margin-top:14px">
+        <label class="field-label">Количество дней от первого визита</label>
+        <div class="field-wrap">
+          <input type="number" id="timer-days-input" min="1" max="365" value="3"
+                 class="field-input" style="padding-left:16px">
+          <div class="field-border-anim"></div>
+        </div>
+      </div>
+
+      <!-- Фиксированный: дата и время -->
+      <div id="timer-fixed-row" class="field" style="margin-top:14px;display:none">
+        <label class="field-label">Дата и время окончания акции</label>
+        <div class="field-wrap">
+          <input type="datetime-local" id="timer-fixed-input"
+                 class="field-input" style="padding-left:16px;color-scheme:dark">
+          <div class="field-border-anim"></div>
+        </div>
+      </div>
+
+      <!-- Текущий статус таймера -->
+      <div id="admin-timer-info" style="margin-top:12px;padding:10px 14px;background:var(--surface3);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.7;display:none"></div>
+
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button onclick="saveTimerConfig()" class="login-btn" style="flex:1;min-width:140px">
+          <span class="btn-content"><span>💾 Сохранить таймер</span></span>
+        </button>
+        <button onclick="resetTimerDeadline()" class="login-btn" style="flex:1;min-width:140px;background:var(--surface3)!important;color:var(--text2)!important">
+          <span class="btn-content"><span>🔄 Сбросить таймер</span></span>
+        </button>
+      </div>
+
+      <div class="admin-video-hint" style="margin-top:14px">
+        <strong>💡 Режимы работы:</strong><br>
+        <strong>Плавающий</strong> — каждый посетитель видит таймер, начинающийся заново (X дней от его первого визита).<br>
+        <strong>Фиксированная дата</strong> — все видят одинаковый дедлайн. По истечении таймер останавливается на 00:00:00.<br><br>
+        <strong>🔄 Сбросить таймер</strong> — удаляет сохранённый дедлайн из браузера. При следующем открытии лендинга таймер запустится заново по текущим настройкам.
+      </div>
+    </div>
+
     <div id="admin-save-msg" class="msg" style="margin-top:12px;display:none"></div>
   </div>
 </div>
@@ -224,6 +292,7 @@
     const videoInput = document.getElementById('admin-video-id-input');
     if (videoInput) videoInput.value = videoId;
     _updateVideoStatus(videoId);
+    _loadTimerFields();
   }
 
   function saveAdmin() {
@@ -331,6 +400,111 @@
     if (input) input.value = '';
     _updateVideoStatus('');
     document.getElementById('admin-video-preview-row').style.display = 'none';
+  }
+
+  // ─── Timer Admin ──────────────────────────────────────────────────
+  function _loadTimerFields() {
+    let config = {};
+    try { config = JSON.parse(localStorage.getItem('lp_timer_config') || '{}'); } catch(_) {}
+    const mode = config.mode || 'float';
+    const days = config.days || 3;
+    const fixedDate = config.fixedDate || '';
+
+    document.getElementById('timer-mode-float').checked = mode === 'float';
+    document.getElementById('timer-mode-fixed').checked = mode === 'fixed';
+    document.getElementById('timer-days-input').value = days;
+    if (fixedDate) document.getElementById('timer-fixed-input').value = fixedDate;
+
+    _toggleTimerRows(mode);
+    _updateTimerStatus(config);
+  }
+
+  function onTimerModeChange() {
+    const mode = document.querySelector('input[name="timer-mode"]:checked').value;
+    _toggleTimerRows(mode);
+  }
+
+  function _toggleTimerRows(mode) {
+    document.getElementById('timer-float-row').style.display = mode === 'float' ? '' : 'none';
+    document.getElementById('timer-fixed-row').style.display = mode === 'fixed' ? '' : 'none';
+  }
+
+  function _updateTimerStatus(config) {
+    const dot = document.getElementById('admin-timer-status-dot');
+    const txt = document.getElementById('admin-timer-status-text');
+    const info = document.getElementById('admin-timer-info');
+    const mode = config.mode || 'float';
+
+    if (mode === 'fixed' && config.fixedDate) {
+      const end = new Date(config.fixedDate);
+      const remaining = end - Date.now();
+      if (dot) dot.style.background = remaining > 0 ? '#22c55e' : '#ef4444';
+      if (txt) txt.textContent = remaining > 0 ? 'фиксированная дата' : 'истекло';
+      if (info) {
+        const d = end.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+        const remStr = remaining > 0
+          ? `осталось: ${Math.floor(remaining/3600000)}ч ${Math.floor((remaining%3600000)/60000)}м`
+          : 'таймер истёк — показывает 00:00:00';
+        info.style.display = '';
+        info.innerHTML = `📅 Дедлайн: <strong>${d}</strong><br>⏱ ${remStr}`;
+      }
+    } else {
+      const days = config.days || 3;
+      if (dot) dot.style.background = '#f59e0b';
+      if (txt) txt.textContent = `плавающий · ${days} дн.`;
+      // Проверяем сохранённый дедлайн пользователя
+      let savedDeadline = null;
+      try {
+        const saved = JSON.parse(localStorage.getItem('lp_timer_deadline') || 'null');
+        if (saved && saved.ts && Date.now() < saved.exp) savedDeadline = saved.ts;
+      } catch(_) {}
+      if (info) {
+        if (savedDeadline) {
+          const end = new Date(savedDeadline);
+          const remaining = Math.max(0, savedDeadline - Date.now());
+          const d = end.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+          info.style.display = '';
+          info.innerHTML = `⏱ Текущий дедлайн (браузер): <strong>${d}</strong><br>осталось: ${Math.floor(remaining/3600000)}ч ${Math.floor((remaining%3600000)/60000)}м`;
+        } else {
+          info.style.display = '';
+          info.innerHTML = `ℹ️ Дедлайн в этом браузере ещё не установлен (запустится при первом открытии лендинга)`;
+        }
+      }
+    }
+  }
+
+  function saveTimerConfig() {
+    const mode = document.querySelector('input[name="timer-mode"]:checked').value;
+    const days = parseInt(document.getElementById('timer-days-input').value) || 3;
+    const fixedDate = document.getElementById('timer-fixed-input').value;
+
+    if (mode === 'fixed' && !fixedDate) {
+      _showAdminMsg('⚠ Укажите дату и время окончания акции.', 'error');
+      return;
+    }
+
+    const config = { mode, days, fixedDate: mode === 'fixed' ? fixedDate : '' };
+    localStorage.setItem('lp_timer_config', JSON.stringify(config));
+    _updateTimerStatus(config);
+    _showAdminMsg('✅ Настройки таймера сохранены! Обновите лендинг для применения.', 'success');
+  }
+
+  function resetTimerDeadline() {
+    localStorage.removeItem('lp_timer_deadline');
+    let config = {};
+    try { config = JSON.parse(localStorage.getItem('lp_timer_config') || '{}'); } catch(_) {}
+    _updateTimerStatus(config);
+    _showAdminMsg('🔄 Дедлайн сброшен. При следующем открытии лендинга таймер запустится заново.', 'success');
+  }
+
+  function _showAdminMsg(text, type) {
+    const msg = document.getElementById('admin-save-msg');
+    if (msg) {
+      msg.textContent = text;
+      msg.className = 'msg ' + type;
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 4000);
+    }
   }
 
   // Auto-focus password field

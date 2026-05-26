@@ -36,23 +36,37 @@ function initLandingTimer() {
   if (!elH || !elM || !elS) return;
 
   const STORAGE_KEY = 'lp_timer_deadline';
-  // Акция заканчивается через 3 дня от первого просмотра; или задайте конкретную дату:
-  // const FIXED_END = new Date('2026-06-30T23:59:00');
-  const DURATION_MS = 3 * 24 * 60 * 60 * 1000; // 3 дня
-  const RESET_MS    = 7 * 24 * 60 * 60 * 1000; // сбрасывать через 7 дней
+
+  // ── Читаем конфиг из админки ──────────────────────────────────
+  let timerConfig = {};
+  try { timerConfig = JSON.parse(localStorage.getItem('lp_timer_config') || '{}'); } catch (_) {}
+
+  const MODE         = timerConfig.mode || 'float';
+  const FLOAT_DAYS   = Math.max(1, parseInt(timerConfig.days) || 3);
+  const DURATION_MS  = FLOAT_DAYS * 24 * 60 * 60 * 1000;
+  const RESET_MS     = 7 * 24 * 60 * 60 * 1000;
 
   let deadline;
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const { ts, exp } = JSON.parse(saved);
-      if (Date.now() < exp) { deadline = ts; }
-    }
-  } catch (_) {}
+  let isFixed = false;
 
-  if (!deadline) {
-    deadline = Date.now() + DURATION_MS;
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: deadline, exp: Date.now() + RESET_MS })); } catch (_) {}
+  if (MODE === 'fixed' && timerConfig.fixedDate) {
+    // Фиксированный режим: дедлайн задан администратором
+    deadline  = new Date(timerConfig.fixedDate).getTime();
+    isFixed   = true;
+  } else {
+    // Плавающий режим: дедлайн от первого визита, хранится в localStorage
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const { ts, exp } = JSON.parse(saved);
+        if (Date.now() < exp) { deadline = ts; }
+      }
+    } catch (_) {}
+
+    if (!deadline) {
+      deadline = Date.now() + DURATION_MS;
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: deadline, exp: Date.now() + RESET_MS })); } catch (_) {}
+    }
   }
 
   function pad(n) { return String(n).padStart(2, '0'); }
@@ -83,7 +97,8 @@ function initLandingTimer() {
       if (remaining < 10 * 60 * 1000) section.classList.add('urgent');
       else section.classList.remove('urgent');
     }
-    if (remaining === 0) {
+    // Сброс только в плавающем режиме
+    if (remaining === 0 && !isFixed) {
       deadline = Date.now() + DURATION_MS;
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: deadline, exp: Date.now() + RESET_MS })); } catch (_) {}
       lastSec = -1;
