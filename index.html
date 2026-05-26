@@ -108,7 +108,7 @@
     <button class="modal-close" onclick="closeCertModal()" aria-label="Закрыть">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
-    <h3 class="modal-h">🏆 Сертификат о прохождении</h3>
+    <h3 class="modal-h" id="cert-modal-title">🏆 Сертификат о прохождении</h3>
     <p class="modal-sub" id="cert-modal-sub">Поздравляем с завершением курса!</p>
     <!-- Прогрессбар генерации сертификата -->
     <div id="cert-gen-progress" style="display:none;margin:16px 0">
@@ -122,14 +122,14 @@
     <button class="login-btn" id="cert-get-btn" onclick="generateCertificateWithProgress()" style="margin-top:8px">
       <span class="btn-content">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor"/></svg>
-        <span>Получить сертификат</span>
+        <span id="cert-get-label">Получить сертификат</span>
       </span>
     </button>
     <!-- Кнопка скачать — появляется после генерации -->
     <button class="login-btn" id="cert-download-btn" onclick="downloadCert()" style="display:none;margin-top:8px">
       <span class="btn-content">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>Скачать PNG</span>
+        <span id="cert-download-label">Скачать PNG</span>
       </span>
     </button>
   </div>
@@ -141,7 +141,7 @@
     <button class="modal-close" onclick="closeModal('progress-modal')" aria-label="Закрыть">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
-    <h3 class="modal-h">📊 Мой прогресс</h3>
+    <h3 class="modal-h" id="progress-modal-title">📊 Мой прогресс</h3>
     <div id="progress-modal-body" class="progress-modal-body"></div>
   </div>
 </div>
@@ -1109,7 +1109,7 @@
       <div id="streak-badge-hero" class="streak-badge-hero" style="display:none"></div>
       <button class="progress-dashboard-btn" onclick="openProgressDashboard()" id="progress-dashboard-btn" style="display:none">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        Мой прогресс
+        <span id="progress-nav-btn-label">Мой прогресс</span>
       </button>
     </div>
     <div class="hero-stats" id="hero-stats">

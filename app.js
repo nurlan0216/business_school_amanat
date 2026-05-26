@@ -413,7 +413,7 @@ function applyTexts() {
   setText('label-phone',      t('labelPhone'));
   setText('btn-text',         t('btnText'));
   setText('logout-label',     t('logout'));
-  setHtml('tg-note',          t('tgNote').replace('__WA__', waUrl || '#').replace('__TG__', tgUrl || '#'));
+  setHtml('tg-note',          t('tgNote').replace('__WA__', waUrl || '#'));
   setHtml('hero-badge',       `<span class="badge-pulse"></span>${t('heroBadge')}`);
   setHtml('hero-h',           t('heroH'));
   setText('hero-sub',         t('heroSub'));
@@ -746,6 +746,20 @@ function applyTexts() {
   const mobWaText = document.getElementById('mob-wa-text');
   if (mobWaText) mobWaText.textContent = t('stickyCta');
 
+  // Обновляем заголовки модалей и кнопки по языку
+  const certModalTitleEl = document.getElementById('cert-modal-title');
+  if (certModalTitleEl) certModalTitleEl.textContent = t('certModalTitle');
+  const certGetLabelEl = document.getElementById('cert-get-label');
+  if (certGetLabelEl) certGetLabelEl.textContent = t('certGetBtn');
+  const certDlLabelEl = document.getElementById('cert-download-label');
+  if (certDlLabelEl) certDlLabelEl.textContent = t('certDownloadBtn');
+  const certGenLabelEl = document.getElementById('cert-gen-label');
+  if (certGenLabelEl) certGenLabelEl.textContent = t('certGenLabel');
+  const progressTitleEl = document.getElementById('progress-modal-title');
+  if (progressTitleEl) progressTitleEl.textContent = t('progressModalTitle');
+  const progressNavLabelEl = document.getElementById('progress-nav-btn-label');
+  if (progressNavLabelEl) progressNavLabelEl.textContent = t('progressNavBtn');
+
   // Перевод секции курсов на казахский
   const isKz = lang === 'kz';
   const coursesLabel = document.querySelector('.lp-courses-section .lp-section-label');
@@ -1001,7 +1015,7 @@ function applyLinks() {
     tgCh.style.display = tgChannelUrl ? 'inline-flex' : 'none';
   }
   const tn = $('tg-note');
-  if (tn) tn.innerHTML = t('tgNote').replace('__WA__', waUrl || '#').replace('__TG__', tgUrl || '#');
+  if (tn) tn.innerHTML = t('tgNote').replace('__WA__', waUrl || '#');
   // Плавающие кнопки полностью убраны
   const floatWa = $('float-wa-btn');
   const floatTg = $('float-tg-btn');
@@ -3626,7 +3640,7 @@ function updateStreakBadge() {
   const data = getStreakData();
   const today = getTodayDateStr();
   if (data.count >= 1 && data.lastDate === today) {
-    badge.textContent = `🔥 ${data.count} ${pluralDays(data.count)} подряд`;
+    badge.textContent = lang === 'kz' ? `🔥 ${data.count} ${t('streakLabel')}` : `🔥 ${data.count} ${pluralDays(data.count)} ${t('streakLabel')}`;
     badge.style.display = 'inline-flex';
   } else {
     badge.style.display = 'none';
@@ -3643,7 +3657,7 @@ function checkStreakOnLogin() {
   if (!currentUser) return;
   const data = getStreakData();
   if (data.count > 3) {
-    const msg = `🔥 ${data.count} ${pluralDays(data.count)} подряд! Так держать, ${currentUser}!`;
+    const msg = lang === 'kz' ? `🔥 ${data.count} ${t('streakLabel')}! Жалғастырыңыз, ${currentUser}!` : `🔥 ${data.count} ${pluralDays(data.count)} ${t('streakLabel')}! Так держать, ${currentUser}!`;
     setTimeout(() => showToast(msg, 'success'), 1000);
   }
 }
@@ -3658,8 +3672,10 @@ function openCertModal() {
   if (!course) return;
 
   const courseName = lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ);
+  const certTitleEl = $('cert-modal-title');
+  if (certTitleEl) certTitleEl.textContent = t('certModalTitle');
   const sub = $('cert-modal-sub');
-  if (sub) sub.textContent = `Курс: «${courseName}»`;
+  if (sub) sub.textContent = `${lang === 'kz' ? 'Курс:' : 'Курс:'} «${courseName}»`;
 
   // Сбрасываем состояние — показываем только кнопку "Получить сертификат"
   const canvas = $('cert-canvas');
@@ -3983,22 +3999,22 @@ function openProgressDashboard() {
     <div class="pd-meta-row">
       <div class="pd-meta-card">
         <div class="pd-meta-num">${totalProg.pct}%</div>
-        <div class="pd-meta-lbl">Общий прогресс</div>
+        <div class="pd-meta-lbl">${t('totalProgressLabel')}</div>
       </div>
       <div class="pd-meta-card">
-        <div class="pd-meta-num">${watchTime} мин</div>
-        <div class="pd-meta-lbl">Время обучения</div>
+        <div class="pd-meta-num">${watchTime} ${t('watchTimeUnit')}</div>
+        <div class="pd-meta-lbl">${t('watchTimeLabel')}</div>
       </div>
       <div class="pd-meta-card">
         <div class="pd-meta-num">🔥 ${streak.count}</div>
-        <div class="pd-meta-lbl">${pluralDays(streak.count)} подряд</div>
+        <div class="pd-meta-lbl">${lang === 'kz' ? streak.count + ' ' + t('streakLabel') : pluralDays(streak.count) + ' ' + t('streakLabel')}</div>
       </div>
       <div class="pd-meta-card">
         <div class="pd-meta-num" style="font-size:14px">${startDate}</div>
-        <div class="pd-meta-lbl">Начало обучения</div>
+        <div class="pd-meta-lbl">${t('startDateLabel')}</div>
       </div>
     </div>
-    <div class="pd-chart-title">Прогресс по курсам</div>
+    <div class="pd-chart-title">${t('chartTitle')}</div>
   `;
 
   courses.forEach((course, idx) => {
@@ -4118,4 +4134,3 @@ function toggleFaq(item) {
   }, { threshold: 0.05 });
   io.observe(faqSection);
 })();
-

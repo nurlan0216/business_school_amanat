@@ -3146,8 +3146,8 @@ body.video-theater #theater-esc {
 /* ── Viewers Bar ──────────────────────────────────────────────── */
 .viewers-bar {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: 80px;
+  right: 16px;
   z-index: 9400;
   display: flex;
   align-items: center;
