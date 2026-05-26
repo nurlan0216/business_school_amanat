@@ -36,8 +36,10 @@ function initLandingTimer() {
   if (!elH || !elM || !elS) return;
 
   const STORAGE_KEY = 'lp_timer_deadline';
-  const DURATION_MS = 2 * 60 * 60 * 1000 + 14 * 60 * 1000 + 33 * 1000; // 2:14:33
-  const RESET_MS    = 24 * 60 * 60 * 1000;
+  // Акция заканчивается через 3 дня от первого просмотра; или задайте конкретную дату:
+  // const FIXED_END = new Date('2026-06-30T23:59:00');
+  const DURATION_MS = 3 * 24 * 60 * 60 * 1000; // 3 дня
+  const RESET_MS    = 7 * 24 * 60 * 60 * 1000; // сбрасывать через 7 дней
 
   let deadline;
   try {

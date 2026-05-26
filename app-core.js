@@ -753,6 +753,31 @@ function applyLinks() {
   if (tgCh) { tgCh.href = tgChannelUrl || '#'; tgCh.style.display = tgChannelUrl ? 'inline-flex' : 'none'; }
   const tn = $('tg-note');
   if (tn) tn.innerHTML = t('tgNote').replace('__WA__', waUrl || 'https://wa.me/77776020216');
+
+  // ── Кнопка «Смотреть все отзывы в Telegram» на лендинге ──
+  const btnReviews = $('btn-all-reviews');
+  const btnReviewsWrap = $('btn-all-reviews-wrap');
+  if (btnReviews && btnReviewsWrap) {
+    if (tgChannelUrl) {
+      btnReviews.href = tgChannelUrl;
+      btnReviewsWrap.style.display = '';
+    } else {
+      btnReviewsWrap.style.display = 'none';
+    }
+    const textEl = document.getElementById('btn-all-reviews-text');
+    if (textEl) {
+      textEl.textContent = lang === 'kz'
+        ? 'Барлық пікірлерді Telegram-да көру'
+        : 'Смотреть все отзывы в Telegram';
+    }
+  }
+
+  // ── data-ru / data-kz — универсальный переключатель текстов ──
+  document.querySelectorAll('[data-ru]').forEach(function(el) {
+    var val = el.getAttribute('data-' + lang) || el.getAttribute('data-ru');
+    if (val !== null) el.textContent = val;
+  });
+
   applyLoginPageReviews();
 }
 
