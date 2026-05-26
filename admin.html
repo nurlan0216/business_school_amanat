@@ -971,8 +971,8 @@
         html += '<div style="display:flex;flex-direction:column;gap:5px">';
         lessons.forEach(function(l, idx) {
           const shortsBadge = l.isShort ? '<span style="font-size:10px;background:#ff0050;color:#fff;border-radius:4px;padding:1px 6px;margin-left:6px;flex-shrink:0">Shorts</span>' : '';
-          html += '<a href="' + l.link + '" target="_blank" rel="noopener" style="font-size:12px;padding:8px 12px;background:var(--surface2);border-radius:8px;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px;transition:background .15s" onmouseover="this.style.background='var(--surface3)'" onmouseout="this.style.background='var(--surface2)'">';
-          html += '<span style="opacity:.4;min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px">' + (idx + 1) + '.</span>';
+          html += '<a href="' + l.link + '" target="_blank" rel="noopener" style="font-size:12px;padding:8px 12px;background:var(--surface2);border-radius:8px;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px;transition:background .15s" onmouseover="this.style.background=&quot;var(--surface3)&quot;" onmouseout="this.style.background=&quot;var(--surface2)&quot;">';
+          html += '<span style="opacity:.4;min-width:22px;font-family:JetBrains Mono,monospace;font-size:10px">' + (idx + 1) + '.</span>';
           html += '<span style="flex:1;line-height:1.3">' + l.name + '</span>';
           html += shortsBadge;
           html += '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="opacity:.4;flex-shrink:0"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
