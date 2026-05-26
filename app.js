@@ -642,16 +642,28 @@ function applyTexts() {
   setText('lp-cmp-no-cta', t('lpCmpNoCta'));
 
   // ── FAQ ──
+  // setFaqAnswer пишет в .lp-faq-a-inner, сохраняя обёртку для grid-collapse
+  function setFaqAnswer(id, html) {
+    const wrap = document.getElementById(id);
+    if (!wrap) return;
+    let inner = wrap.querySelector('.lp-faq-a-inner');
+    if (!inner) {
+      inner = document.createElement('div');
+      inner.className = 'lp-faq-a-inner';
+      wrap.appendChild(inner);
+    }
+    inner.innerHTML = html;
+  }
   setText('lp-faq-label',        t('lpFaqLabel'));
   setText('lp-faq-h',            t('lpFaqH'));
   setText('lp-faq-intro',        t('lpFaqIntro'));
-  setText('lp-faq-q1', t('lpFaqQ1')); setHtml('lp-faq-a1', t('lpFaqA1'));
-  setText('lp-faq-q2', t('lpFaqQ2')); setHtml('lp-faq-a2', t('lpFaqA2'));
-  setText('lp-faq-q3', t('lpFaqQ3')); setHtml('lp-faq-a3', t('lpFaqA3'));
-  setText('lp-faq-q4', t('lpFaqQ4')); setHtml('lp-faq-a4', t('lpFaqA4'));
-  setText('lp-faq-q5', t('lpFaqQ5')); setHtml('lp-faq-a5', t('lpFaqA5'));
-  setText('lp-faq-q6', t('lpFaqQ6')); setHtml('lp-faq-a6', t('lpFaqA6'));
-  setText('lp-faq-q7', t('lpFaqQ7')); setHtml('lp-faq-a7', t('lpFaqA7'));
+  setText('lp-faq-q1', t('lpFaqQ1')); setFaqAnswer('lp-faq-a1', t('lpFaqA1'));
+  setText('lp-faq-q2', t('lpFaqQ2')); setFaqAnswer('lp-faq-a2', t('lpFaqA2'));
+  setText('lp-faq-q3', t('lpFaqQ3')); setFaqAnswer('lp-faq-a3', t('lpFaqA3'));
+  setText('lp-faq-q4', t('lpFaqQ4')); setFaqAnswer('lp-faq-a4', t('lpFaqA4'));
+  setText('lp-faq-q5', t('lpFaqQ5')); setFaqAnswer('lp-faq-a5', t('lpFaqA5'));
+  setText('lp-faq-q6', t('lpFaqQ6')); setFaqAnswer('lp-faq-a6', t('lpFaqA6'));
+  setText('lp-faq-q7', t('lpFaqQ7')); setFaqAnswer('lp-faq-a7', t('lpFaqA7'));
   setText('lp-faq-cta-text',     t('lpFaqCtaText'));
   setText('lp-faq-cta-btn-text', t('lpFaqCtaBtnText'));
 
@@ -749,6 +761,8 @@ function applyTexts() {
   // Обновляем заголовки модалей и кнопки по языку
   const certModalTitleEl = document.getElementById('cert-modal-title');
   if (certModalTitleEl) certModalTitleEl.textContent = t('certModalTitle');
+  const certModalSubEl = document.getElementById('cert-modal-sub');
+  if (certModalSubEl) certModalSubEl.textContent = t('certModalSub');
   const certGetLabelEl = document.getElementById('cert-get-label');
   if (certGetLabelEl) certGetLabelEl.textContent = t('certGetBtn');
   const certDlLabelEl = document.getElementById('cert-download-label');
@@ -759,6 +773,9 @@ function applyTexts() {
   if (progressTitleEl) progressTitleEl.textContent = t('progressModalTitle');
   const progressNavLabelEl = document.getElementById('progress-nav-btn-label');
   if (progressNavLabelEl) progressNavLabelEl.textContent = t('progressNavBtn');
+  // Fix H: viewers-label синхронизируем в applyTexts (не только в setLang)
+  const viewersLabelEl = document.getElementById('viewers-label');
+  if (viewersLabelEl) viewersLabelEl.textContent = lang === 'kz' ? 'адам қазір қарауда' : 'человек смотрят сейчас';
 
   // Перевод секции курсов на казахский
   const isKz = lang === 'kz';

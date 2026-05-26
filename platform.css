@@ -3209,7 +3209,7 @@ body.video-theater #theater-esc {
 .viewers-bar.vb-down .viewers-dot { background: #f59e42; }
 
 @media (max-width: 480px) {
-  .viewers-bar { bottom: 16px; right: 12px; padding: 8px 14px 8px 10px; }
+  .viewers-bar { bottom: 80px; right: 12px; padding: 8px 14px 8px 10px; }
   .viewers-label { font-size: 12px; }
 }
 
