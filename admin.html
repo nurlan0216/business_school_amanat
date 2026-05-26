@@ -194,17 +194,18 @@
 
 <script src="translations.js"></script>
 <script src="app-core.js" defer></script>
-<script src="app-auth.js" defer></script>
 <script>
   // ─── Standalone admin page auth & UI ──────────────────────────────
   const ADMIN_PW_KEY = 'amanat_admin_pw';
 
-  function checkAdminPw() {
+  async function checkAdminPw() {
     const input = document.getElementById('admin-pw-input');
     const errEl = document.getElementById('pw-error');
-    const pw = input ? input.value.trim() : '';
-    const storedPw = localStorage.getItem(ADMIN_PW_KEY) || 'N20020216$$';
-    if (pw === storedPw) {
+    const pw = input ? input.value : '';
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+    const hash = [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2,'0')).join('');
+    const HASH = '7404297e91a4ab5b540fceefb2c0030cc24965b1ac4591c774435421b5d8b9ad';
+    if (hash === HASH) {
       document.getElementById('admin-gate').style.display = 'none';
       document.getElementById('admin-panel').style.display = 'block';
       _loadAdminFields();
