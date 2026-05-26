@@ -1100,6 +1100,8 @@ function openHeroVideo() {
         iv_load_policy: 3,
         disablekb: 1,
         fs: 0,
+        origin: window.location.origin,
+        widget_referrer: window.location.origin,
       },
       events: {
         onReady: function(e) {

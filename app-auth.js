@@ -123,6 +123,8 @@ async function loadSheet2() {
     const sheetHeroVideoId = strip((rows[9] || [])[0]) || '';
     if (sheetHeroVideoId) {
       localStorage.setItem('bs_hero_video_id', sheetHeroVideoId);
+    } else {
+      localStorage.removeItem('bs_hero_video_id'); // если в Sheets пусто — убираем видео
     }
     if (typeof applyHeroVideo === 'function') applyHeroVideo();
 
