@@ -143,7 +143,7 @@ const T = {
     lpPriceBadge: '🔥 Полный доступ',
     lpPriceNumber: '59 900',
     lpPricePeriod: 'разовый платёж · доступ навсегда',
-    lpPriceInc1: '47 видеоуроков: Kaspi + Wildberries + Ozon',
+    lpPriceInc1: '47 видеоуроков: Kaspi + Wildberries + Ozon + 6 бонусных курсов',
     lpPriceInc2: 'Личный куратор на весь период обучения',
     lpPriceInc3: 'Готовый договор фулфилмента',
     lpPriceInc4: 'Каталог 200+ проверенных товаров',
@@ -164,18 +164,18 @@ const T = {
 
     // ── Калькулятор ──
     lpCalcLabel: 'Потенциальный доход',
-    lpCalcH: 'Сколько можно зарабатывать?',
-    lpCalcDesc: 'Введите товар — ИИ сделает персональный прогноз на 3 месяца',
+    lpCalcH: 'Калькулятор дохода',
+    lpCalcDesc: 'Введите товар — калькулятор покажет прогноз дохода на 3 месяца',
     lpCalcStepLabel: 'Ваш товар',
     lpCalcInputPlaceholder: 'Например: детские носки, чехол для телефона, крем для рук...',
     lpCalcBtnText: 'Рассчитать',
     lpCalcLblMarket: 'Маркетплейс',
-    lpCalcEmptyText: 'Введите любой товар — ИИ проанализирует спрос,\nконкуренцию и рассчитает реальный прогноз дохода',
+    lpCalcEmptyText: 'Введите любой товар — калькулятор проанализирует спрос\nи рассчитает прогноз дохода на основе данных рынка',
     lpCalcCtaText: 'Хочу такой доход — узнать условия',
-    lpCalcDisc: '* AI-прогноз на основе средних данных рынка. Реальный результат зависит от качества работы.',
+    lpCalcDisc: '⚠️ Прогноз основан на средних показателях рынка. Реальный результат зависит от ваших усилий и вложений. Не является гарантией дохода.',
     lpCalcRetry: 'Другой товар',
-    lpCalcResHeader: 'AI-прогноз для: ',
-    lpCalcAiLabel: 'AI-анализ',
+    lpCalcResHeader: 'Прогноз дохода для: ',
+    lpCalcAiLabel: 'Анализ рынка',
     lpCalcMonth1: '1-й месяц',
     lpCalcMonth2: '2-й месяц',
     lpCalcMonth3: '3-й месяц',
@@ -183,7 +183,7 @@ const T = {
     lpCalcProfitLbl: 'Чистая прибыль',
     lpCalcCapitalLbl: 'Стартовый капитал',
     lpCalcTipsTitle: '📌 Советы для этого товара',
-    lpCalcLoadStep1Title: 'ИИ анализирует рынок...',
+    lpCalcLoadStep1Title: 'Анализируем рынок...',
     lpCalcLoadStep1Sub: 'Изучаю спрос на маркетплейсе',
     lpCalcLoadStep2Title: 'Считаю конкурентов...',
     lpCalcLoadStep2Sub: 'Анализирую нишу и ценообразование',
@@ -215,7 +215,7 @@ const T = {
     lpCmpY3t: 'Готовый каталог товаров', lpCmpY3d: '— не нужно тратить недели на поиск поставщиков',
     lpCmpY4t: 'Договор фулфилмента', lpCmpY4d: '— хранение, упаковка и доставка уже организованы',
     lpCmpY5t: 'Сообщество 2400+ продавцов', lpCmpY5d: '— опыт, советы и живые кейсы каждый день',
-    lpCmpY6t: 'Первый доход за 1–2 месяца', lpCmpY6d: '— реалистичный срок благодаря структуре курса',
+    lpCmpY6t: 'Первая продажа в среднем за 18 дней', lpCmpY6d: '— пошаговая программа ведёт к результату быстро',
     lpCmpY7t: 'Доступ навсегда', lpCmpY7d: '— обновления курса включены без доплат',
     lpCmpCtaText: 'Хочу так же — узнать стоимость',
     lpCmpWithoutHdr: 'Самостоятельный старт',
@@ -256,7 +256,7 @@ const T = {
     lpPopupWaText: 'Узнать цену и программу курса',    lpPopupSkip: 'Нет, спасибо',
 
     // ── Social proof toast ──
-    spToastAction: 'только что купил доступ',
+    spToastAction: 'присоединился сегодня',
 
     // ── Sticky CTA bar ──
     stickyCta: 'Узнать цену и программу курса',
@@ -388,7 +388,7 @@ const T = {
     lpPriceBadge: '🔥 Толық қол жеткізу',
     lpPriceNumber: '59 900',
     lpPricePeriod: 'біржолғы төлем · мәңгілік қол жеткізу',
-    lpPriceInc1: 'Kaspi, Wildberries және Ozon бойынша 47 бейне сабақ',
+    lpPriceInc1: 'Kaspi + Wildberries + Ozon бойынша 47 бейне сабақ + 6 бонустық курс',
     lpPriceInc2: 'Бүкіл оқу кезеңіне жеке куратор',
     lpPriceInc3: 'Дайын фулфилмент шарты',
     lpPriceInc4: '200+ тексерілген тауар каталогы',
@@ -409,18 +409,18 @@ const T = {
 
     // ── Калькулятор ──
     lpCalcLabel: 'Мүмкін табыс',
-    lpCalcH: 'Қанша табуға болады?',
-    lpCalcDesc: 'Тауар енгізіңіз — ЖИ 3 айға жеке болжам жасайды',
+    lpCalcH: 'Табыс калькуляторы',
+    lpCalcDesc: 'Тауар енгізіңіз — калькулятор 3 айға табыс болжамын көрсетеді',
     lpCalcStepLabel: 'Сіздің тауарыңыз',
     lpCalcInputPlaceholder: 'Мысалы: балалар шұлықтары, телефон қапшығы, қол кремі...',
     lpCalcBtnText: 'Есептеу',
     lpCalcLblMarket: 'Маркетплейс',
-    lpCalcEmptyText: 'Кез келген тауарды енгізіңіз — ЖИ сұранысты,\nбәсекелестікті талдап, нақты табыс болжамын жасайды',
+    lpCalcEmptyText: 'Кез келген тауарды енгізіңіз — калькулятор сұранысты,\nбәсекелестікті талдап, табыс болжамын жасайды',
     lpCalcCtaText: 'Осындай табыс алғым келеді — шарттарын білу',
-    lpCalcDisc: '* Нарықтың орташа деректері негізіндегі ЖИ болжамы. Нақты нәтиже жұмыс сапасына байланысты.',
+    lpCalcDisc: '⚠️ Болжам нарықтың орташа көрсеткіштері негізінде. Нақты нәтиже сіздің күш-жігеріңізге байланысты. Табыс кепілі емес.',
     lpCalcRetry: 'Басқа тауар',
-    lpCalcResHeader: 'ЖИ болжамы: ',
-    lpCalcAiLabel: 'ЖИ талдауы',
+    lpCalcResHeader: 'Табыс болжамы: ',
+    lpCalcAiLabel: 'Нарық талдауы',
     lpCalcMonth1: '1-ші ай',
     lpCalcMonth2: '2-ші ай',
     lpCalcMonth3: '3-ші ай',
@@ -428,7 +428,7 @@ const T = {
     lpCalcProfitLbl: 'Таза пайда',
     lpCalcCapitalLbl: 'Бастапқы капитал',
     lpCalcTipsTitle: '📌 Осы тауар бойынша кеңестер',
-    lpCalcLoadStep1Title: 'ЖИ нарықты талдауда...',
+    lpCalcLoadStep1Title: 'Нарықты талдауда...',
     lpCalcLoadStep1Sub: 'Маркетплейстегі сұранысты зерттеуде',
     lpCalcLoadStep2Title: 'Бәсекелестерді санауда...',
     lpCalcLoadStep2Sub: 'Ниша мен баға белгілеуді талдауда',
@@ -461,7 +461,7 @@ const T = {
     lpCmpY3t: 'Дайын тауар каталогы', lpCmpY3d: '— жеткізушілерді іздеуге апта жұмсаудың қажеті жоқ',
     lpCmpY4t: 'Фулфилмент шарты', lpCmpY4d: '— сақтау, орау және жеткізу ұйымдастырылған',
     lpCmpY5t: '2400+ сатушы қауымдастығы', lpCmpY5d: '— тәжірибе, кеңес және нақты кейстер күн сайын',
-    lpCmpY6t: '1–2 айда алғашқы табыс', lpCmpY6d: '— курс құрылымы арқасында реалистік мерзім',
+    lpCmpY6t: 'Орта есеппен 18 күнде алғашқы сатылым', lpCmpY6d: '— қадамдық бағдарлама нәтижеге жылдам жеткізеді',
     lpCmpY7t: 'Мәңгілік қол жеткізу', lpCmpY7d: '— курс жаңартулары қосымша төлемсіз кіреді',
     lpCmpCtaText: 'Сондай болғым келеді — құнын білу',
     lpCmpWithoutHdr: 'Өз бетіңше старт',
@@ -503,7 +503,7 @@ const T = {
     lpPopupSkip: 'Жоқ, рақмет',
 
     // ── Social proof toast ──
-    spToastAction: 'жаңа ғана қол жеткізу сатып алды',
+    spToastAction: 'бүгін қосылды',
 
     // ── Sticky CTA bar ──
     stickyCta: 'Бағасы мен бағдарламасын білу',
@@ -793,10 +793,26 @@ function showLpPopup() {
   function onExitIntent(e) {
     if (e.clientY < 10) triggerPopup();
   }
-  document.addEventListener('mouseleave', onExitIntent);
 
-  // Резервный таймер: на мобильных mouseleave не работает — показываем через 30 сек
-  var fallbackTimer = setTimeout(triggerPopup, 30000);
+  if (window.innerWidth >= 768) {
+    // Десктоп: exit intent (мышь к верхнему краю)
+    document.addEventListener('mouseleave', onExitIntent);
+    // Резервный таймер десктоп — 40 сек
+    var fallbackTimer = setTimeout(triggerPopup, 40000);
+  } else {
+    // Мобиль: таймер 40 сек + триггер при скролле вверх после 300px вниз
+    var fallbackTimer = setTimeout(triggerPopup, 40000);
+    var _mobileScrolledDown = false;
+    window.addEventListener('scroll', function _mobileScrollTrigger() {
+      if (!_mobileScrolledDown && window.scrollY > 300) {
+        _mobileScrolledDown = true;
+      } else if (_mobileScrolledDown && window.scrollY < 100) {
+        window.removeEventListener('scroll', _mobileScrollTrigger);
+        clearTimeout(fallbackTimer);
+        triggerPopup();
+      }
+    }, { passive: true });
+  }
 })();
 
 
@@ -1936,7 +1952,17 @@ function renderCoursesGrid() {
     return;
   }
 
-  grid.innerHTML = filtered.map((course, fi) => {
+  const BONUS_COURSES = ['shopify','ebay','таргет','target','китай','china','турция','turkey','америка','america'];
+  const BONUS_SUBTITLES = {
+    'таргет': 'TikTok Реклама + Instagram Реклама',
+    'target': 'TikTok Ads + Instagram Ads',
+    'китай': '1688 · Taobao · Pinduoduo · WeChat · Alipay',
+    'china': '1688 · Taobao · Pinduoduo · WeChat · Alipay',
+    'америка': 'Америка сабақтары · На казахском языке',
+    'america': 'Америка сабақтары · На казахском языке',
+  };
+
+  function _buildCard(course, fi) {
     const idx        = courses.indexOf(course);
     const name       = lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ);
     const lessons    = lang === 'kz' ? course.lessonsKZ : course.lessonsRU;
@@ -1945,6 +1971,13 @@ function renderCoursesGrid() {
     const initials   = name.substring(0, 2).toUpperCase();
     const delay      = fi * 0.06;
     const prog       = getCourseProgress(idx);
+
+    const nameKey    = name.toLowerCase();
+    const isBonus    = BONUS_COURSES.some(k => nameKey.includes(k));
+    const bonusBadge = isBonus ? `<span class="pc-bonus-badge">🎁 Бонус</span>` : '';
+    const subtitle   = BONUS_SUBTITLES[nameKey] || '';
+    const subtitleHtml = subtitle ? `<p class="pc-subtitle">${subtitle}</p>` : '';
+    const kzBadge    = (nameKey.includes('амери') || nameKey.includes('america')) ? `<span class="pc-kz-badge">На казах. языке</span>` : '';
 
     const iconHtml = course.iconUrl
       ? `<img src="${course.iconUrl}" alt="${name}" onerror="this.style.display='none';this.parentNode.textContent='${initials}'">`
@@ -1961,12 +1994,14 @@ function renderCoursesGrid() {
         </div>
       </div>` : '';
 
-    return `<div class="platform-card" style="--card-accent:${color};--card-glow:${hexToRgba(color,0.06)};animation-delay:${delay}s" onclick="openLesson(${idx})">
+    return `<div class="platform-card${isBonus ? ' platform-card--bonus' : ''}" style="--card-accent:${color};--card-glow:${hexToRgba(color,0.06)};animation-delay:${delay}s" onclick="openLesson(${idx})">
       <div class="pc-body">
         <div class="pc-logo">
           <div class="pc-icon" style="background:linear-gradient(140deg,${color},${darkenHex(color,20)})">${iconHtml}</div>
           <span class="pc-name">${escHtml(name)}</span>
         </div>
+        ${bonusBadge}${kzBadge}
+        ${subtitleHtml}
         <p class="pc-desc">${videoCount} ${t('lessons')}</p>
       </div>
       ${progressBlock}
@@ -1981,7 +2016,41 @@ function renderCoursesGrid() {
         </span>
       </div>
     </div>`;
-  }).join('');
+  }
+
+  // При поиске — плоский список без разделителей
+  if (query) {
+    grid.innerHTML = filtered.map((course, fi) => _buildCard(course, fi)).join('');
+    updateHeroStats();
+    return;
+  }
+
+  // Без поиска — разбиваем на 2 группы
+  const mainCourses  = filtered.filter(c => {
+    const n = (lang === 'kz' ? (c.nameKZ || c.nameRU) : (c.nameRU || c.nameKZ)).toLowerCase();
+    return !BONUS_COURSES.some(k => n.includes(k));
+  });
+  const bonusCourses = filtered.filter(c => {
+    const n = (lang === 'kz' ? (c.nameKZ || c.nameRU) : (c.nameRU || c.nameKZ)).toLowerCase();
+    return BONUS_COURSES.some(k => n.includes(k));
+  });
+
+  let html = '';
+
+  if (mainCourses.length > 0) {
+    const labelMain = lang === 'kz' ? '🔥 Негізгі курстар' : '🔥 Основные курсы';
+    html += `<div class="pc-group-label" style="grid-column:1/-1">${labelMain}</div>`;
+    html += mainCourses.map((c, i) => _buildCard(c, i)).join('');
+  }
+
+  if (bonusCourses.length > 0) {
+    const labelBonus = lang === 'kz' ? '🎁 Бонустық курстар — сыйлыққа' : '🎁 Бонусные курсы — в подарок';
+    const subBonus   = lang === 'kz' ? 'Негізгілерге қосымша. Үстем төлемсіз.' : 'Идут в дополнение к основным. Без доплат.';
+    html += `<div class="pc-group-label pc-group-label--bonus" style="grid-column:1/-1">${labelBonus}<span class="pc-group-sub">${subBonus}</span></div>`;
+    html += bonusCourses.map((c, i) => _buildCard(c, mainCourses.length + i)).join('');
+  }
+
+  grid.innerHTML = html;
 
   updateHeroStats();
 }
@@ -2938,6 +3007,23 @@ async function logLogin(iin, name) {
 
 // ══════════════════════════════ LOGIN ════════════════════════════
 async function doLogin() {
+  // ── Защита от брутфорса ──────────────────────────────────────
+  const MAX_ATTEMPTS   = 5;
+  const BLOCK_DURATION = 10 * 60 * 1000; // 10 минут
+  const ATTEMPTS_KEY   = 'login_attempts';
+  const BLOCK_KEY      = 'login_block_until';
+  try {
+    const blockUntil = parseInt(localStorage.getItem(BLOCK_KEY) || '0', 10);
+    if (Date.now() < blockUntil) {
+      const remaining = Math.ceil((blockUntil - Date.now()) / 60000);
+      showMsg('error', lang === 'kz'
+        ? `Тым көп әрекет. ${remaining} минут күтіңіз.`
+        : `Слишком много попыток. Подождите ${remaining} мин.`);
+      return;
+    }
+  } catch(_) {}
+  // ─────────────────────────────────────────────────────────────
+
   const name  = $('inp-name').value.trim();
   const iin   = $('inp-iin').value.trim();
   const phone = $('inp-phone').value.trim().replace(/\s/g, '');
@@ -2981,7 +3067,7 @@ async function doLogin() {
     if (!res.ok) throw new Error('http_' + res.status);
     const result = await res.json();
     scriptOk = true;
-    if (!result.found) { finishLogin(btn); showMsg('error', t('errNotFound')); return; }
+    if (!result.found) { finishLogin(btn, true); showMsg('error', t('errNotFound')); return; }
     foundName  = result.name || name;
     isPaid     = !!result.isPaid;
     isAllowed  = !!result.isAllowed;
@@ -3025,12 +3111,12 @@ async function doLogin() {
 
         // Проверяем телефон (если в строке есть номер)
         if (rowPhone && matchPhone && rowPhone !== matchPhone) {
-          finishLogin(btn); showMsg('error', t('errNotFound')); return;
+          finishLogin(btn, true); showMsg('error', t('errNotFound')); return;
         }
 
         // Заблокирован за нарушение?
         if ((row[3]||'').includes('НАРУШЕНИЕ')) {
-          finishLogin(btn); showMsg('error', t('errNoAccess')); return;
+          finishLogin(btn, true); showMsg('error', t('errNoAccess')); return;
         }
 
         foundName = (row[1]||'').trim() || name;
@@ -3043,7 +3129,7 @@ async function doLogin() {
         break;
       }
 
-      if (!found) { finishLogin(btn); showMsg('error', t('errNotFound')); return; }
+      if (!found) { finishLogin(btn, true); showMsg('error', t('errNotFound')); return; }
       scriptOk = true;
     } catch(e2) {
       await animProg(40, 40, 50, '');
@@ -3062,15 +3148,18 @@ async function doLogin() {
   await animProg(60, 75, 300, steps[3]); markStep(3);
   await sleep(180);
 
-  if (!isPaid)    { finishLogin(btn); showMsg('error', t('errNotPaid'));  return; }
+  if (!isPaid)    { finishLogin(btn, true); showMsg('error', t('errNotPaid'));  return; }
 
   await animProg(75, 90, 300, steps[4]); markStep(4);
   await sleep(180);
 
-  if (!isAllowed) { finishLogin(btn); showMsg('error', t('errNoAccess')); return; }
+  if (!isAllowed) { finishLogin(btn, true); showMsg('error', t('errNoAccess')); return; }
 
   await animProg(90, 100, 350, steps[5]); markStep(5);
   if (pg) pg.classList.remove('active');
+
+  // Сброс счётчика попыток при успешном входе
+  try { localStorage.removeItem('login_attempts'); localStorage.removeItem('login_block_until'); } catch(_) {}
 
   currentUser = foundName || name;
   logLogin(iin, currentUser);
@@ -3093,10 +3182,24 @@ async function doLogin() {
   showLessons();
 }
 
-function finishLogin(btn) {
+function finishLogin(btn, failed) {
   btn.disabled = false;
   btn.classList.remove('loading');
   setTimeout(() => { $('progress-wrap').style.display = 'none'; $('prog-fill').style.width = '0%'; }, 1000);
+  // Счётчик неудачных попыток
+  if (failed) {
+    try {
+      const ATTEMPTS_KEY = 'login_attempts';
+      const BLOCK_KEY    = 'login_block_until';
+      const attempts = parseInt(localStorage.getItem(ATTEMPTS_KEY) || '0', 10) + 1;
+      if (attempts >= 5) {
+        localStorage.setItem(BLOCK_KEY, Date.now() + 10 * 60 * 1000);
+        localStorage.removeItem(ATTEMPTS_KEY);
+      } else {
+        localStorage.setItem(ATTEMPTS_KEY, attempts);
+      }
+    } catch(_) {}
+  }
 }
 function showMsg(type, msg) {
   const el = $(type === 'error' ? 'login-error' : 'login-success');
@@ -3742,18 +3845,11 @@ function initOnlineCounter() {
   // Set initial count in bar
   if (barEl) barEl.textContent = count;
 
-  // Show bar after 3s (only when landing is visible)
+  // Показываем viewers bar с задержкой 5 сек после загрузки
   let barVisible = false;
   setTimeout(() => {
-    const lp = $('landing-page');
-    if (!bar) return;
-    if (!lp || lp.style.display === 'none') return; // don't show inside app
-    bar.style.display = 'flex';
-    // force reflow for transition
-    void bar.offsetWidth;
-    bar.classList.add('vb-visible');
-    barVisible = true;
-  }, 3000);
+    if (window._showViewersBar) window._showViewersBar();
+  }, 5000);
 
   // Shared update: both stat counter + bar
   function _tick() {
@@ -3792,11 +3888,13 @@ function initOnlineCounter() {
   const _origShowLandingLoginInner = showLandingLogin;
   window._hideViewersBar = function() {
     if (!bar || !barVisible) return;
+    barVisible = false;
     bar.classList.remove('vb-visible');
     bar.classList.add('vb-hidden');
   };
   window._showViewersBar = function() {
     if (!bar) return;
+    barVisible = true;
     bar.style.display = 'flex';
     void bar.offsetWidth;
     bar.classList.remove('vb-hidden');
@@ -3858,19 +3956,11 @@ function showResumeBeacon() {
    ══════════════════════════════════════════════════════════════ */
 
 // ── 2. Social Proof Toast ─────────────────────────────────────
+// Имена заменены на нейтральные — без фейковых «только что купил»
 const SP_NAMES = [
-  { name: 'Нурлан', city: 'Алматы', emoji: '👨' },
-  { name: 'Айгерим', city: 'Астана', emoji: '👩' },
-  { name: 'Данияр', city: 'Шымкент', emoji: '👨' },
-  { name: 'Зарина', city: 'Алматы', emoji: '👩' },
-  { name: 'Болат', city: 'Атырау', emoji: '👨' },
-  { name: 'Мадина', city: 'Тараз', emoji: '👩' },
-  { name: 'Арман', city: 'Актобе', emoji: '👨' },
-  { name: 'Сабина', city: 'Астана', emoji: '👩' },
-  { name: 'Ерлан', city: 'Усть-Каменогорск', emoji: '👨' },
-  { name: 'Гульнара', city: 'Алматы', emoji: '👩' },
-  { name: 'Темирлан', city: 'Кокшетау', emoji: '👨' },
-  { name: 'Айнур', city: 'Семей', emoji: '👩' },
+  { name: 'Новый студент', city: 'Казахстан', emoji: '👤' },
+  { name: 'Новый студент', city: 'Казахстан', emoji: '👤' },
+  { name: 'Новый студент', city: 'Казахстан', emoji: '👤' },
 ];
 
 let spToastTimer = null;
@@ -3895,8 +3985,7 @@ function showSpToast() {
   if (!el || !nameEl) return;
 
   el.querySelector('.sp-toast-avatar').textContent = person.emoji;
-  const from = lang === 'kz' ? 'қаласынан' : 'из';
-  nameEl.textContent = `${person.name} ${from} ${person.city}`;
+  nameEl.textContent = lang === 'kz' ? 'Жаңа студент' : 'Новый студент';
   el.style.display = 'flex';
 
   requestAnimationFrame(() => {
