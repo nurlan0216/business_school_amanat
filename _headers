@@ -1,0 +1,17 @@
+/app.js
+  Cache-Control: public, max-age=86400
+
+/translations.js
+  Cache-Control: public, max-age=604800
+
+/calc.js
+  Cache-Control: public, max-age=86400
+
+/style.css
+  Cache-Control: public, max-age=86400
+
+/platform.css
+  Cache-Control: public, max-age=86400
+
+/*.html
+  Cache-Control: public, max-age=3600

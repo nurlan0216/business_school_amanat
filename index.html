@@ -29,12 +29,16 @@
 
 <!-- ── Fonts ── -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
 
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="platform.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="platform.css"></noscript>
 <!-- manifest removed -->
 <!-- YouTube IFrame API for seek control -->
-<script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://www.youtube.com/iframe_api" defer></script>
 </head>
 <body>
 
@@ -43,7 +47,7 @@
   <div class="sp-toast-avatar"></div>
   <div class="sp-toast-text">
     <div class="sp-toast-name" id="sp-toast-name"></div>
-    <div class="sp-toast-action">только что купил доступ</div>
+    <div class="sp-toast-action" id="sp-toast-action">присоединился сегодня</div>
   </div>
   <div class="sp-toast-badge">🔥</div>
 </div>
@@ -1641,7 +1645,9 @@
   </div>
 </footer>
 
-<script src="app.js"></script>
+<script src="translations.js"></script>
+<script src="app.js" defer></script>
+<script src="calc.js" defer></script>
   <div id="block-overlay" style="display: none; position: fixed; inset: 0; background: #060608; z-index: 99999; align-items: center; justify-content: center; text-align: center; padding: 20px; font-family: 'Syne', sans-serif;">
   <div style="background: #0f0f16; border: 1px solid #e24b4a; padding: 40px 30px; border-radius: 22px; max-width: 450px; box-shadow: 0 24px 80px rgba(0,0,0,0.8);">
     <div style="font-size: 64px; margin-bottom: 20px;">🔒</div>
