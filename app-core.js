@@ -366,6 +366,7 @@ function initCountdown(deadlineStr) {
 // ══════════════════════════════ LANGUAGE ══════════════════════════
 function setLang(l) {
   lang = l;
+  window.lang = l;
   document.querySelectorAll('.lang-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.lang === l);
   });
@@ -690,6 +691,25 @@ function applyTexts() {
   if (bonusLabel) bonusLabel.innerHTML = isKz
     ? '🎁 Бонустық курстар — сыйлыққа <span class="lp-courses-bonus-note">Негізгілерге қосымша. Доплатасыз.</span>'
     : '🎁 Бонусные курсы — в подарок <span class="lp-courses-bonus-note">Идут в дополнение к основным. Без доплат.</span>';
+
+  // ── Кнопка WA в контейнере авторизации ──
+  const loginWaLink  = document.getElementById('login-wa-link');
+  const loginWaText  = document.getElementById('login-wa-text');
+  const loginWaLabel = document.getElementById('login-wa-label');
+  const loginWaBadge = document.getElementById('login-wa-badge');
+  if (loginWaLink) {
+    const waNum = (waAccessUrl && waAccessUrl.match(/wa\.me\/(\d+)/))
+      ? waAccessUrl.match(/wa\.me\/(\d+)/)[1]
+      : '77776020216';
+    loginWaLink.href = `https://wa.me/${waNum}?text=${encodeURIComponent(
+      lang === 'kz'
+        ? 'Сәлеметсіз бе, платформаға кіру туралы білгім келеді'
+        : 'Здравствуйте, хочу узнать о доступе к платформе'
+    )}`;
+  }
+  if (loginWaText)  loginWaText.textContent  = lang === 'kz' ? 'WhatsApp-та жазу' : 'Написать в WhatsApp';
+  if (loginWaLabel) loginWaLabel.textContent = lang === 'kz' ? 'Кіру мүмкіндігі жоқ па немесе көмек керек пе?' : 'Нет доступа или нужна помощь?';
+  if (loginWaBadge) loginWaBadge.textContent = lang === 'kz' ? '5 минутта жауап' : 'Ответим за 5 мин';
 }
 
 // ══════════════════════════════ APPLY LINKS ═══════════════════════

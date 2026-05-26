@@ -550,6 +550,87 @@ body.cursor-active * { cursor: none !important; }
 .tg-note a { color: var(--gold); text-decoration: none; font-weight: 600; }
 .tg-note a:hover { text-decoration: underline; }
 
+/* ── WhatsApp CTA — контейнер авторизации ── */
+.login-wa-wrap {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.login-wa-label {
+  font-size: 12px;
+  color: var(--text3);
+  margin: 0;
+  text-align: center;
+}
+.login-wa-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 18px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(37,211,102,0.12) 0%, rgba(18,183,87,0.08) 100%);
+  border: 1.5px solid rgba(37,211,102,0.28);
+  color: #25d366;
+  text-decoration: none;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.login-wa-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #25d366, #12b757);
+  opacity: 0;
+  transition: opacity 0.28s ease;
+}
+.login-wa-btn:hover::before { opacity: 1; }
+.login-wa-btn:hover { color: #fff; border-color: transparent; box-shadow: 0 8px 28px rgba(37,211,102,0.35); transform: translateY(-2px); }
+.login-wa-btn:active { transform: translateY(0); box-shadow: 0 4px 14px rgba(37,211,102,0.25); }
+.login-wa-icon {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: rgba(37,211,102,0.15);
+  flex-shrink: 0;
+  transition: background 0.28s ease;
+}
+.login-wa-btn:hover .login-wa-icon { background: rgba(255,255,255,0.2); }
+.login-wa-text {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+.login-wa-badge {
+  position: relative;
+  z-index: 1;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: rgba(37,211,102,0.15);
+  color: #25d366;
+  white-space: nowrap;
+  transition: background 0.28s ease, color 0.28s ease;
+}
+.login-wa-btn:hover .login-wa-badge { background: rgba(255,255,255,0.22); color: #fff; }
+@media (max-width: 480px) {
+  .login-wa-badge { display: none; }
+  .login-wa-btn { font-size: 13px; padding: 12px 14px; }
+}
+
 /* ════════════════════════════ HERO ═════════════════════════════════ */
 .hero {
   padding-top: var(--header-h);
@@ -750,3 +831,65 @@ body.cursor-active * { cursor: none !important; }
 .search-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245,200,66,0.08); }
 .search-input::placeholder { color: var(--text3); }
 
+
+/* ════════════════════════════════════════════════════════════════
+   КРИТИЧЕСКИЕ СТИЛИ ДЛЯ ЛЕНДИНГА — перенесены из platform.css
+   чтобы избежать FOUC (мигание без стилей) при lazy-загрузке
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Social Proof avatars (hero секция) ── */
+.lp-social-proof {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  animation: fadeInUp .45s ease .15s both;
+}
+.lp-sp-avatars {
+  display: flex;
+  flex-shrink: 0;
+}
+.lp-sp-ava {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #fff;
+  margin-right: -8px;
+  flex-shrink: 0;
+}
+.lp-sp-ava--more {
+  background: var(--surface3) !important;
+  color: var(--gold) !important;
+  font-size: 8px !important;
+  font-weight: 800 !important;
+  letter-spacing: -.03em;
+  border: 2px solid var(--border2);
+  width: 34px;
+}
+.lp-sp-text {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.lp-sp-count {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1;
+  white-space: nowrap;
+  animation: countUp .6s ease .3s both;
+}
+.lp-sp-label {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.4;
+}
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+[data-theme="light"] .lp-sp-ava--more { background: var(--surface2) !important; }
+[data-theme="light"] .lp-sp-label { color: var(--text2); }
