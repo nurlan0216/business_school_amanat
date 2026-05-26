@@ -175,19 +175,27 @@ function showSpToast() {
 })();
 
 // Патч showLanding — скрываем sticky bar при возврате на лендинг
-const _origShowLanding = showLanding;
-showLanding = function() {
-  const bar = $('sticky-cta-bar');
-  if (bar) { bar.classList.remove('sticky-visible'); }
-  _origShowLanding.call(this);
-};
+if (typeof showLanding === 'function') {
+  const _origShowLanding = showLanding;
+  showLanding = function() {
+    const bar = $('sticky-cta-bar');
+    if (bar) { bar.classList.remove('sticky-visible'); }
+    _origShowLanding.call(this);
+  };
+} else {
+  console.warn('[app-lp] showLanding не найдена — проверь порядок скриптов в index.html');
+}
 
 // Патч toggleTheme — сохраняем ручной выбор
-const _origToggleTheme = toggleTheme;
-window.toggleTheme = function() {
-  localStorage.setItem('manualTheme', '1');
-  _origToggleTheme.call(this);
-};
+if (typeof toggleTheme === 'function') {
+  const _origToggleTheme = toggleTheme;
+  window.toggleTheme = function() {
+    localStorage.setItem('manualTheme', '1');
+    _origToggleTheme.call(this);
+  };
+} else {
+  console.warn('[app-lp] toggleTheme не найдена — проверь порядок скриптов в index.html');
+}
 
 // ══ INIT FEATURES ═════════════════════════════════════════════════
 (function initFeatures() {
