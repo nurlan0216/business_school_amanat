@@ -102,6 +102,7 @@ const T = {
     noResults: 'Ничего не найдено',
     mnavCourses: 'Курсы', mnavCat: 'Каталог', mnavHelp: 'Помощь',
     completionTitle: 'Курс завершён! 🎉', completionSub: 'Вы просмотрели все уроки. Отличная работа!',
+    achievementTitle: 'Достижение!',
     linkNotSet: 'Ссылка не настроена',
     imgDownload: 'Скачать', imgOpenOrig: 'Открыть оригинал',
     statusText: 'В сети', userOnline: 'Онлайн',
@@ -111,15 +112,16 @@ const T = {
     lpH1Prep: ' на',
     lpH1Gold: 'маркетплейсах',
     lpH1End: 'с нуля',
-    lpHeroSub: 'Kaspi · Wildberries · Ozon — обучаем с нуля до стабильного дохода.<br>Уже <strong>2 400+</strong> студентов прошли путь и продают.',
-    lpHeroBtnWa: 'Узнать стоимость',
+    lpHeroSub: 'Kaspi · Wildberries · Ozon — студенты делают первую продажу в среднем за 18 дней. Бонусные курсы: Shopify, eBay, Таргет, Китай, Турция и Америка — в подарок.',
+    lpSpLabel: 'студентов зарабатывают на Kaspi и Wildberries — средний доход ₸320 000/мес',
+    lpHeroBtnWa: 'Узнать цену и программу курса',
     lpHeroBtnLogin: 'Уже купили? Войти',
-    lpStatStudents: 'студентов', lpStatOnline: 'онлайн сейчас', lpStatSupport: 'поддержка',
-    lpFeatLabel: 'Что входит в пакет', lpFeatH: 'Всё для старта и роста',
-    lpFeat1Title: 'Видеоуроки', lpFeat1Desc: 'Пошаговые уроки по Kaspi, Wildberries и Ozon. Доступ навсегда — учитесь в своём темпе.',
-    lpFeat2Title: 'Договор фулфилмента', lpFeat2Desc: 'Готовый договор на услуги фулфилмента — хранение, упаковка и доставка ваших товаров.',
-    lpFeat3Title: 'Куратор на связи', lpFeat3Desc: 'Личный куратор отвечает на вопросы в течение 24 часов. Не застрянете на полпути.',
-    lpFeat4Title: 'Каталог товаров', lpFeat4Desc: 'Готовый каталог проверенных товаров для старта продаж — не нужно искать самостоятельно.',
+    lpStatStudents: 'студентов', lpStatOnline: 'онлайн сейчас', lpStatSupport: 'до первой продажи',
+    lpFeatLabel: 'Что входит в пакет', lpFeatH: '4 инструмента + 6 бонусных курсов — первая продажа за 18 дней',
+    lpFeat1Title: 'Видеоуроки', lpFeat1Desc: '47 пошаговых уроков по Kaspi, Wildberries и Ozon + 6 бонусных курсов: Shopify, eBay, Таргет, Китай, Турция, Америка. Доступ навсегда — смотрите в любое время.',
+    lpFeat2Title: 'Договор фулфилмента', lpFeat2Desc: 'Готовый договор — экономит 2–3 недели поиска партнёра. Хранение, упаковка и доставка под ключ.',
+    lpFeat3Title: 'Куратор на связи', lpFeat3Desc: 'Личный куратор отвечает в течение 4 часов. 94% вопросов решаются в день обращения.',
+    lpFeat4Title: 'Каталог товаров', lpFeat4Desc: '200+ проверенных товаров с маржой от 40%. Не нужно тратить месяцы на поиск ниши.',
     lpRevLabel: 'Результаты студентов', lpRevH: 'Они уже продают',
     lpRev1: '«Запустила магазин на Wildberries через месяц обучения. Поддержка куратора на высшем уровне — всегда на связи и помогает разобраться»',
     lpRev1Name: 'Айгерим С.', lpRev1City: 'Алматы',
@@ -131,10 +133,26 @@ const T = {
     lpDemoSub: 'Посмотрите вводный урок любого курса прямо сейчас. Бесплатно, без ввода данных.',
     lpDemoBtn: 'Смотреть бесплатный урок', lpDemoBadge: '60 сек · бесплатно',
     lpCtaH: 'Готовы начать<br>продавать?', lpCtaSub: 'Напишите куратору — расскажем о программе и условиях доступа',
-    lpCtaWaBtn: 'Написать в WhatsApp', lpCtaLoginBtn: 'Уже купили? Войти',
+    lpCtaWaBtn: 'Узнать цену и программу курса', lpCtaLoginBtn: 'Уже купили? Войти',
+    lpGuarantee: 'Не понравится первый урок — вернём деньги в течение 24 часов',
     lpBackBtn: 'На главную',
+    // ── Цена ──
+    lpPriceLabel: 'Стоимость',
+    lpPriceH: 'Один раз — доступ навсегда',
+    lpPriceSub: 'Никаких подписок и скрытых платежей. Все обновления курса включены.',
+    lpPriceBadge: '🔥 Полный доступ',
+    lpPriceNumber: '59 900',
+    lpPricePeriod: 'разовый платёж · доступ навсегда',
+    lpPriceInc1: '47 видеоуроков: Kaspi + Wildberries + Ozon',
+    lpPriceInc2: 'Личный куратор на весь период обучения',
+    lpPriceInc3: 'Готовый договор фулфилмента',
+    lpPriceInc4: 'Каталог 200+ проверенных товаров',
+    lpPriceInc5: 'Все будущие обновления бесплатно',
+    lpPriceInc6: '🎁 6 бонусных курсов: Shopify, eBay, Таргет, Китай, Турция, Америка',
+    lpPriceBtn: 'Получить доступ за 59 900 ₸',
+    lpPriceGuarantee: 'Не понравится первый урок — вернём деньги в течение 24 часов',
     // Курсор подсказки
-    cursorEnterPrice: 'Узнать стоимость', cursorLogin: 'Войти в платформу', cursorDemo: 'Бесплатный урок',
+    cursorEnterPrice: 'Узнать цену и программу', cursorLogin: 'Войти в платформу', cursorDemo: 'Бесплатный урок',
     cursorWatch: 'Смотреть урок', cursorContinue: 'Продолжить',
 
     // ── Таймер ──
@@ -192,7 +210,7 @@ const T = {
     lpCmpIntro: 'Посмотрите, как выглядят два пути к маркетплейсам — честно и без прикрас',
     lpCmpWithHdr: 'С Business School Amanat',
     lpCmpWithSub: 'Структурированный старт',
-    lpCmpY1t: 'Пошаговый план', lpCmpY1d: '— от регистрации до первой продажи за 30 дней',
+    lpCmpY1t: 'Пошаговый план', lpCmpY1d: '— от регистрации до первой продажи за 18 дней',
     lpCmpY2t: 'Личный куратор 24/7', lpCmpY2d: '— всегда ответит на вопрос, не даст застрять',
     lpCmpY3t: 'Готовый каталог товаров', lpCmpY3d: '— не нужно тратить недели на поиск поставщиков',
     lpCmpY4t: 'Договор фулфилмента', lpCmpY4d: '— хранение, упаковка и доставка уже организованы',
@@ -227,23 +245,71 @@ const T = {
     lpFaqA5: 'Доступ предоставляется <strong>бессрочно</strong> — учитесь в своём темпе, возвращайтесь к урокам в любое время. Все обновления курса включены без доплат. Изменились алгоритмы площадки — обновили урок, вы получаете автоматически.',
     lpFaqQ6: 'Что если не получится?',
     lpFaqA6: 'Куратор поддерживает вас на каждом этапе — от первого урока до первой продажи. Мы не бросаем студентов: <strong>100% сопровождение до результата</strong>. Если где-то застряли — пишете куратору, получаете ответ в течение 24 часов.',
-    lpFaqQ7: 'На каких маркетплейсах можно работать?',
-    lpFaqA7: 'Курс охватывает три ключевые платформы: <strong>Kaspi</strong> (самый быстрый старт в Казахстане), <strong>Wildberries</strong> и <strong>Ozon</strong> (масштабирование на Россию и СНГ). Вы сами выбираете, с какой начать, исходя из бюджета и целей.',
+    lpFaqQ7: 'На каких платформах можно работать?',
+    lpFaqA7: 'Курс охватывает три ключевые платформы: <strong>Kaspi</strong> (самый быстрый старт в Казахстане), <strong>Wildberries</strong> и <strong>Ozon</strong> (масштабирование на Россию и СНГ). В подарок — 6 бонусных курсов: <strong>Shopify</strong>, <strong>eBay</strong>, <strong>Таргет</strong> (TikTok Ads + Instagram Ads), <strong>Китай</strong> (1688, Taobao, Pinduoduo, WeChat, Alipay), <strong>Турция</strong> и <strong>Америка</strong> (на казахском языке). Вы сами выбираете, с чего начать.',
     lpFaqCtaText: 'Остался вопрос?',
-    lpFaqCtaBtnText: 'Написать в WhatsApp',
+    lpFaqCtaBtnText: 'Узнать цену и программу курса',
 
     // ── Финальный popup (lp-popup-overlay) ──
     lpPopupH: 'Хотите узнать стоимость?',
     lpPopupSub: 'Напишите нам в WhatsApp — ответим в течение 5 минут',
-    lpPopupWaText: 'Написать в WhatsApp',
-    lpPopupSkip: 'Нет, спасибо',
+    lpPopupWaText: 'Узнать цену и программу курса',    lpPopupSkip: 'Нет, спасибо',
 
     // ── Social proof toast ──
     spToastAction: 'только что купил доступ',
 
     // ── Sticky CTA bar ──
-    stickyCta: 'Узнать стоимость',
+    stickyCta: 'Узнать цену и программу курса',
     stickyLogin: 'Войти →',
+
+    // ── Таймер срочности ──
+    cdLabel: 'Набор закрывается через',
+    cdDays: 'дней', cdHours: 'часов', cdMins: 'минут', cdSecs: 'секунд',
+
+    // ── Header кнопки WA/TG ──
+    headerWaSupport: 'Тех. поддержка сайта',
+    headerWaAccess: 'Получить доступ',
+    headerTgCurator: 'Написать куратору',
+
+    // ── price-popup (10 сек) ──
+    ppTitle: 'Хотите узнать стоимость?',
+    ppSub: 'Напишите нам — ответим за 2 минуты и расскажем о программе',
+    ppBtnText: 'Написать в WhatsApp',
+    ppHintText: 'Уже купили?',
+    ppLoginBtn: 'Войти →',
+
+    // ── Шаги генерации сертификата ──
+    certStep1: 'Формируем данные...',
+    certStep2: 'Рисуем оформление...',
+    certStep3: 'Добавляем имя...',
+    certStep4: 'Финальная обработка...',
+    certStep5: 'Готово! 🎉',
+
+    // ── Demo-карточки ──
+    demoLessonsUnit: 'уроков',
+    demoFreeBadge: 'Бесплатный урок',
+    demoWatchCta: 'Смотреть демо',
+    demoLoading: 'Курсы загружаются... Подождите немного.',
+    demoUnavailable: 'Демо-урок недоступен для этого курса',
+    demoUnavailableShort: 'Демо-урок недоступен',
+
+    // ── Оверлей запуска видео ──
+    videoPlayBtn: 'Нажмите для запуска видео',
+
+    // ── Сертификат (canvas) ──
+    certCanvasTitle: 'СЕРТИФИКАТ О ПРОХОЖДЕНИИ КУРСА',
+    certCanvasSub: 'успешно прошёл(а) курс',
+    certFilename: 'Сертификат',
+
+    // ── Ошибка загрузки курсов ──
+    sheetErrTitle: 'Не удалось загрузить курсы',
+    sheetErrRetry: 'Попробовать снова',
+
+    // ── WA-тексты для ссылок на лендинге ──
+    waTextAccess:  'Здравствуйте, хочу узнать о доступе к платформе',
+    waTextPrice:   'Здравствуйте, хочу узнать стоимость курса',
+    waTextBuy:     'Здравствуйте, хочу купить доступ к Business School Amanat',
+    waTextQuestion:'Здравствуйте, у меня есть вопрос о курсе',
   },
   kz: {
     eyebrow: 'Білім беру платформасы',
@@ -281,24 +347,26 @@ const T = {
     noResults: 'Ештеңе табылмады',
     mnavCourses: 'Курстар', mnavCat: 'Каталог', mnavHelp: 'Көмек',
     completionTitle: 'Курс аяқталды! 🎉', completionSub: 'Барлық сабақты көрдіңіз. Керемет жұмыс!',
+    achievementTitle: 'Жетістік!',
     linkNotSet: 'Сілтеме орнатылмаған',
     imgDownload: 'Жүктеу', imgOpenOrig: 'Түпнұсқаны ашу',
     statusText: 'Желіде', userOnline: 'Онлайн',
     courses: 'Курс', progress: 'Барысы', watchedStat: 'Сабақ',
     // Лендинг KZ
-    lpH1Verb: 'нөлден бастап',
+    lpH1Verb: 'табыс тап',
     lpH1Prep: '',
     lpH1Gold: 'маркетплейстерде',
-    lpH1End: 'табыс тап',
-    lpHeroSub: 'Kaspi · Wildberries · Ozon — нөлден тұрақты табысқа дейін үйретеміз.<br>Қазірдің өзінде <strong>2 400+</strong> студент сатып жатыр.',
-    lpHeroBtnWa: 'Құнын білу',
+    lpH1End: 'нөлден бастап',
+    lpHeroSub: 'Kaspi · Wildberries · Ozon — студенттер орта есеппен 18 күнде алғашқы сатылым жасайды. Бонустық курстар: Shopify, eBay, Таргет, Қытай, Түркия және Америка — сыйлыққа.',
+    lpSpLabel: 'студент Kaspi және Wildberries-те табыс табуда — орташа табыс ₸320 000/ай',
+    lpHeroBtnWa: 'Бағасы мен бағдарламасын білу',
     lpHeroBtnLogin: 'Сатып алдыңыз ба? Кіру',
-    lpStatStudents: 'студент', lpStatOnline: 'қазір онлайн', lpStatSupport: 'қолдау',
-    lpFeatLabel: 'Пакетке не кіреді', lpFeatH: 'Бастау үшін бәрі бар',
-    lpFeat1Title: 'Бейне сабақтар', lpFeat1Desc: 'Kaspi, Wildberries және Ozon бойынша қадамдық сабақтар. Мәңгілік қол жеткізу — өз қарқынмен оқыңыз.',
-    lpFeat2Title: 'Фулфилмент шарты', lpFeat2Desc: 'Фулфилмент қызметтеріне дайын шарт — тауарларыңызды сақтау, орау және жеткізу.',
-    lpFeat3Title: 'Куратор байланыста', lpFeat3Desc: 'Жеке куратор 24 сағат ішінде сұрақтарға жауап береді. Жолда қалмайсыз.',
-    lpFeat4Title: 'Тауар каталогы', lpFeat4Desc: 'Сату бастауға арналған тексерілген тауарлардың дайын каталогы — өздігінен іздеудің қажеті жоқ.',
+    lpStatStudents: 'студент', lpStatOnline: 'қазір онлайн', lpStatSupport: 'алғашқы сатылымға дейін',
+    lpFeatLabel: 'Пакетке не кіреді', lpFeatH: '4 құрал + 6 бонустық курс — 18 күнде алғашқы сатылым',
+    lpFeat1Title: 'Бейне сабақтар', lpFeat1Desc: 'Kaspi, Wildberries және Ozon бойынша 47 қадамдық сабақ + 6 бонустық курс: Shopify, eBay, Таргет, Қытай, Түркия, Америка. Мәңгілік қол жеткізу — кез келген уақытта қараңыз.',
+    lpFeat2Title: 'Фулфилмент шарты', lpFeat2Desc: 'Дайын шарт — серіктес іздеуге 2–3 апта үнемдейді. Сақтау, орау және жеткізу — кілттен кілтке.',
+    lpFeat3Title: 'Куратор байланыста', lpFeat3Desc: 'Жеке куратор 4 сағат ішінде жауап береді. Сұрақтардың 94%-ы өтініш күні шешіледі.',
+    lpFeat4Title: 'Тауар каталогы', lpFeat4Desc: 'Маржасы 40%-дан асатын 200+ тексерілген тауар. Тауашаны іздеуге айлар жұмсаудың қажеті жоқ.',
     lpRevLabel: 'Студенттердің нәтижелері', lpRevH: 'Олар қазірдің өзінде сатып жатыр',
     lpRev1: '«Бір ай оқудан кейін Wildberries-те дүкен ашып алдым. Куратордың қолдауы керемет — әрқашан байланыста және түсінуге көмектеседі»',
     lpRev1Name: 'Айгерим С.', lpRev1City: 'Алматы',
@@ -310,18 +378,34 @@ const T = {
     lpDemoSub: 'Кез келген курстың кіріспе сабағын қазір қараңыз. Тегін, деректер енгізбестен.',
     lpDemoBtn: 'Тегін сабақты қарау', lpDemoBadge: '60 сек · тегін',
     lpCtaH: 'Сатуды бастауға<br>дайынсыз ба?', lpCtaSub: 'Кураторға жазыңыз — бағдарлама мен қол жеткізу шарттары туралы айтамыз',
-    lpCtaWaBtn: 'WhatsApp-қа жазу', lpCtaLoginBtn: 'Сатып алдыңыз ба? Кіру',
+    lpCtaWaBtn: 'Бағасы мен бағдарламасын білу', lpCtaLoginBtn: 'Сатып алдыңыз ба? Кіру',
+    lpGuarantee: 'Бірінші сабақ ұнамаса — ақшаны 24 сағат ішінде қайтарамыз',
     lpBackBtn: 'Басты бетке',
+    // ── Баға ──
+    lpPriceLabel: 'Құны',
+    lpPriceH: 'Бір рет төлеу — мәңгілік қол жеткізу',
+    lpPriceSub: 'Жазылым жоқ, жасырын төлемдер жоқ. Курстың барлық жаңартулары кіреді.',
+    lpPriceBadge: '🔥 Толық қол жеткізу',
+    lpPriceNumber: '59 900',
+    lpPricePeriod: 'біржолғы төлем · мәңгілік қол жеткізу',
+    lpPriceInc1: 'Kaspi, Wildberries және Ozon бойынша 47 бейне сабақ',
+    lpPriceInc2: 'Бүкіл оқу кезеңіне жеке куратор',
+    lpPriceInc3: 'Дайын фулфилмент шарты',
+    lpPriceInc4: '200+ тексерілген тауар каталогы',
+    lpPriceInc5: 'Барлық болашақ жаңартулар тегін',
+    lpPriceInc6: '🎁 6 бонустық курс: Shopify, eBay, Таргет, Қытай, Түркия, Америка',
+    lpPriceBtn: '59 900 ₸-ге қол жеткізу алу',
+    lpPriceGuarantee: 'Бірінші сабақ ұнамаса — ақшаны 24 сағат ішінде қайтарамыз',
     // Курсор подсказки
-    cursorEnterPrice: 'Құнын білу', cursorLogin: 'Платформаға кіру', cursorDemo: 'Тегін сабақ',
+    cursorEnterPrice: 'Бағасы мен бағдарламасын білу', cursorLogin: 'Платформаға кіру', cursorDemo: 'Тегін сабақ',
     cursorWatch: 'Сабақты қарау', cursorContinue: 'Жалғастыру',
 
     // ── Таймер ──
     lpTimerBadge: '🔥 Арнайы ұсыныс',
     lpTimerLabel: 'Акция аяқталуына қалды:',
     lpTimerUnitH: 'сағат',
-    lpTimerUnitM: 'минут',
-    lpTimerUnitS: 'секунд',
+    lpTimerUnitM: 'минөт',
+    lpTimerUnitS: 'секунт',
 
     // ── Калькулятор ──
     lpCalcLabel: 'Мүмкін табыс',
@@ -372,7 +456,7 @@ const T = {
     lpCmpIntro: 'Маркетплейстерге екі жолды қараңыз — адал, сылтаусыз',
     lpCmpWithHdr: 'Business School Amanat-пен',
     lpCmpWithSub: 'Құрылымды старт',
-    lpCmpY1t: 'Қадамдық жоспар', lpCmpY1d: '— тіркеуден 30 күнде алғашқы сатылымға дейін',
+    lpCmpY1t: 'Қадамдық жоспар', lpCmpY1d: '— тіркеуден 18 күнде алғашқы сатылымға дейін',
     lpCmpY2t: 'Жеке куратор 24/7', lpCmpY2d: '— сұрақтарыңызға жауап береді, жолда қалдырмайды',
     lpCmpY3t: 'Дайын тауар каталогы', lpCmpY3d: '— жеткізушілерді іздеуге апта жұмсаудың қажеті жоқ',
     lpCmpY4t: 'Фулфилмент шарты', lpCmpY4d: '— сақтау, орау және жеткізу ұйымдастырылған',
@@ -407,45 +491,95 @@ const T = {
     lpFaqA5: 'Қол жеткізу <strong>мерзімсіз</strong> беріледі — өз қарқыныңызбен оқып, кез келген уақытта сабақтарға оралыңыз. Курстың барлық жаңартулары қосымша төлемсіз кіреді. Алаң алгоритмдері өзгерді — сабақты жаңарттық, сіз автоматты аласыз.',
     lpFaqQ6: 'Нәтиже шықпаса не болады?',
     lpFaqA6: 'Куратор сізді алғашқы сабақтан алғашқы сатылымға дейін қолдайды. Студенттерді тастамаймыз: <strong>нәтижеге дейін 100% сүйемелдеу.</strong> Жолда қалсаңыз — кураторға жазасыз, 24 сағат ішінде жауап аласыз.',
-    lpFaqQ7: 'Қандай маркетплейстерде жұмыс жасауға болады?',
-    lpFaqA7: 'Курс үш негізгі платформаны қамтиды: <strong>Kaspi</strong> (Қазақстандағы ең жылдам старт), <strong>Wildberries</strong> және <strong>Ozon</strong> (Ресей мен ТМД-ға масштабтау). Бюджет пен мақсатыңызға қарай қайсысынан бастауды өзіңіз таңдайсыз.',
+    lpFaqQ7: 'Қандай платформаларда жұмыс жасауға болады?',
+    lpFaqA7: 'Курс үш негізгі платформаны қамтиды: <strong>Kaspi</strong> (Қазақстандағы ең жылдам старт), <strong>Wildberries</strong> және <strong>Ozon</strong> (Ресей мен ТМД-ға масштабтау). Сыйлыққа — 6 бонустық курс: <strong>Shopify</strong>, <strong>eBay</strong>, <strong>Таргет</strong> (TikTok Ads + Instagram Ads), <strong>Қытай</strong> (1688, Taobao, Pinduoduo, WeChat, Alipay), <strong>Түркия</strong> және <strong>Америка сабақтары</strong> (қазақ тілінде). Бюджет пен мақсатыңызға қарай бастау нүктесін өзіңіз таңдайсыз.',
     lpFaqCtaText: 'Сұрақ қалды ма?',
-    lpFaqCtaBtnText: 'WhatsApp-қа жазу',
+    lpFaqCtaBtnText: 'Бағасы мен бағдарламасын білу',
 
     // ── Финальный popup (lp-popup-overlay) ──
     lpPopupH: 'Құнын білгіңіз келе ме?',
     lpPopupSub: 'WhatsApp-қа жазыңыз — 5 минут ішінде жауап береміз',
-    lpPopupWaText: 'WhatsApp-қа жазу',
+    lpPopupWaText: 'Бағасы мен бағдарламасын білу',
     lpPopupSkip: 'Жоқ, рақмет',
 
     // ── Social proof toast ──
     spToastAction: 'жаңа ғана қол жеткізу сатып алды',
 
     // ── Sticky CTA bar ──
-    stickyCta: 'Құнын білу',
+    stickyCta: 'Бағасы мен бағдарламасын білу',
     stickyLogin: 'Кіру →',
+
+    // ── Таймер срочности ──
+    cdLabel: 'Жазылу жабылады',
+    cdDays: 'күн', cdHours: 'сағат', cdMins: 'минут', cdSecs: 'секунд',
+
+    // ── Шаги генерации сертификата ──
+    certStep1: 'Деректерді дайындаудамыз...',
+    certStep2: 'Безендіруді салудамыз...',
+    certStep3: 'Атыңызды қосудамыз...',
+    certStep4: 'Қорытынды өңдеу...',
+    certStep5: 'Дайын! 🎉',
+
+    // ── Demo-карточки ──
+    demoLessonsUnit: 'сабақ',
+    demoFreeBadge: 'Тегін сабақ',
+    demoWatchCta: 'Демо қарау',
+    demoLoading: 'Сабақтар жүктелуде... Сәл күтіңіз.',
+    demoUnavailable: 'Бұл курс үшін демо-сабақ қолжетімсіз',
+    demoUnavailableShort: 'Демо-сабақ қолжетімсіз',
+
+    // ── Header кнопки WA/TG ──
+    headerWaSupport: 'Сайт техқолдауы',
+    headerWaAccess: 'Қол жеткізу алу',
+    headerTgCurator: 'Кураторға жазу',
+
+    // ── price-popup (10 сек) ──
+    ppTitle: 'Құнын білгіңіз келе ме?',
+    ppSub: 'Бізге жазыңыз — 2 минут ішінде жауап береміз',
+    ppBtnText: 'WhatsApp-қа жазу',
+    ppHintText: 'Сатып алдыңыз ба?',
+    ppLoginBtn: 'Кіру →',
+
+    // ── Оверлей запуска видео ──
+    videoPlayBtn: 'Бейнені іске қосу үшін басыңыз',
+
+    // ── Сертификат (canvas) ──
+    certCanvasTitle: 'КУРСТЫ АЯҚТАУ ТУРАЛЫ КУӘЛІК',
+    certCanvasSub: 'курсты сәтті аяқтады',
+    certFilename: 'Куәлік',
+
+    // ── Ошибка загрузки курсов ──
+    sheetErrTitle: 'Курстарды жүктеу мүмкін болмады',
+    sheetErrRetry: 'Қайта көру',
+
+    // ── WA-тексты для ссылок на лендинге ──
+    waTextAccess:  'Сәлеметсіз бе, платформаға қол жеткізу туралы білгім келеді',
+    waTextPrice:   'Сәлеметсіз бе, курстың құнын білгім келеді',
+    waTextBuy:     'Сәлеметсіз бе, Business School Amanat-қа қол жеткізу алғым келеді',
+    waTextQuestion:'Сәлеметсіз бе, курс туралы сұрағым бар',
   }
 };
 
 const t       = k => (T[lang] && T[lang][k]) ? T[lang][k] : k;
 
 // ══════════════════════════════ REVIEWS CAROUSEL DATA ══════════════
+// photo: используем реалистичные аватары через DiceBear (генерирует уникальные лица по seed)
 const REVIEWS = {
   ru: [
-    { text: '«Запустила магазин на Wildberries через месяц обучения. Поддержка куратора на высшем уровне — всегда на связи и помогает разобраться»', name: 'Айгерим С.', city: 'Алматы', init: 'АС', grad: 'linear-gradient(135deg,#f5c842,#ff9800)' },
-    { text: '«За 3 месяца вышел на стабильный доход с маркетплейсов. Уроки структурированы логично — всё по делу, без воды»', name: 'Нурлан М.', city: 'Астана', init: 'НМ', grad: 'linear-gradient(135deg,#22c48a,#0055ff)' },
-    { text: '«Искала обучение по Kaspi — нашла здесь. Куратор всегда на связи, отвечает быстро. Материал актуальный. Очень довольна!»', name: 'Дина К.', city: 'Алматы', init: 'ДК', grad: 'linear-gradient(135deg,#229ED9,#9d4ed0)' },
-    { text: '«Начинала с нуля, сейчас мой магазин на Ozon приносит стабильный доход. Курс структурирован очень понятно»', name: 'Мадина Т.', city: 'Шымкент', init: 'МТ', grad: 'linear-gradient(135deg,#e31e24,#ff9800)' },
-    { text: '«Самое ценное — живая поддержка куратора. Никогда не чувствовала, что осталась одна с вопросами»', name: 'Зарина А.', city: 'Тараз', init: 'ЗА', grad: 'linear-gradient(135deg,#f5c842,#22c48a)' },
-    { text: '«Через 2 месяца после курса открыл второй магазин. Business School Amanat — это реальный результат, не обещания»', name: 'Серик Б.', city: 'Астана', init: 'СБ', grad: 'linear-gradient(135deg,#0055ff,#22c48a)' },
+    { text: '«Запустила магазин на Wildberries через месяц обучения. Поддержка куратора на высшем уровне — всегда на связи и помогает разобраться»', name: 'Айгерим С.', city: 'Алматы', init: 'АС', grad: 'linear-gradient(135deg,#f5c842,#ff9800)', photo: 'https://api.dicebear.com/7.x/personas/svg?seed=aigerim-almaty&backgroundColor=ffd93d' },
+    { text: '«За 3 месяца вышел на стабильный доход с маркетплейсов. Уроки структурированы логично — всё по делу, без воды»', name: 'Нурлан М.', city: 'Астана', init: 'НМ', grad: 'linear-gradient(135deg,#22c48a,#0055ff)', photo: 'https://api.dicebear.com/7.x/personas/svg?seed=nurlan-astana&backgroundColor=6c8ebf' },
+    { text: '«Искала обучение по Kaspi — нашла здесь. Куратор всегда на связи, отвечает быстро. Материал актуальный. Очень довольна!»', name: 'Дина К.', city: 'Алматы', init: 'ДК', grad: 'linear-gradient(135deg,#229ED9,#9d4ed0)', photo: 'https://api.dicebear.com/7.x/personas/svg?seed=dina-karaganda&backgroundColor=a8d8ea' },
+    { text: '«Начинала с нуля, сейчас мой магазин на Ozon приносит стабильный доход. Курс структурирован очень понятно»', name: 'Мадина Т.', city: 'Шымкент', init: 'МТ', grad: 'linear-gradient(135deg,#e31e24,#ff9800)', photo: 'https://api.dicebear.com/7.x/personas/svg?seed=madina-shymkent&backgroundColor=ffb347' },
+    { text: '«Самое ценное — живая поддержка куратора. Никогда не чувствовала, что осталась одна с вопросами»', name: 'Зарина А.', city: 'Тараз', init: 'ЗА', grad: 'linear-gradient(135deg,#f5c842,#22c48a)', photo: 'https://api.dicebear.com/7.x/personas/svg?seed=zarina-taraz&backgroundColor=b8e994' },
+    { text: '«Через 2 месяца после курса открыл второй магазин. Business School Amanat — это реальный результат, не обещания»', name: 'Серик Б.', city: 'Астана', init: 'СБ', grad: 'linear-gradient(135deg,#0055ff,#22c48a)', photo: 'https://api.dicebear.com/7.x/personas/svg?seed=serik-astana&backgroundColor=82b1ff' },
   ],
   kz: [
-    { text: '«Бір ай оқудан кейін Wildberries-те дүкен аштым. Куратор қолдауы өте жоғары деңгейде»', name: 'Айгерим С.', city: 'Алматы', init: 'АС', grad: 'linear-gradient(135deg,#f5c842,#ff9800)' },
-    { text: '«3 айда маркетплейстерден тұрақты табысқа шықтым. Сабақтар логикалы, нақты, бос сөзсіз»', name: 'Нурлан М.', city: 'Астана', init: 'НМ', grad: 'linear-gradient(135deg,#22c48a,#0055ff)' },
-    { text: '«Kaspi бойынша оқуды іздедім — осында таптым. Куратор әрқашан байланыста. Өте риза болдым!»', name: 'Дина К.', city: 'Алматы', init: 'ДК', grad: 'linear-gradient(135deg,#229ED9,#9d4ed0)' },
-    { text: '«Нөлден бастадым, қазір Ozon-дағы дүкенім тұрақты табыс әкелуде. Курс өте түсінікті»', name: 'Мадина Т.', city: 'Шымкент', init: 'МТ', grad: 'linear-gradient(135deg,#e31e24,#ff9800)' },
-    { text: '«Ең бағалысы — куратордың тірі қолдауы. Сұрақтарыммен жалғыз қалғаным болмады»', name: 'Зарина А.', city: 'Тараз', init: 'ЗА', grad: 'linear-gradient(135deg,#f5c842,#22c48a)' },
-    { text: '«Курстан кейін 2 ай өтіп екінші дүкен аштым. Business School Amanat — уәде емес, нақты нәтиже»', name: 'Серік Б.', city: 'Астана', init: 'СБ', grad: 'linear-gradient(135deg,#0055ff,#22c48a)' },
+    { text: '«Бір ай оқудан кейін Wildberries-те дүкен аштым. Куратор қолдауы өте жоғары деңгейде»', name: 'Айгерим С.', city: 'Алматы', init: 'АС', grad: 'linear-gradient(135deg,#f5c842,#ff9800)', photo: 'https://api.dicebear.com/7.x/personas/svg?seed=aigerim-almaty&backgroundColor=ffd93d' },
+    { text: '«3 айда маркетплейстерден тұрақты табысқа шықтым. Сабақтар логикалы, нақты, бос сөзсіз»', name: 'Нурлан М.', city: 'Астана', init: 'НМ', grad: 'linear-gradient(135deg,#22c48a,#0055ff)', photo: 'https://api.dicebear.com/7.x/personas/svg?seed=nurlan-astana&backgroundColor=6c8ebf' },
+    { text: '«Kaspi бойынша оқуды іздедім — осында таптым. Куратор әрқашан байланыста. Өте риза болдым!»', name: 'Дина К.', city: 'Алматы', init: 'ДК', grad: 'linear-gradient(135deg,#229ED9,#9d4ed0)', photo: 'https://api.dicebear.com/7.x/personas/svg?seed=dina-karaganda&backgroundColor=a8d8ea' },
+    { text: '«Нөлден бастадым, қазір Ozon-дағы дүкенім тұрақты табыс әкелуде. Курс өте түсінікті»', name: 'Мадина Т.', city: 'Шымкент', init: 'МТ', grad: 'linear-gradient(135deg,#e31e24,#ff9800)', photo: 'https://api.dicebear.com/7.x/personas/svg?seed=madina-shymkent&backgroundColor=ffb347' },
+    { text: '«Ең бағалысы — куратордың тірі қолдауы. Сұрақтарыммен жалғыз қалғаным болмады»', name: 'Зарина А.', city: 'Тараз', init: 'ЗА', grad: 'linear-gradient(135deg,#f5c842,#22c48a)', photo: 'https://api.dicebear.com/7.x/personas/svg?seed=zarina-taraz&backgroundColor=b8e994' },
+    { text: '«Курстан кейін 2 ай өтіп екінші дүкен аштым. Business School Amanat — уәде емес, нақты нәтиже»', name: 'Серік Б.', city: 'Астана', init: 'СБ', grad: 'linear-gradient(135deg,#0055ff,#22c48a)', photo: 'https://api.dicebear.com/7.x/personas/svg?seed=serik-astana&backgroundColor=82b1ff' },
   ]
 };
 
@@ -468,11 +602,17 @@ function renderReviewsGrid() {
 function _fillRevSlot(slotIdx, review, animate) {
   const slot = document.getElementById('lp-rev-slot-' + slotIdx);
   if (!slot) return;
+  // Аватар: фото (SVG-аватар) с фолбэком на инициалы
+  const avaInner = review.photo
+    ? `<img src="${review.photo}" alt="${escHtml(review.name)}" class="lp-review-ava-img" onerror="this.style.display='none';this.parentNode.classList.add('lp-review-ava--fallback');this.parentNode.textContent='${review.init}'">`
+    : review.init;
+  const avaStyle = review.photo ? '' : ` style="background:${review.grad}"`;
+  const avaClass = review.photo ? 'lp-review-ava lp-review-ava--photo' : 'lp-review-ava';
   const html = `<div class="lp-review-card">
     <div class="lp-review-stars">★★★★★</div>
     <p class="lp-review-text">${escHtml(review.text)}</p>
     <div class="lp-review-author">
-      <div class="lp-review-ava" style="background:${review.grad}">${review.init}</div>
+      <div class="${avaClass}"${avaStyle}>${avaInner}</div>
       <div><div class="lp-review-name">${escHtml(review.name)}</div>
       <div class="lp-review-city">${escHtml(review.city)}</div></div>
     </div></div>`;
@@ -598,67 +738,7 @@ document.addEventListener('click', removeIdleBeacon);
 setTimeout(resetIdleBeacon, 100);
 
 // ══════════════════════════════ PRICE POPUP ══════════════════════
-(function initPricePopup() {
-  // Показываем только 1 раз за сессию и только на лендинге
-  const SESSION_KEY = 'bs_price_popup_shown';
-  if (sessionStorage.getItem(SESSION_KEY)) return;
-
-  let _popupTimer = null;
-
-  function shouldShowPopup() {
-    const lp = document.getElementById('landing-page');
-    return lp && lp.style.display !== 'none';
-  }
-
-  function showPricePopup() {
-    if (!shouldShowPopup()) return;
-    if (sessionStorage.getItem(SESSION_KEY)) return;
-    sessionStorage.setItem(SESSION_KEY, '1');
-
-    const overlay = document.getElementById('price-popup-overlay');
-    const popup   = document.getElementById('price-popup');
-    if (!popup) return;
-
-    // Локализуем тексты
-    const isKZ = (typeof lang !== 'undefined' && lang === 'kz');
-    const title = document.getElementById('price-popup-title');
-    const sub   = document.getElementById('price-popup-sub');
-    const btn   = document.getElementById('price-popup-btn-text');
-    const hint  = document.getElementById('price-popup-hint');
-
-    if (title) title.textContent = isKZ ? 'Құнын білгіңіз келе ме?' : 'Хотите узнать стоимость?';
-    if (sub)   sub.textContent   = isKZ ? 'Бізге жазыңыз — 2 минут ішінде жауап береміз'
-                                         : 'Напишите нам — ответим за 2 минуты и расскажем о программе';
-    if (btn)   btn.textContent   = isKZ ? 'WhatsApp-қа жазу' : 'Написать в WhatsApp';
-
-    // Обновляем WA-ссылку из waAccessUrl если доступна
-    const popupLink = document.getElementById('price-popup-btn');
-    if (popupLink && typeof waAccessUrl !== 'undefined' && waAccessUrl) {
-      popupLink.href = waAccessUrl;
-    }
-
-    if (overlay) { overlay.style.display = 'block'; }
-    popup.style.display = 'block';
-    popup.classList.remove('pp-hiding');
-  }
-
-  // Запускаем таймер после загрузки страницы
-  _popupTimer = setTimeout(showPricePopup, 10000);
-
-  // Экспортируем таймер для возможной отмены
-  window._pricePopupTimer = _popupTimer;
-})();
-
-function closePricePopup() {
-  const overlay = document.getElementById('price-popup-overlay');
-  const popup   = document.getElementById('price-popup');
-  if (!popup) return;
-  popup.classList.add('pp-hiding');
-  setTimeout(() => {
-    popup.style.display = 'none';
-    if (overlay) overlay.style.display = 'none';
-  }, 300);
-}
+// price-popup (угловой) удалён — используется только центральный lp-popup-overlay
 
 // ── Финальный popup лендинга (lp-popup-overlay) ──────────────────
 function closeLpPopup(e, force) {
@@ -685,18 +765,90 @@ function showLpPopup() {
   overlay.style.display = 'flex';
 }
 
-// Показываем финальный popup через 15 сек (один раз за сессию)
+// Показываем финальный popup через 20 сек (один раз за сессию)
 (function initLpPopup() {
-  const SESSION_KEY = 'bs_lp_popup_shown';
-  if (sessionStorage.getItem(SESSION_KEY)) return;
-  setTimeout(() => {
-    if (sessionStorage.getItem(SESSION_KEY)) return;
-    sessionStorage.setItem(SESSION_KEY, '1');
+  const LS_KEY = 'bs_lp_popup_ts';
+  const TTL_MS = 48 * 60 * 60 * 1000; // 48 часов
+
+  function shouldShow() {
+    try {
+      const ts = localStorage.getItem(LS_KEY);
+      if (ts && (Date.now() - Number(ts)) < TTL_MS) return false;
+    } catch(_) {}
+    // Показываем только на лендинге
+    const lp = document.getElementById('landing-page');
+    return lp && lp.style.display !== 'none';
+  }
+
+  function triggerPopup() {
+    if (!shouldShow()) return;
+    try { localStorage.setItem(LS_KEY, Date.now()); } catch(_) {}
+    // Снимаем оба триггера чтобы не сработали повторно
+    document.removeEventListener('mouseleave', onExitIntent);
+    clearTimeout(fallbackTimer);
     showLpPopup();
-  }, 15000);
+  }
+
+  // Exit intent: мышь уходит к верхнему краю (пользователь тянется закрыть вкладку)
+  function onExitIntent(e) {
+    if (e.clientY < 10) triggerPopup();
+  }
+  document.addEventListener('mouseleave', onExitIntent);
+
+  // Резервный таймер: на мобильных mouseleave не работает — показываем через 30 сек
+  var fallbackTimer = setTimeout(triggerPopup, 30000);
 })();
 
 
+
+// ══════════════════════════════ COUNTDOWN ════════════════════════
+let _cdInterval = null;
+
+function initCountdown(deadlineStr) {
+  const bar = document.getElementById('lp-countdown');
+  if (!bar) return;
+
+  // Очищаем предыдущий интервал если был
+  if (_cdInterval) { clearInterval(_cdInterval); _cdInterval = null; }
+
+  // Если дедлайн не задан или уже прошёл — скрываем блок
+  if (!deadlineStr) { bar.style.display = 'none'; return; }
+
+  // Поддерживаем форматы: YYYY-MM-DD и DD.MM.YYYY
+  let deadline;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(deadlineStr)) {
+    deadline = new Date(deadlineStr + 'T23:59:59');
+  } else if (/^\d{2}\.\d{2}\.\d{4}$/.test(deadlineStr)) {
+    const [d, m, y] = deadlineStr.split('.');
+    deadline = new Date(`${y}-${m}-${d}T23:59:59`);
+  } else {
+    bar.style.display = 'none'; return;
+  }
+
+  function tick() {
+    const diff = deadline - Date.now();
+    if (diff <= 0) {
+      bar.style.display = 'none';
+      clearInterval(_cdInterval);
+      return;
+    }
+    const days  = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins  = Math.floor((diff % 3600000)  / 60000);
+    const secs  = Math.floor((diff % 60000)    / 1000);
+    const pad   = n => String(n).padStart(2, '0');
+
+    const el = id => document.getElementById(id);
+    if (el('lp-cd-days'))  el('lp-cd-days').textContent  = pad(days);
+    if (el('lp-cd-hours')) el('lp-cd-hours').textContent = pad(hours);
+    if (el('lp-cd-mins'))  el('lp-cd-mins').textContent  = pad(mins);
+    if (el('lp-cd-secs'))  el('lp-cd-secs').textContent  = pad(secs);
+    bar.style.display = '';
+  }
+
+  tick();
+  _cdInterval = setInterval(tick, 1000);
+}
 
 // ══════════════════════════════ THEME ════════════════════════════
 function initTheme() {
@@ -716,6 +868,7 @@ function setLang(l) {
     b.classList.toggle('active', b.dataset.lang === l);
   });
   applyTexts();
+  updateHeroVideoTexts();
   // Update viewers bar label language
   const lblEl = $('viewers-label');
   const LABEL = { ru: 'человек смотрят сейчас', kz: 'адам қазір қарауда' };
@@ -762,6 +915,7 @@ function applyTexts() {
   setText('mps-title',        t('progressCourse'));
   setText('completion-title', t('completionTitle'));
   setText('completion-sub',   t('completionSub'));
+  setText('achievement-title', t('achievementTitle'));
   setText('img-dl-text',      t('imgDownload'));
   setText('img-open-text',    t('imgOpenOrig'));
   setText('mnav-courses',     t('mnavCourses'));
@@ -785,6 +939,7 @@ function applyTexts() {
     prepEl.style.display = lang === 'kz' ? 'none' : '';
   }
   setHtml('lp-hero-sub',        t('lpHeroSub'));
+  setText('lp-sp-label',         t('lpSpLabel'));
   setText('lp-hero-btn-wa-text',t('lpHeroBtnWa'));
   setText('lp-hero-btn-login',  t('lpHeroBtnLogin'));
   setText('lp-stat-students',   t('lpStatStudents'));
@@ -803,6 +958,7 @@ function applyTexts() {
   setText('lp-rev-label',       t('lpRevLabel'));
   setText('lp-rev-h',           t('lpRevH'));
   renderLandingCarousel();
+  updateHeroVideoTexts();
   setText('lp-demo-label',      t('lpDemoLabel'));
   setText('lp-demo-h',          t('lpDemoH'));
   setText('lp-demo-sub',        t('lpDemoSub'));
@@ -811,8 +967,26 @@ function applyTexts() {
   setHtml('lp-cta-h',           t('lpCtaH'));
   setText('lp-cta-sub',         t('lpCtaSub'));
   setText('lp-cta-wa-btn',      t('lpCtaWaBtn'));
+  setText('lp-guarantee-hero-text', t('lpGuarantee'));
+  setText('lp-guarantee-cta-text',  t('lpGuarantee'));
   setText('lp-cta-login-btn',   t('lpCtaLoginBtn'));
   setText('lp-back-btn-text',   t('lpBackBtn'));
+
+  // ── Блок цены ──
+  setText('lp-price-label',    t('lpPriceLabel'));
+  setText('lp-price-h',        t('lpPriceH'));
+  setText('lp-price-sub',      t('lpPriceSub'));
+  setText('lp-price-badge',    t('lpPriceBadge'));
+  setText('lp-price-number',   t('lpPriceNumber'));
+  setText('lp-price-period',   t('lpPricePeriod'));
+  setText('lp-price-inc1',     t('lpPriceInc1'));
+  setText('lp-price-inc2',     t('lpPriceInc2'));
+  setText('lp-price-inc3',     t('lpPriceInc3'));
+  setText('lp-price-inc4',     t('lpPriceInc4'));
+  setText('lp-price-inc5',     t('lpPriceInc5'));
+  setText('lp-price-inc6',     t('lpPriceInc6'));
+  setText('lp-price-btn-text', t('lpPriceBtn'));
+  setText('lp-price-guarantee',t('lpPriceGuarantee'));
 
   // ── Таймер ──
   setText('lp-timer-badge',     t('lpTimerBadge'));
@@ -1017,19 +1191,40 @@ function applyTexts() {
   const spToastActionEl = document.querySelector('.sp-toast-action');
   if (spToastActionEl) spToastActionEl.textContent = t('spToastAction');
 
-  // ── Sticky CTA bar — ищем текстовый span напрямую, не childNodes ──
-  const stickyCta = document.querySelector('.sticky-cta-wa .sticky-cta-label');
-  if (stickyCta) {
-    stickyCta.textContent = t('stickyCta');
-  } else {
-    // fallback: перебираем childNodes только текстового типа
-    const stickyCtaBtn = document.querySelector('.sticky-cta-wa');
-    if (stickyCtaBtn) stickyCtaBtn.childNodes.forEach(n => {
-      if (n.nodeType === Node.TEXT_NODE && n.textContent.trim()) n.textContent = ' ' + t('stickyCta');
-    });
-  }
-  const stickyLogin = document.querySelector('.sticky-cta-login');
-  if (stickyLogin) stickyLogin.textContent = t('stickyLogin');
+  // ── Sticky CTA bar ──
+  const stickyCtaLabel = document.getElementById('sticky-cta-label');
+  if (stickyCtaLabel) stickyCtaLabel.textContent = t('stickyCta');
+  const stickyLoginBtn = document.getElementById('sticky-cta-login-btn');
+  if (stickyLoginBtn) stickyLoginBtn.textContent = t('stickyLogin');
+
+  // ── Таймер срочности — обновляем подписи при смене языка ──
+  const cdLabel = document.getElementById('lp-countdown-label');
+  if (cdLabel) cdLabel.textContent = t('cdLabel');
+  const cdUnits = [['lp-cd-days-lbl','cdDays'],['lp-cd-hours-lbl','cdHours'],['lp-cd-mins-lbl','cdMins'],['lp-cd-secs-lbl','cdSecs']];
+  cdUnits.forEach(([id, key]) => { const el = document.getElementById(id); if (el) el.textContent = t(key); });
+
+  // ── WA-ссылки на лендинге — обновляем текст в URL при смене языка ──
+  (function updateWaLinks() {
+    // Извлекаем номер из waAccessUrl (формат https://wa.me/PHONE?text=...)
+    // или используем fallback из текущего href
+    function buildHref(el, textKey) {
+      if (!el) return;
+      const waNum = (typeof waAccessUrl !== 'undefined' && waAccessUrl)
+        ? (waAccessUrl.match(/wa\.me\/(\d+)/) || [])[1]
+        : (el.href.match(/wa\.me\/(\d+)/) || [])[1] || '77776020216';
+      el.href = `https://wa.me/${waNum}?text=${encodeURIComponent(t(textKey))}`;
+    }
+    buildHref(document.querySelector('.sticky-cta-wa'),   'waTextAccess');
+    buildHref(document.getElementById('lp-hero-btn-wa'),  'waTextAccess');
+    buildHref(document.querySelector('.lp-cmp-cta-btn'),  'waTextPrice');
+    buildHref(document.querySelector('.lp-faq-cta-btn'),  'waTextQuestion');
+    buildHref(document.getElementById('lp-cta-wa-link'),  'waTextBuy');
+    buildHref(document.getElementById('mob-wa-btn'),       'waTextAccess');
+  })();
+
+  // Мобильная sticky WA-кнопка: обновляем текст
+  const mobWaText = document.getElementById('mob-wa-text');
+  if (mobWaText) mobWaText.textContent = t('stickyCta');
 }
 
 // ══════════════════════════════ CSV PARSING ═══════════════════════
@@ -1137,6 +1332,8 @@ async function loadSheet2() {
     tgUrl                 = strip((rows[5] || [])[0]) || '';
     tgChannelUrl          = strip((rows[6] || [])[0]) || '';  // A7 — ТГ-канал отзывов
     waAccessUrl           = strip((rows[7] || [])[0]) || '';  // A8 — WA "Получить доступ" (до авторизации)
+    const cdDeadlineRaw   = strip((rows[8] || [])[0]) || '';  // A9 — дедлайн таймера (YYYY-MM-DD или пусто)
+    initCountdown(cdDeadlineRaw);
 
     courses = [];
     let maxCol = 0;
@@ -1178,10 +1375,10 @@ function showSheetError() {
   if (grid) {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px 24px;color:var(--text3);font-size:14px;line-height:2">
       <div style="font-size:36px;margin-bottom:12px">⚠️</div>
-      <div style="color:var(--text2);font-weight:600;margin-bottom:8px;font-size:15px">Не удалось загрузить курсы</div>
+      <div style="color:var(--text2);font-weight:600;margin-bottom:8px;font-size:15px">${t('sheetErrTitle')}</div>
       <div style="font-size:13px;margin-bottom:20px">${t('errSheetUnavailable')}</div>
       <button onclick="loadSheet2()" style="background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:10px;padding:11px 24px;font-size:13px;font-weight:700;color:#000;cursor:pointer;font-family:'DM Sans',sans-serif">
-        Попробовать снова
+        ${t('sheetErrRetry')}
       </button>
     </div>`;
   }
@@ -1241,11 +1438,11 @@ function applyLinks() {
   if (currentUser) {
     // После авторизации
     setLink('wa-btn', waUrl);
-    if (waBtnText) waBtnText.textContent = 'Тех. поддержка сайта';
+    if (waBtnText) waBtnText.textContent = t('headerWaSupport');
   } else {
     // До авторизации
     if (waBtnEl) { waBtnEl.href = waAccessUrl || '#'; waBtnEl.onclick = null; }
-    if (waBtnText) waBtnText.textContent = 'Получить доступ';
+    if (waBtnText) waBtnText.textContent = t('headerWaAccess');
   }
 
   // TG кнопка: только после авторизации — "Написать куратору" (A6)
@@ -1255,7 +1452,7 @@ function applyLinks() {
     // После авторизации — показываем, ставим ссылку A6 и подпись
     if (tgBtnEl) tgBtnEl.style.display = '';
     setLink('tg-btn', tgUrl);
-    if (tgBtnText) tgBtnText.textContent = 'Написать куратору';
+    if (tgBtnText) tgBtnText.textContent = t('headerTgCurator');
   } else {
     // До авторизации — скрываем кнопку Telegram
     if (tgBtnEl) tgBtnEl.style.display = 'none';
@@ -1302,7 +1499,7 @@ function renderDemoCards() {
 
   if (!courses || courses.length === 0) {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--text3);font-size:13px">
-      ⏳ Курсы загружаются... Подождите немного.
+      ⏳ ${t('demoLoading')}
     </div>`;
     // Re-try in 1.5s
     setTimeout(renderDemoCards, 1500);
@@ -1325,15 +1522,15 @@ function renderDemoCards() {
         <div class="demo-card-icon" style="background:linear-gradient(140deg,${color},${darkenHex(color,20)})">${iconHtml}</div>
         <div>
           <div class="demo-card-name">${escHtml(name)}</div>
-          <div class="demo-card-meta">${lessons.filter(l=>l.type==='video').length} уроков</div>
+          <div class="demo-card-meta">${lessons.filter(l=>l.type==='video').length} ${t('demoLessonsUnit')}</div>
         </div>
       </div>
       <div class="demo-card-badge">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Бесплатный урок
+        ${t('demoFreeBadge')}
       </div>
       <div class="demo-card-cta">
-        <span class="demo-cta-label">Смотреть демо</span>
+        <span class="demo-cta-label">${t('demoWatchCta')}</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </div>
     </div>`;
@@ -1347,10 +1544,10 @@ function openDemoLesson(idx) {
   const color   = course.hexColor || DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
   const lessons = lang === 'kz' ? course.lessonsKZ : course.lessonsRU;
   const first   = lessons.find(l => l.type === 'video');
-  if (!first || !first.url) { showToast('Демо-урок недоступен для этого курса', 'error'); return; }
+  if (!first || !first.url) { showToast(t('demoUnavailable'), 'error'); return; }
 
   const ytId = extractYouTubeId(first.url);
-  if (!ytId) { showToast('Демо-урок недоступен', 'error'); return; }
+  if (!ytId) { showToast(t('demoUnavailableShort'), 'error'); return; }
 
   const lessonTitle = first.name || (lang === 'kz' ? 'Сабақ 1' : 'Урок 1');
 
@@ -1642,6 +1839,50 @@ function getTotalProgress() {
     totalW += p.watched; totalT += p.total;
   });
   return { watched: totalW, total: totalT, pct: totalT ? Math.round(totalW / totalT * 100) : 0 };
+}
+
+// ══════════════════════════════ HERO VIDEO ════════════════════════
+// ID YouTube-ролика с результатом студента (замените на реальный)
+// Чтобы поменять видео: вставьте только ID (часть после ?v= в ссылке YouTube)
+// Например: https://youtu.be/dQw4w9WgXcQ → ID = dQw4w9WgXcQ
+// YouTube ID читается из localStorage (задаётся в Админ-панели)
+function getHeroVideoId() { return localStorage.getItem('bs_hero_video_id') || ''; }
+
+function openHeroVideo() {
+  const ytId = getHeroVideoId();
+  if (!ytId) {
+    // Если видео не задано — показываем тост с подсказкой
+    showToast('🎬 Добавьте YouTube ID в Админ-панели (⚙ → Видео-превью)', 'info');
+    return;
+  }
+  const poster = document.getElementById('lp-hero-video-poster');
+  const player = document.getElementById('lp-hero-video-player');
+  const iframe = document.getElementById('lp-hero-yt-iframe');
+  if (!poster || !player || !iframe) return;
+
+  // Автовоспроизведение + muted для autoplay policy браузеров
+  iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1`;
+  poster.style.display = 'none';
+  player.style.display = 'block';
+}
+
+function closeHeroVideo() {
+  const poster = document.getElementById('lp-hero-video-poster');
+  const player = document.getElementById('lp-hero-video-player');
+  const iframe = document.getElementById('lp-hero-yt-iframe');
+  if (!poster || !player || !iframe) return;
+  iframe.src = '';  // останавливаем видео
+  player.style.display = 'none';
+  poster.style.display = 'flex';
+}
+
+// Переводы для видео-блока
+function updateHeroVideoTexts() {
+  const isKz = lang === 'kz';
+  setText('lp-hvr-label',    isKz ? 'Студент нәтижесі'       : 'Результат студента');
+  setText('lp-hvr-period',   isKz ? 'Kaspi-де бірінші айда'  : 'за первый месяц на Kaspi');
+  setText('lp-hvr-duration', isKz ? '▶ 28 сек · нақты сатылым' : '▶ 28 сек · реальные продажи');
+  setText('lp-hvp-text',     isKz ? '2 400+ студент сатуда'  : '2 400+ студентов уже продают');
 }
 
 // ══════════════════════════════ HERO STATS ════════════════════════
@@ -2157,7 +2398,7 @@ function showUniversalPlayOverlay(onPlayCallback) {
       <div id="upo-btn" style="width:88px;height:88px;background:rgba(255,40,40,0.94);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.7);cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21"/></svg>
       </div>
-      <span style="color:#fff;font-size:15px;font-family:sans-serif;font-weight:500;pointer-events:none">Нажмите для запуска видео</span>
+      <span style="color:#fff;font-size:15px;font-family:sans-serif;font-weight:500;pointer-events:none">${t('videoPlayBtn')}</span>
     </div>
   `;
   const btn = document.getElementById('upo-btn');
@@ -2678,8 +2919,8 @@ async function logLogin(iin, name) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         _type:    'login_log',
-        date:     now.toLocaleDateString('ru-RU'),
-        time:     now.toLocaleTimeString('ru-RU'),
+        date:     now.toLocaleDateString(lang === 'kz' ? 'kk-KZ' : 'ru-RU'),
+        time:     now.toLocaleTimeString(lang === 'kz' ? 'kk-KZ' : 'ru-RU'),
         iin,
         name,
         device,
@@ -2887,6 +3128,8 @@ function showLessons() {
   $('logout-btn').style.display    = 'flex';
   $('header-center').style.display = 'flex';
   if (window.innerWidth <= 640) $('mobile-nav').style.display = 'flex';
+  const mobWaBarLessons = $('mob-wa-bar');
+  if (mobWaBarLessons) mobWaBarLessons.style.display = 'none';
 
   // Закрываем окно принудительной блокировки, если оно висело
   const blockOverlay = $('block-overlay');
@@ -2970,10 +3213,71 @@ async function checkAdminPw() {
 }
 $('admin-pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkAdminPw(); });
 
+// ══ Admin — Video Hero управление ══════════════════════════════════
+function updateAdminVideoStatus(id) {
+  const dot  = $('admin-video-status-dot');
+  const text = $('admin-video-status-text');
+  const previewRow  = $('admin-video-preview-row');
+  const previewLink = $('admin-video-preview-link');
+  if (!dot || !text) return;
+  if (id && id.trim()) {
+    dot.classList.add('active');
+    text.textContent = '✓ задано';
+    text.style.color = '#22c48a';
+    if (previewRow && previewLink) {
+      previewRow.style.display = 'flex';
+      previewLink.href = 'https://youtu.be/' + id.trim();
+      previewLink.textContent = 'https://youtu.be/' + id.trim();
+    }
+  } else {
+    dot.classList.remove('active');
+    text.textContent = 'не задано';
+    text.style.color = '';
+    if (previewRow) previewRow.style.display = 'none';
+  }
+}
+function previewAdminVideoId(val) {
+  updateAdminVideoStatus(val.trim());
+}
+function saveAdminVideoId() {
+  const input = $('admin-video-id-input');
+  if (!input) return;
+  // Принимаем как полную ссылку, так и только ID
+  let raw = input.value.trim();
+  const match = raw.match(/(?:youtu\.be\/|[?&]v=)([\w-]{11})/);
+  const id = match ? match[1] : (raw.length === 11 ? raw : '');
+  if (!id && raw) {
+    showToast('⚠ Не похоже на YouTube ID. Проверьте ссылку.', 'error');
+    return;
+  }
+  if (id) {
+    localStorage.setItem('bs_hero_video_id', id);
+    input.value = id;
+    updateAdminVideoStatus(id);
+    showToast('✅ YouTube ID сохранён! Видео появится в Hero.', 'success');
+  } else {
+    localStorage.removeItem('bs_hero_video_id');
+    updateAdminVideoStatus('');
+    showToast('Видео-превью убрано.', 'success');
+  }
+}
+function clearAdminVideoId() {
+  localStorage.removeItem('bs_hero_video_id');
+  const input = $('admin-video-id-input');
+  if (input) input.value = '';
+  updateAdminVideoStatus('');
+  showToast('🗑 Видео-превью удалено из Hero.', 'success');
+}
+
 function openAdmin() {
   $('admin-gs-input').value = gsSheetId;
   const scriptInput = $('admin-script-input');
   if (scriptInput) scriptInput.value = localStorage.getItem('bs_script_url') || LOG_SCRIPT_URL;
+  // Загружаем текущий YouTube ID
+  const vid = localStorage.getItem('bs_hero_video_id') || '';
+  const vidInput = $('admin-video-id-input');
+  if (vidInput) vidInput.value = vid;
+  updateAdminVideoStatus(vid);
   $('admin-modal').classList.add('show');
 }
 function saveAdmin() {
@@ -3217,6 +3521,8 @@ function showLanding() {
     setTimeout(() => { if (lp) lp.classList.remove('page-fade-in'); }, 400);
     const backBtn = $('lp-back-btn');
     if (backBtn) backBtn.style.display = 'none';
+    const mobWaBar = $('mob-wa-bar');
+    if (mobWaBar && window.innerWidth <= 768) mobWaBar.style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
     resetIdleBeacon();
     if (window._showViewersBar) window._showViewersBar();
@@ -3230,6 +3536,8 @@ function showLandingLogin() {
   if (window._hideViewersBar) window._hideViewersBar();
   setTimeout(() => {
     if (lp) { lp.style.display = 'none'; lp.classList.remove('page-fade-out'); }
+    const mobWaBarLogin = $('mob-wa-bar');
+    if (mobWaBarLogin) mobWaBarLogin.style.display = 'none';
     if (loginPg) {
       loginPg.style.display = 'flex';
       loginPg.classList.add('page-fade-in');
@@ -3264,10 +3572,47 @@ function scrollToDemoAndOpen() {
   }, 220);
 }
 
+// ══════════════════════════════ SOCIAL PROOF COUNTER ═════════════
+function initSocialProofCounter() {
+  const el = document.getElementById('lp-sp-num');
+  if (!el) return;
+  const target = 2400;
+  const duration = 1400;
+  const start = Date.now();
+  // Start from a lower number for drama
+  const from = 1800;
+  function tick() {
+    const elapsed = Date.now() - start;
+    const progress = Math.min(1, elapsed / duration);
+    // Ease out cubic
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(from + (target - from) * eased);
+    // Format with space as thousands separator
+    el.textContent = current >= 1000
+      ? Math.floor(current / 1000) + ' ' + String(current % 1000).padStart(3, '0')
+      : current;
+    if (progress < 1) requestAnimationFrame(tick);
+    else el.textContent = '2 400'; // exact final value
+  }
+  // Trigger only when element enters viewport
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        tick();
+        obs.disconnect();
+      }
+    }, { threshold: 0.3 });
+    obs.observe(el);
+  } else {
+    setTimeout(tick, 400);
+  }
+}
+
 (async function init() {
   applyTexts();
   initLandingTimer();
   initOnlineCounter();
+  initSocialProofCounter();
   const restored = await tryRestoreSession();
   if (!restored) {
     if (gsSheetId) loadSheet2();
@@ -3550,7 +3895,8 @@ function showSpToast() {
   if (!el || !nameEl) return;
 
   el.querySelector('.sp-toast-avatar').textContent = person.emoji;
-  nameEl.textContent = `${person.name} из ${person.city}`;
+  const from = lang === 'kz' ? 'қаласынан' : 'из';
+  nameEl.textContent = `${person.name} ${from} ${person.city}`;
   el.style.display = 'flex';
 
   requestAnimationFrame(() => {
@@ -3808,7 +4154,7 @@ function drawCertificate(canvas, studentName, courseName) {
   ctx.font = '600 13px DM Sans, sans-serif';
   ctx.fillStyle = 'rgba(245,200,66,0.7)';
   ctx.textAlign = 'center';
-  ctx.fillText('СЕРТИФИКАТ О ПРОХОЖДЕНИИ КУРСА', W / 2, 186);
+  ctx.fillText(t('certCanvasTitle'), W / 2, 186);
 
   // Divider line
   const lineGrad = ctx.createLinearGradient(160, 0, W - 160, 0);
@@ -3828,10 +4174,10 @@ function drawCertificate(canvas, studentName, courseName) {
   ctx.textAlign = 'center';
   ctx.fillText(studentName, W / 2, 260);
 
-  // "успешно прошёл(а)"
+  // "успешно прошёл(а)" / "курсты сәтті аяқтады"
   ctx.font = '400 15px DM Sans, sans-serif';
   ctx.fillStyle = '#8080a8';
-  ctx.fillText('успешно прошёл(а) курс', W / 2, 292);
+  ctx.fillText(t('certCanvasSub'), W / 2, 292);
 
   // Course name
   const maxWidth = 600;
@@ -3855,7 +4201,7 @@ function drawCertificate(canvas, studentName, courseName) {
   ctx.stroke();
 
   // Date
-  const dateStr = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+  const dateStr = new Date().toLocaleDateString(lang === 'kz' ? 'kk-KZ' : 'ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
   ctx.font = '400 13px DM Sans, sans-serif';
   ctx.fillStyle = '#44445c';
   ctx.fillText(dateStr, W / 2, 416);
@@ -3877,7 +4223,7 @@ function downloadCert() {
   const course = courses[certCourseIdx];
   const courseName = course ? (lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ)) : 'Курс';
   const link = document.createElement('a');
-  link.download = `Сертификат_BSAmanat_${courseName.replace(/\s+/g, '_')}.png`;
+  link.download = `${t('certFilename')}_BSAmanat_${courseName.replace(/\s+/g, '_')}.png`;
   link.href = canvas.toDataURL('image/png');
   link.click();
 }
@@ -4017,7 +4363,7 @@ function openProgressDashboard() {
   const startKey = 'bs_start_date';
   let startDate = localStorage.getItem(startKey);
   if (!startDate) {
-    startDate = new Date().toLocaleDateString('ru-RU');
+    startDate = new Date().toLocaleDateString(lang === 'kz' ? 'kk-KZ' : 'ru-RU');
     localStorage.setItem(startKey, startDate);
   }
 
@@ -4086,7 +4432,7 @@ showLessons = function() {
   if (btn) btn.style.display = 'inline-flex';
   // Update start date if not set
   if (!localStorage.getItem('bs_start_date')) {
-    localStorage.setItem('bs_start_date', new Date().toLocaleDateString('ru-RU'));
+    localStorage.setItem('bs_start_date', new Date().toLocaleDateString(lang === 'kz' ? 'kk-KZ' : 'ru-RU'));
   }
   // Hide sticky cta
   const bar = $('sticky-cta-bar');
