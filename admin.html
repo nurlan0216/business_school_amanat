@@ -33,8 +33,8 @@
       <span class="field-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       </span>
-      <input type="password" id="admin-pw-input" placeholder="••••••••" class="field-input"
-             onkeydown="if(event.key==='Enter') checkAdminPw()">
+      <input type="password" id="admin-pw-input" placeholder="••••••••" class="field-input" onkeydown="if(event.key==='Enter') checkAdminPw()" style="padding-right:44px">
+      <button id="admin-pw-show-btn" onclick="toggleAdminPwShow()" type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:4px;z-index:2">👁</button>
       <div class="field-border-anim"></div>
     </div>
   </div>
@@ -393,8 +393,21 @@
       document.getElementById('admin-panel').style.display = 'block';
       _loadAdminFields();
     } else {
-      if (errEl) { errEl.textContent = '❌ Неверный пароль'; errEl.style.display = 'block'; }
-      if (input) input.value = '';
+      if (errEl) { errEl.textContent = '❌ Неверный пароль. Проверьте: латинская N, цифры 20020216, два символа $$ в конце. Введено символов: ' + pw.length; errEl.style.display = 'block'; }
+      // НЕ очищаем поле — чтобы можно было увидеть что введено
+    }
+  }
+
+  function toggleAdminPwShow() {
+    const input = document.getElementById('admin-pw-input');
+    const btn = document.getElementById('admin-pw-show-btn');
+    if (!input) return;
+    if (input.type === 'password') {
+      input.type = 'text';
+      if (btn) btn.textContent = '🙈';
+    } else {
+      input.type = 'password';
+      if (btn) btn.textContent = '👁';
     }
   }
 
