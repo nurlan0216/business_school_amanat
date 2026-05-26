@@ -127,14 +127,16 @@ const LP_COURSE_DATA = {
 
 // ── Поиск иконки курса из Sheets по matchKey ────────────────
 function _findCourseIcon(matchKey) {
-  if (!window.courses || !window.courses.length) return null;
+  // courses объявлен как let в app-core.js — берём из window или глобального scope
+  const _courses = window.courses || (typeof courses !== 'undefined' ? courses : []);
+  if (!_courses || !_courses.length) return null;
   const key = matchKey.toLowerCase();
-  const found = window.courses.find(c => {
+  const found = _courses.find(c => {
     const nameRU = (c.nameRU || '').toLowerCase();
     const nameKZ = (c.nameKZ || '').toLowerCase();
     return nameRU.includes(key) || nameKZ.includes(key);
   });
-  return found ? found.iconUrl : null;
+  return (found && found.iconUrl) ? found.iconUrl : null;
 }
 
 // ── Рендер иконки: из Sheets или fallback-эмодзи ────────────
@@ -224,7 +226,8 @@ function applyLpCourseCards() {
   if (typeof _origLoadSheet2 === 'function') {
     window.loadSheet2 = async function() {
       await _origLoadSheet2.apply(this, arguments);
-      applyLpCourseCards();
+      // setTimeout гарантирует что renderCoursesGrid() внутри loadSheet2 уже выполнился
+      setTimeout(() => applyLpCourseCards(), 50);
     };
   } else {
     // loadSheet2 ещё не определена — ждём
@@ -236,7 +239,7 @@ function applyLpCourseCards() {
         const _orig = window.loadSheet2;
         window.loadSheet2 = async function() {
           await _orig.apply(this, arguments);
-          applyLpCourseCards();
+          setTimeout(() => applyLpCourseCards(), 50);
         };
       }
       if (_attempts > 50) clearInterval(_waitInterval);

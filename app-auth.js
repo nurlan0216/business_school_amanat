@@ -127,10 +127,15 @@ async function loadSheet2() {
       const nameKZ = strip((rows[0] || [])[colKZ]);
       const nameRU = strip((rows[0] || [])[colRU]);
       if (!nameKZ && !nameRU) break;
-      // Иконка берётся из KZ-колонки, фоллбэк — из RU-колонки (на случай если только там)
-      const iconUrl  = strip((rows[1] || [])[colKZ]) || strip((rows[1] || [])[colRU]);
-      // hexColor берётся из RU-колонки; если там иконка — следующая RU-колонка
-      const hexColor = strip((rows[1] || [])[colRU + 1]) || strip((rows[1] || [])[colRU]);
+      // Иконка (URL) и цвет (hex) берутся из строки 1 по KZ и RU колонкам
+      const rawKZIcon = strip((rows[1] || [])[colKZ]) || '';
+      const rawRUIcon = strip((rows[1] || [])[colRU]) || '';
+      const _isUrl = s => s && (s.startsWith('http') || s.startsWith('data:') || s.startsWith('//'));
+      const _isHex = s => s && /^#[0-9a-fA-F]{3,8}$/.test(s.trim());
+      // iconUrl — первый из значений, который является URL
+      const iconUrl  = _isUrl(rawKZIcon) ? rawKZIcon : (_isUrl(rawRUIcon) ? rawRUIcon : '');
+      // hexColor — первый из значений, который является hex-цветом
+      const hexColor = _isHex(rawKZIcon) ? rawKZIcon : (_isHex(rawRUIcon) ? rawRUIcon : '');
       const lessonsKZ = [], lessonsRU = [];
       for (let r = 2; r < rows.length; r++) {
         const row   = rows[r] || [];
