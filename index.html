@@ -280,7 +280,56 @@
             </div>
           </div>
           <div class="lp-hero-video-player" id="lp-hero-video-player" style="display:none">
-            <iframe id="lp-hero-yt-iframe" src="" title="Результат студента Business School Amanat" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;border-radius:16px"></iframe>
+            <!-- YT IFrame API target -->
+            <div id="lp-hero-yt-api" style="width:100%;height:100%;border-radius:16px;overflow:hidden"></div>
+
+            <!-- Кастомные контролы -->
+            <div class="lp-hvc-bar" id="lp-hvc-bar">
+              <!-- Прогресс-бар -->
+              <div class="lp-hvc-progress" id="lp-hvc-progress" onmousedown="heroVcSeekStart(event)" ontouchstart="heroVcSeekStart(event)">
+                <div class="lp-hvc-progress-bg"></div>
+                <div class="lp-hvc-progress-fill" id="lp-hvc-fill"></div>
+                <div class="lp-hvc-progress-thumb" id="lp-hvc-thumb"></div>
+              </div>
+
+              <div class="lp-hvc-row">
+                <!-- Перемотка назад -->
+                <button class="lp-hvc-btn" onclick="heroVcSeek(-10)" title="Назад 10 сек">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.22"/></svg>
+                  <span style="font-size:10px;margin-left:2px">10</span>
+                </button>
+
+                <!-- Play/Pause -->
+                <button class="lp-hvc-btn lp-hvc-playpause" id="lp-hvc-pp" onclick="heroVcTogglePlay()" title="Воспроизвести / Пауза">
+                  <svg id="lp-hvc-icon-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>
+                  <svg id="lp-hvc-icon-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+                </button>
+
+                <!-- Перемотка вперёд -->
+                <button class="lp-hvc-btn" onclick="heroVcSeek(10)" title="Вперёд 10 сек">
+                  <span style="font-size:10px;margin-right:2px">10</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-3.22"/></svg>
+                </button>
+
+                <!-- Таймер -->
+                <span class="lp-hvc-time" id="lp-hvc-time">0:00 / 0:00</span>
+
+                <div style="flex:1"></div>
+
+                <!-- Громкость -->
+                <button class="lp-hvc-btn" id="lp-hvc-mute" onclick="heroVcToggleMute()" title="Звук">
+                  <svg id="lp-hvc-vol-on" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                  <svg id="lp-hvc-vol-off" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+                </button>
+
+                <!-- Fullscreen -->
+                <button class="lp-hvc-btn" id="lp-hvc-fs" onclick="heroVcToggleFS()" title="Полный экран">
+                  <svg id="lp-hvc-fs-exp" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                  <svg id="lp-hvc-fs-shr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:none"><polyline points="8 3 3 3 3 8"/><polyline points="21 8 21 3 16 3"/><polyline points="3 16 3 21 8 21"/><polyline points="16 21 21 21 21 16"/></svg>
+                </button>
+              </div>
+            </div>
+
             <button class="lp-hero-video-close" onclick="closeHeroVideo()" aria-label="Закрыть видео">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>

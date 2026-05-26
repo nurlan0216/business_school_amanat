@@ -1038,29 +1038,204 @@ function closeDemoLesson() {
   }
 }
 
-// ══ HERO VIDEO ════════════════════════════════════════════════════
+// ══ HERO VIDEO (YT IFrame API + custom controls) ══════════════════
 function getHeroVideoId() { return localStorage.getItem('bs_hero_video_id') || ''; }
 
+// ── Состояние hero-плеера ─────────────────────────────────────
+let heroYtPlayer   = null;
+let heroVcInterval = null;
+let heroVcMuted    = true;  // стартуем muted (autoplay требует)
+let heroVcIsDragging = false;
+
+// ── Открыть / закрыть ─────────────────────────────────────────
 function openHeroVideo() {
   const ytId = getHeroVideoId();
   if (!ytId) { showToast('🎬 Добавьте YouTube ID в Админ-панели (⚙ → Видео-превью)', 'info'); return; }
+
   const poster = document.getElementById('lp-hero-video-poster');
-  const player = document.getElementById('lp-hero-video-player');
-  const iframe = document.getElementById('lp-hero-yt-iframe');
-  if (!poster || !player || !iframe) return;
-  iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1`;
+  const playerWrap = document.getElementById('lp-hero-video-player');
+  if (!poster || !playerWrap) return;
+
   poster.style.display = 'none';
-  player.style.display = 'block';
+  playerWrap.style.display = 'block';
+
+  // Уничтожаем старый инстанс если был
+  if (heroYtPlayer) { try { heroYtPlayer.destroy(); } catch(_) {} heroYtPlayer = null; }
+
+  // Контейнер должен быть чистым div без id-коллизий
+  const target = document.getElementById('lp-hero-yt-api');
+  if (!target) return;
+  target.innerHTML = '<div id="lp-hero-yt-player-div"></div>';
+
+  // Ждём готовности YT API
+  function _create() {
+    heroYtPlayer = new YT.Player('lp-hero-yt-player-div', {
+      videoId: ytId,
+      playerVars: {
+        autoplay: 1,
+        mute: 1,
+        controls: 0,
+        rel: 0,
+        modestbranding: 1,
+        playsinline: 1,
+        iv_load_policy: 3,
+        disablekb: 1,
+        fs: 0,
+      },
+      events: {
+        onReady: function(e) {
+          e.target.playVideo();
+          heroVcMuted = true;
+          _heroVcUpdateMuteIcon();
+          _heroVcStartPoll();
+        },
+        onStateChange: function(e) {
+          const playing = e.data === YT.PlayerState.PLAYING;
+          _heroVcSyncPlayIcon(playing);
+          if (playing) _heroVcStartPoll();
+          else _heroVcStopPoll();
+        },
+      },
+    });
+  }
+
+  if (window.YT && YT.Player) { _create(); }
+  else {
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = function() {
+      if (prev) prev();
+      _create();
+    };
+  }
 }
 
 function closeHeroVideo() {
+  _heroVcStopPoll();
+  if (heroYtPlayer) { try { heroYtPlayer.stopVideo(); heroYtPlayer.destroy(); } catch(_) {} heroYtPlayer = null; }
+  const target = document.getElementById('lp-hero-yt-api');
+  if (target) target.innerHTML = '<div id="lp-hero-yt-player-div"></div>';
+  const playerWrap = document.getElementById('lp-hero-video-player');
+  if (playerWrap) playerWrap.style.display = 'none';
   const poster = document.getElementById('lp-hero-video-poster');
-  const player = document.getElementById('lp-hero-video-player');
-  const iframe = document.getElementById('lp-hero-yt-iframe');
-  if (!poster || !player || !iframe) return;
-  iframe.src = '';
-  player.style.display = 'none';
-  poster.style.display = 'flex';
+  if (poster) poster.style.display = 'flex';
+  // Сброс иконок
+  _heroVcSyncPlayIcon(false);
+}
+
+// ── Play / Pause ──────────────────────────────────────────────
+function heroVcTogglePlay() {
+  if (!heroYtPlayer || typeof heroYtPlayer.getPlayerState !== 'function') return;
+  const state = heroYtPlayer.getPlayerState();
+  if (state === YT.PlayerState.PLAYING) { heroYtPlayer.pauseVideo(); _heroVcSyncPlayIcon(false); }
+  else { heroYtPlayer.playVideo(); _heroVcSyncPlayIcon(true); }
+}
+
+// ── Перемотка ─────────────────────────────────────────────────
+function heroVcSeek(delta) {
+  if (!heroYtPlayer || typeof heroYtPlayer.getCurrentTime !== 'function') return;
+  try { heroYtPlayer.seekTo(Math.max(0, heroYtPlayer.getCurrentTime() + delta), true); } catch(_) {}
+}
+
+// ── Mute / Unmute ─────────────────────────────────────────────
+function heroVcToggleMute() {
+  if (!heroYtPlayer) return;
+  heroVcMuted = !heroVcMuted;
+  try { heroVcMuted ? heroYtPlayer.mute() : heroYtPlayer.unMute(); } catch(_) {}
+  _heroVcUpdateMuteIcon();
+}
+
+function _heroVcUpdateMuteIcon() {
+  const on  = document.getElementById('lp-hvc-vol-on');
+  const off = document.getElementById('lp-hvc-vol-off');
+  if (on)  on.style.display  = heroVcMuted ? 'none' : '';
+  if (off) off.style.display = heroVcMuted ? '' : 'none';
+}
+
+// ── Fullscreen ────────────────────────────────────────────────
+function heroVcToggleFS() {
+  const wrap = document.getElementById('lp-hero-video-wrap');
+  if (!wrap) return;
+  if (!document.fullscreenElement) {
+    wrap.requestFullscreen && wrap.requestFullscreen();
+  } else {
+    document.exitFullscreen && document.exitFullscreen();
+  }
+}
+
+document.addEventListener('fullscreenchange', function() {
+  const exp = document.getElementById('lp-hvc-fs-exp');
+  const shr = document.getElementById('lp-hvc-fs-shr');
+  const isFs = !!document.fullscreenElement;
+  if (exp) exp.style.display = isFs ? 'none' : '';
+  if (shr) shr.style.display = isFs ? '' : 'none';
+});
+
+// ── Прогресс-бар (клик + drag) ────────────────────────────────
+function heroVcSeekStart(e) {
+  heroVcIsDragging = true;
+  heroVcSeekAt(e);
+
+  function onMove(ev) { if (heroVcIsDragging) heroVcSeekAt(ev.touches ? ev.touches[0] : ev); }
+  function onUp()   { heroVcIsDragging = false; document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); document.removeEventListener('touchmove', onMove); document.removeEventListener('touchend', onUp); }
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
+  document.addEventListener('touchmove', onMove, { passive: true });
+  document.addEventListener('touchend', onUp);
+}
+
+function heroVcSeekAt(e) {
+  const bar = document.getElementById('lp-hvc-progress');
+  if (!bar || !heroYtPlayer || typeof heroYtPlayer.getDuration !== 'function') return;
+  const rect = bar.getBoundingClientRect();
+  const pct  = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  try {
+    const dur = heroYtPlayer.getDuration();
+    if (dur > 0) heroYtPlayer.seekTo(pct * dur, true);
+  } catch(_) {}
+}
+
+// ── Polling: обновляем прогресс-бар и таймер ─────────────────
+function _heroVcStartPoll() {
+  if (heroVcInterval) return;
+  heroVcInterval = setInterval(_heroVcTick, 250);
+}
+
+function _heroVcStopPoll() {
+  if (heroVcInterval) { clearInterval(heroVcInterval); heroVcInterval = null; }
+}
+
+function _heroVcTick() {
+  if (!heroYtPlayer || typeof heroYtPlayer.getCurrentTime !== 'function') return;
+  try {
+    const cur = heroYtPlayer.getCurrentTime();
+    const dur = heroYtPlayer.getDuration();
+    if (!dur) return;
+
+    const pct = cur / dur;
+    const fill  = document.getElementById('lp-hvc-fill');
+    const thumb = document.getElementById('lp-hvc-thumb');
+    if (!heroVcIsDragging) {
+      if (fill)  fill.style.width = (pct * 100) + '%';
+      if (thumb) thumb.style.left = (pct * 100) + '%';
+    }
+
+    const timeEl = document.getElementById('lp-hvc-time');
+    if (timeEl) timeEl.textContent = _heroFmt(cur) + ' / ' + _heroFmt(dur);
+  } catch(_) {}
+}
+
+function _heroFmt(s) {
+  s = Math.floor(s);
+  const m = Math.floor(s / 60), sec = s % 60;
+  return m + ':' + String(sec).padStart(2, '0');
+}
+
+// ── Синхронизация иконки play/pause ──────────────────────────
+function _heroVcSyncPlayIcon(playing) {
+  const iconPlay  = document.getElementById('lp-hvc-icon-play');
+  const iconPause = document.getElementById('lp-hvc-icon-pause');
+  if (iconPlay)  iconPlay.style.display  = playing ? 'none' : '';
+  if (iconPause) iconPause.style.display = playing ? '' : 'none';
 }
 
 function updateHeroVideoTexts() {
