@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin — Business School Amanat</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="platform.css">
+  <style>
+    body { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px; }
+    #admin-gate { width:100%; max-width:420px; }
+    #admin-panel { width:100%; max-width:680px; display:none; }
+    .admin-header { display:flex; align-items:center; gap:12px; margin-bottom:24px; }
+    .admin-header h1 { font-size:20px; font-weight:700; margin:0; }
+    .admin-back { color:var(--text3); text-decoration:none; font-size:13px; margin-left:auto; }
+    .admin-back:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+
+<!-- ─── GATE: Password ─────────────────────────────────────── -->
+<div id="admin-gate" class="modal" style="position:relative;padding:32px">
+  <h3 class="modal-h">🔐 Панель администратора</h3>
+  <p class="modal-sub">Введите пароль для доступа к настройкам</p>
+  <div class="field">
+    <label class="field-label">Пароль</label>
+    <div class="field-wrap">
+      <span class="field-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </span>
+      <input type="password" id="admin-pw-input" placeholder="••••••••" class="field-input"
+             onkeydown="if(event.key==='Enter') checkAdminPw()">
+      <div class="field-border-anim"></div>
+    </div>
+  </div>
+  <div class="msg error" id="pw-error"></div>
+  <button onclick="checkAdminPw()" class="login-btn" style="margin-top:12px">
+    <span class="btn-content"><span>Войти</span></span>
+  </button>
+  <p style="text-align:center;margin-top:16px;font-size:12px;color:var(--text3)">
+    <a href="/" style="color:var(--text3)">← Вернуться на сайт</a>
+  </p>
+</div>
+
+<!-- ─── ADMIN PANEL ─────────────────────────────────────────── -->
+<div id="admin-panel">
+  <div class="admin-header">
+    <span style="font-size:22px">⚙️</span>
+    <h1>Настройки администратора</h1>
+    <a href="/" class="admin-back">← На сайт</a>
+  </div>
+
+  <div class="modal" style="position:relative;padding:28px">
+    <p class="modal-sub">Управление подключением к Google Sheets и базой данных.</p>
+
+    <!-- Диагностика -->
+    <div class="admin-diag-box" id="admin-diag-box">
+      <div class="admin-diag-row">
+        <span class="admin-diag-label">Google Sheets (Лист2)</span>
+        <span class="admin-diag-status" id="diag-sheet2">⏳ не проверено</span>
+      </div>
+      <div class="admin-diag-row">
+        <span class="admin-diag-label">Apps Script (авторизация)</span>
+        <span class="admin-diag-status" id="diag-script">⏳ не проверено</span>
+      </div>
+      <button onclick="runAdminDiag()" class="admin-diag-btn" id="admin-diag-run-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-3.22"/></svg>
+        Проверить соединение
+      </button>
+    </div>
+
+    <!-- Sheet ID -->
+    <div class="field" style="margin-top:16px">
+      <label class="field-label">Google Sheets ID</label>
+      <div class="field-wrap">
+        <input type="text" id="admin-gs-input" placeholder="ID таблицы (из URL)" class="field-input" style="padding-left:16px">
+        <div class="field-border-anim"></div>
+      </div>
+    </div>
+
+    <!-- Apps Script URL -->
+    <div class="field" style="margin-top:10px">
+      <label class="field-label">Apps Script URL (для авторизации)</label>
+      <div class="field-wrap">
+        <input type="text" id="admin-script-input" placeholder="https://script.google.com/macros/s/..." class="field-input" style="padding-left:16px">
+        <div class="field-border-anim"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+      <button onclick="saveAdmin()" class="login-btn" style="flex:1;min-width:140px">
+        <span class="btn-content"><span>💾 Сохранить</span></span>
+      </button>
+      <button onclick="runAdminDiag()" class="login-btn" style="flex:1;min-width:140px;background:var(--surface3)!important;color:var(--text)!important">
+        <span class="btn-content"><span>🔍 Диагностика</span></span>
+      </button>
+    </div>
+
+    <div id="admin-diag-log" class="admin-diag-log" style="display:none"></div>
+
+    <div class="hint-box" style="margin-top:16px">
+      <strong>📋 Структура Google Таблицы</strong>
+      <strong style="display:block;margin-top:14px;color:var(--text)">📌 Лист1 — список студентов</strong>
+      <table class="sheet-table" style="margin-top:6px">
+        <tr><th>Столбец</th><th>Содержимое</th><th>Пример</th></tr>
+        <tr><td>A (0)</td><td>ИИН</td><td>123456789012</td></tr>
+        <tr><td>B (1)</td><td>Имя студента</td><td>Нурлан Нурланов</td></tr>
+        <tr><td>C (2)</td><td>Адрес / доп. инфо</td><td>Алматы</td></tr>
+        <tr><td>D (3)</td><td>Телефон</td><td>+77771234567</td></tr>
+        <tr><td>E (4)</td><td>Согласие</td><td>Да</td></tr>
+        <tr><td>K (10)</td><td>Статус доступа</td><td>✅ РАЗРЕШЕНО</td></tr>
+        <tr><td>L (11)</td><td>Статус оплаты</td><td>✅ ОПЛАЧЕНО</td></tr>
+      </table>
+      <p style="margin-top:8px;font-size:11px;color:var(--text3);line-height:1.8">
+        ⚠️ Строки F–J (5–9) — служебные данные (лид, проект и т.д.)<br>
+        ✅ РАЗРЕШЕНО / ✅ РҰҚСАТ — доступ открыт<br>
+        ✅ ОПЛАЧЕНО / ✅ ТӨЛЕНДІ — оплата подтверждена
+      </p>
+      <strong style="display:block;margin-top:14px;color:var(--text)">📌 Лист2 — настройки (столбец A)</strong>
+      <table class="sheet-table" style="margin-top:6px">
+        <tr><th>Ячейка</th><th>Содержимое</th></tr>
+        <tr><td>A3</td><td>Ссылка каталог Фулфилмент</td></tr>
+        <tr><td>A4</td><td>Ссылка каталог Золото / Алтын</td></tr>
+        <tr><td>A5</td><td>Ссылка WhatsApp куратора</td></tr>
+        <tr><td>A6</td><td>Ссылка Telegram куратора</td></tr>
+        <tr><td>A7</td><td>Ссылка ТГ-канал отзывов</td></tr>
+      </table>
+      <strong style="display:block;margin-top:14px;color:var(--text)">📌 Курсы: B+C = курс 1, D+E = курс 2...</strong>
+      <table class="sheet-table" style="margin-top:6px">
+        <tr><th>Строка</th><th>KZ столбец (B,D,F…)</th><th>RU столбец (C,E,G…)</th></tr>
+        <tr><td>1</td><td>Название курса на KZ</td><td>Название курса на RU</td></tr>
+        <tr><td>2</td><td>Ссылка на иконку курса</td><td>Hex цвет карточки</td></tr>
+        <tr><td>3+</td><td>Урок / img: / file: / header:</td><td>Урок / img: / file: / header:</td></tr>
+      </table>
+      <p style="margin-top:8px;font-size:11px;color:var(--text3);line-height:1.8">
+        🎬 Видео: <code class="hint-code">https://youtu.be/xxx|Название урока</code><br>
+        🖼 Картинка: <code class="hint-code">img:https://url|Подпись</code><br>
+        📝 Заголовок: <code class="hint-code">header:Название раздела</code><br>
+        📎 Файл: <code class="hint-code">file:https://url|Название</code><br>
+        🔗 Ссылка: <code class="hint-code">link:https://url|Текст</code><br>
+        💬 Текст: <code class="hint-code">text:Любой текст</code>
+      </p>
+    </div>
+
+    <!-- ══ ВИДЕО-ПРЕВЬЮ В HERO ══════════════════════════════════════ -->
+    <div class="admin-video-block" id="admin-video-block">
+      <div class="admin-video-block-header">
+        <span class="admin-video-block-icon">🎬</span>
+        <div>
+          <div class="admin-video-block-title">Видео-превью в Hero-блоке</div>
+          <div class="admin-video-block-sub">Короткое видео (15–30 сек) с результатом студента — показывается на главной странице до входа</div>
+        </div>
+        <div class="admin-video-status" id="admin-video-status">
+          <span class="admin-video-status-dot" id="admin-video-status-dot"></span>
+          <span id="admin-video-status-text">не задано</span>
+        </div>
+      </div>
+      <div class="field" style="margin-top:14px">
+        <label class="field-label">YouTube ID видео</label>
+        <div class="field-wrap">
+          <input type="text" id="admin-video-id-input" class="field-input" placeholder="Например: dQw4w9WgXcQ" style="padding-left:16px" oninput="previewAdminVideoId(this.value)">
+          <div class="field-border-anim"></div>
+        </div>
+      </div>
+      <div class="admin-video-preview-row" id="admin-video-preview-row" style="display:none">
+        <span class="admin-video-preview-label">Ссылка:</span>
+        <a class="admin-video-preview-link" id="admin-video-preview-link" href="#" target="_blank" rel="noopener">—</a>
+      </div>
+      <div class="admin-video-hint">
+        <strong>📋 Как найти YouTube ID:</strong><br>
+        Откройте видео на YouTube → скопируйте ссылку<br>
+        <code class="hint-code">https://youtu.be/<strong>dQw4w9WgXcQ</strong></code> → ID = <strong>dQw4w9WgXcQ</strong><br>
+        <code class="hint-code">https://youtube.com/watch?v=<strong>dQw4w9WgXcQ</strong></code> → ID = <strong>dQw4w9WgXcQ</strong><br><br>
+        <strong>💡 Идеальное видео:</strong> 15–30 секунд, без звука (mute), скриншот отчёта Kaspi или WB с реальными продажами.
+      </div>
+      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+        <button onclick="saveAdminVideoId()" class="login-btn" style="flex:1;min-width:120px">
+          <span class="btn-content"><span>💾 Сохранить видео</span></span>
+        </button>
+        <button onclick="clearAdminVideoId()" class="login-btn" style="flex:1;min-width:120px;background:var(--surface3)!important;color:var(--text2)!important">
+          <span class="btn-content"><span>🗑 Убрать видео</span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ ТАЙМЕР АКЦИИ ════════════════════════════════════════════ -->
+    <div class="admin-video-block" id="admin-timer-block" style="margin-top:20px">
+      <div class="admin-video-block-header">
+        <span class="admin-video-block-icon">⏱️</span>
+        <div>
+          <div class="admin-video-block-title">Таймер акции</div>
+          <div class="admin-video-block-sub">Управляет обратным отсчётом на лендинге</div>
+        </div>
+        <div class="admin-video-status" id="admin-timer-status">
+          <span class="admin-video-status-dot" id="admin-timer-status-dot"></span>
+          <span id="admin-timer-status-text">загрузка...</span>
+        </div>
+      </div>
+
+      <!-- Режим -->
+      <div style="display:flex;gap:16px;margin-top:16px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:var(--text)">
+          <input type="radio" name="timer-mode" id="timer-mode-float" value="float"
+                 onchange="onTimerModeChange()" style="accent-color:var(--gold);width:16px;height:16px">
+          Плавающий (X дней от визита)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:var(--text)">
+          <input type="radio" name="timer-mode" id="timer-mode-fixed" value="fixed"
+                 onchange="onTimerModeChange()" style="accent-color:var(--gold);width:16px;height:16px">
+          Фиксированная дата
+        </label>
+      </div>
+
+      <!-- Плавающий: количество дней -->
+      <div id="timer-float-row" class="field" style="margin-top:14px">
+        <label class="field-label">Количество дней от первого визита</label>
+        <div class="field-wrap">
+          <input type="number" id="timer-days-input" min="1" max="365" value="3"
+                 class="field-input" style="padding-left:16px">
+          <div class="field-border-anim"></div>
+        </div>
+      </div>
+
+      <!-- Фиксированный: дата и время -->
+      <div id="timer-fixed-row" class="field" style="margin-top:14px;display:none">
+        <label class="field-label">Дата и время окончания акции</label>
+        <div class="field-wrap">
+          <input type="datetime-local" id="timer-fixed-input"
+                 class="field-input" style="padding-left:16px;color-scheme:dark">
+          <div class="field-border-anim"></div>
+        </div>
+      </div>
+
+      <!-- Текущий статус таймера -->
+      <div id="admin-timer-info" style="margin-top:12px;padding:10px 14px;background:var(--surface3);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.7;display:none"></div>
+
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button onclick="saveTimerConfig()" class="login-btn" style="flex:1;min-width:140px">
+          <span class="btn-content"><span>💾 Сохранить таймер</span></span>
+        </button>
+        <button onclick="resetTimerDeadline()" class="login-btn" style="flex:1;min-width:140px;background:var(--surface3)!important;color:var(--text2)!important">
+          <span class="btn-content"><span>🔄 Сбросить таймер</span></span>
+        </button>
+      </div>
+
+      <div class="admin-video-hint" style="margin-top:14px">
+        <strong>💡 Режимы работы:</strong><br>
+        <strong>Плавающий</strong> — каждый посетитель видит таймер, начинающийся заново (X дней от его первого визита).<br>
+        <strong>Фиксированная дата</strong> — все видят одинаковый дедлайн. По истечении таймер останавливается на 00:00:00.<br><br>
+        <strong>🔄 Сбросить таймер</strong> — удаляет сохранённый дедлайн из браузера. При следующем открытии лендинга таймер запустится заново по текущим настройкам.
+      </div>
+    </div>
+
+    <!-- ══ ANTHROPIC API KEY ═══════════════════════════════════════ -->
+    <div class="admin-video-block" id="admin-anthropic-block" style="margin-top:20px">
+      <div class="admin-video-block-header">
+        <span class="admin-video-block-icon">🤖</span>
+        <div>
+          <div class="admin-video-block-title">Anthropic API Key (AI-калькулятор)</div>
+          <div class="admin-video-block-sub">Ключ для работы AI-прогноза доходов в калькуляторе лендинга</div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:14px">
+        <label class="field-label">API Key</label>
+        <div class="field-wrap">
+          <input type="password" id="admin-anthropic-key-input" class="field-input" placeholder="sk-ant-..." style="padding-left:16px">
+          <div class="field-border-anim"></div>
+        </div>
+      </div>
+      <div class="admin-video-hint">
+        <strong>⚠️ Важно:</strong> Ключ хранится в localStorage браузера администратора. Для продакшна рекомендуется проксировать запросы через backend, чтобы ключ не был виден в DevTools клиентов.<br><br>
+        Получить ключ: <a href="https://console.anthropic.com" target="_blank" rel="noopener" style="color:var(--gold)">console.anthropic.com</a>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+        <button onclick="saveAnthropicKey()" class="login-btn" style="flex:1;min-width:120px">
+          <span class="btn-content"><span>💾 Сохранить ключ</span></span>
+        </button>
+      </div>
+    </div>
+
+    <div id="admin-save-msg" class="msg" style="margin-top:12px;display:none"></div>
+  </div>
+</div>
+
+<script src="translations.js"></script>
+<script src="app-core.js" defer></script>
+<script>
+  // ─── Standalone admin page auth & UI ──────────────────────────────
+  const ADMIN_PW_KEY = 'amanat_admin_pw';
+
+  async function checkAdminPw() {
+    const input = document.getElementById('admin-pw-input');
+    const errEl = document.getElementById('pw-error');
+    const pw = input ? input.value : '';
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+    const hash = [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2,'0')).join('');
+    const HASH = '7404297e91a4ab5b540fceefb2c0030cc24965b1ac4591c774435421b5d8b9ad';
+    if (hash === HASH) {
+      document.getElementById('admin-gate').style.display = 'none';
+      document.getElementById('admin-panel').style.display = 'block';
+      _loadAdminFields();
+    } else {
+      if (errEl) { errEl.textContent = '❌ Неверный пароль'; errEl.style.display = 'block'; }
+      if (input) input.value = '';
+    }
+  }
+
+  function _loadAdminFields() {
+    const gsInput = document.getElementById('admin-gs-input');
+    const scriptInput = document.getElementById('admin-script-input');
+    if (gsInput) gsInput.value = localStorage.getItem('gs_sheet_id') || '';
+    if (scriptInput) scriptInput.value = localStorage.getItem('bs_script_url') || '';
+    const videoId = localStorage.getItem('bs_hero_video_id') || '';
+    const videoInput = document.getElementById('admin-video-id-input');
+    if (videoInput) videoInput.value = videoId;
+    _updateVideoStatus(videoId);
+    _loadTimerFields();
+  }
+
+  async function _saveSettingsToSheet(updates) {
+    const scriptUrl = localStorage.getItem('bs_script_url') || '';
+    if (!scriptUrl) {
+      console.warn('[admin] bs_script_url не задан — запись в Sheets пропущена');
+      return false;
+    }
+    try {
+      const res = await fetch(scriptUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ command: 'updateSettings', updates }),
+      });
+      if (!res.ok) { console.error('[admin] Apps Script HTTP', res.status); return false; }
+      const json = await res.json();
+      return json.ok === true;
+    } catch (e) {
+      console.error('[admin] Ошибка записи в Sheets:', e);
+      return false;
+    }
+  }
+
+  function saveAnthropicKey() {
+    const key = (document.getElementById('admin-anthropic-key-input') || {}).value || '';
+    if (key.trim()) {
+      localStorage.setItem('bs_anthropic_key', key.trim());
+      _showAdminMsg('✅ API-ключ сохранён локально. AI-калькулятор будет использовать его при следующем запросе.', 'success');
+    } else {
+      _showAdminMsg('⚠ Введите API-ключ в формате sk-ant-...', 'error');
+    }
+  }
+
+  function saveAdmin() {
+    const gsId = (document.getElementById('admin-gs-input') || {}).value || '';
+    const scriptUrl = (document.getElementById('admin-script-input') || {}).value || '';
+    if (gsId) localStorage.setItem('gs_sheet_id', gsId.trim());
+    if (scriptUrl) localStorage.setItem('bs_script_url', scriptUrl.trim());
+    const msg = document.getElementById('admin-save-msg');
+    if (msg) { msg.textContent = '✅ Сохранено! Перезагрузите сайт для применения.'; msg.className = 'msg success'; msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 4000); }
+  }
+
+  function runAdminDiag() {
+    const gsId = localStorage.getItem('gs_sheet_id') || '';
+    const scriptUrl = localStorage.getItem('bs_script_url') || '';
+    const s2 = document.getElementById('diag-sheet2');
+    const sc = document.getElementById('diag-script');
+    const log = document.getElementById('admin-diag-log');
+    const btn = document.getElementById('admin-diag-run-btn');
+
+    if (s2) s2.textContent = '⏳ проверяю...';
+    if (sc) sc.textContent = '⏳ проверяю...';
+    if (log) { log.style.display = 'block'; log.textContent = ''; }
+    if (btn) btn.disabled = true;
+
+    if (gsId) {
+      const url = `https://docs.google.com/spreadsheets/d/${gsId}/gviz/tq?tqx=out:csv&sheet=Лист2`;
+      fetch(url).then(r => {
+        if (s2) s2.textContent = r.ok ? '✅ доступна' : `❌ HTTP ${r.status}`;
+        if (log) log.textContent += `Sheet2: ${r.ok ? 'OK' : 'ERROR ' + r.status}\n`;
+      }).catch(e => {
+        if (s2) s2.textContent = '❌ ошибка соединения';
+        if (log) log.textContent += `Sheet2 error: ${e.message}\n`;
+      });
+    } else {
+      if (s2) s2.textContent = '⚠️ ID не задан';
+    }
+
+    if (scriptUrl) {
+      fetch(scriptUrl + '?check=1').then(r => {
+        if (sc) sc.textContent = r.ok ? '✅ доступен' : `❌ HTTP ${r.status}`;
+        if (log) log.textContent += `Script: ${r.ok ? 'OK' : 'ERROR ' + r.status}\n`;
+      }).catch(e => {
+        if (sc) sc.textContent = '❌ ошибка соединения';
+        if (log) log.textContent += `Script error: ${e.message}\n`;
+      }).finally(() => { if (btn) btn.disabled = false; });
+    } else {
+      if (sc) sc.textContent = '⚠️ URL не задан';
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function previewAdminVideoId(val) {
+    const row = document.getElementById('admin-video-preview-row');
+    const link = document.getElementById('admin-video-preview-link');
+    const v = val.trim();
+    if (v && row && link) {
+      const url = `https://youtu.be/${v}`;
+      row.style.display = 'flex';
+      link.href = url;
+      link.textContent = url;
+    } else if (row) {
+      row.style.display = 'none';
+    }
+  }
+
+  function _updateVideoStatus(videoId) {
+    const dot = document.getElementById('admin-video-status-dot');
+    const txt = document.getElementById('admin-video-status-text');
+    if (videoId) {
+      if (dot) dot.style.background = '#22c55e';
+      if (txt) txt.textContent = 'задано: ' + videoId;
+    } else {
+      if (dot) dot.style.background = 'var(--text3)';
+      if (txt) txt.textContent = 'не задано';
+    }
+  }
+
+  async function saveAdminVideoId() {
+    const input = document.getElementById('admin-video-id-input');
+    const raw = (input ? input.value : '').trim();
+    const match = raw.match(/(?:youtu\.be\/|[?&]v=)([\w-]{11})/);
+    const id = match ? match[1] : (raw.length === 11 ? raw : '');
+    if (!id && raw) {
+      _showAdminMsg('⚠ Не похоже на YouTube ID. Проверьте ссылку.', 'error');
+      return;
+    }
+    if (id) {
+      localStorage.setItem('bs_hero_video_id', id);
+      if (input) input.value = id;
+      _updateVideoStatus(id);
+      const ok = await _saveSettingsToSheet({ A10: id });
+      if (ok) {
+        _showAdminMsg('✅ YouTube ID сохранён в Sheets! Видео появится у всех пользователей.', 'success');
+      } else {
+        _showAdminMsg('✅ YouTube ID сохранён локально. Запись в Sheets не удалась — обновите A10 вручную.', 'success');
+      }
+    } else {
+      localStorage.removeItem('bs_hero_video_id');
+      _updateVideoStatus('');
+      await _saveSettingsToSheet({ A10: '' });
+      _showAdminMsg('🗑 Видео-превью убрано.', 'success');
+    }
+  }
+
+  function clearAdminVideoId() {
+    localStorage.removeItem('bs_hero_video_id');
+    const input = document.getElementById('admin-video-id-input');
+    if (input) input.value = '';
+    _updateVideoStatus('');
+    document.getElementById('admin-video-preview-row').style.display = 'none';
+  }
+
+  // ─── Timer Admin ──────────────────────────────────────────────────
+  function _loadTimerFields() {
+    let config = {};
+    try { config = JSON.parse(localStorage.getItem('lp_timer_config') || '{}'); } catch(_) {}
+    const mode = config.mode || 'float';
+    const days = config.days || 3;
+    const fixedDate = config.fixedDate || '';
+
+    document.getElementById('timer-mode-float').checked = mode === 'float';
+    document.getElementById('timer-mode-fixed').checked = mode === 'fixed';
+    document.getElementById('timer-days-input').value = days;
+    if (fixedDate) document.getElementById('timer-fixed-input').value = fixedDate;
+
+    _toggleTimerRows(mode);
+    _updateTimerStatus(config);
+  }
+
+  function onTimerModeChange() {
+    const mode = document.querySelector('input[name="timer-mode"]:checked').value;
+    _toggleTimerRows(mode);
+  }
+
+  function _toggleTimerRows(mode) {
+    document.getElementById('timer-float-row').style.display = mode === 'float' ? '' : 'none';
+    document.getElementById('timer-fixed-row').style.display = mode === 'fixed' ? '' : 'none';
+  }
+
+  function _updateTimerStatus(config) {
+    const dot = document.getElementById('admin-timer-status-dot');
+    const txt = document.getElementById('admin-timer-status-text');
+    const info = document.getElementById('admin-timer-info');
+    const mode = config.mode || 'float';
+
+    if (mode === 'fixed' && config.fixedDate) {
+      const end = new Date(config.fixedDate);
+      const remaining = end - Date.now();
+      if (dot) dot.style.background = remaining > 0 ? '#22c55e' : '#ef4444';
+      if (txt) txt.textContent = remaining > 0 ? 'фиксированная дата' : 'истекло';
+      if (info) {
+        const d = end.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+        const remStr = remaining > 0
+          ? `осталось: ${Math.floor(remaining/3600000)}ч ${Math.floor((remaining%3600000)/60000)}м`
+          : 'таймер истёк — показывает 00:00:00';
+        info.style.display = '';
+        info.innerHTML = `📅 Дедлайн: <strong>${d}</strong><br>⏱ ${remStr}`;
+      }
+    } else {
+      const days = config.days || 3;
+      if (dot) dot.style.background = '#f59e0b';
+      if (txt) txt.textContent = `плавающий · ${days} дн.`;
+      // Проверяем сохранённый дедлайн пользователя
+      let savedDeadline = null;
+      try {
+        const saved = JSON.parse(localStorage.getItem('lp_timer_deadline') || 'null');
+        if (saved && saved.ts && Date.now() < saved.exp) savedDeadline = saved.ts;
+      } catch(_) {}
+      if (info) {
+        if (savedDeadline) {
+          const end = new Date(savedDeadline);
+          const remaining = Math.max(0, savedDeadline - Date.now());
+          const d = end.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+          info.style.display = '';
+          info.innerHTML = `⏱ Текущий дедлайн (браузер): <strong>${d}</strong><br>осталось: ${Math.floor(remaining/3600000)}ч ${Math.floor((remaining%3600000)/60000)}м`;
+        } else {
+          info.style.display = '';
+          info.innerHTML = `ℹ️ Дедлайн в этом браузере ещё не установлен (запустится при первом открытии лендинга)`;
+        }
+      }
+    }
+  }
+
+  async function saveTimerConfig() {
+    const mode = document.querySelector('input[name="timer-mode"]:checked').value;
+    const days = parseInt(document.getElementById('timer-days-input').value) || 3;
+    const fixedDate = document.getElementById('timer-fixed-input').value;
+
+    if (mode === 'fixed' && !fixedDate) {
+      _showAdminMsg('⚠ Укажите дату и время окончания акции.', 'error');
+      return;
+    }
+
+    const config = { mode, days, fixedDate: mode === 'fixed' ? fixedDate : '' };
+    const configStr = JSON.stringify(config);
+    localStorage.setItem('lp_timer_config', configStr);
+    _updateTimerStatus(config);
+
+    const ok = await _saveSettingsToSheet({ A11: configStr });
+    if (ok) {
+      _showAdminMsg('✅ Таймер сохранён в Sheets! Настройки применятся для всех пользователей.', 'success');
+    } else {
+      _showAdminMsg('✅ Таймер сохранён локально. Запись в Sheets не удалась — обновите A11 вручную.', 'success');
+    }
+  }
+
+  function resetTimerDeadline() {
+    localStorage.removeItem('lp_timer_deadline');
+    let config = {};
+    try { config = JSON.parse(localStorage.getItem('lp_timer_config') || '{}'); } catch(_) {}
+    _updateTimerStatus(config);
+    _showAdminMsg('🔄 Дедлайн сброшен. При следующем открытии лендинга таймер запустится заново.', 'success');
+  }
+
+  function _showAdminMsg(text, type) {
+    const msg = document.getElementById('admin-save-msg');
+    if (msg) {
+      msg.textContent = text;
+      msg.className = 'msg ' + type;
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 4000);
+    }
+  }
+
+  // Auto-focus password field
+  window.addEventListener('DOMContentLoaded', () => {
+    const pw = document.getElementById('admin-pw-input');
+    if (pw) pw.focus();
+  });
+</script>
+</body>
+</html>
