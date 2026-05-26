@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    BUSINESS SCHOOL AMANAT — AUTH v3.3
    Авторизация, выход, восстановление сессии,
    монитор безопасности, admin-панель
@@ -121,10 +121,9 @@ async function loadSheet2() {
 
     // ── A10: YouTube ID hero-видео (новая строка) ─────────────────
     const sheetHeroVideoId = strip((rows[9] || [])[0]) || '';
-    if (sheetHeroVideoId) {
+    const heroClearedManually = localStorage.getItem('bs_hero_video_cleared') === '1';
+    if (sheetHeroVideoId && !heroClearedManually) {
       localStorage.setItem('bs_hero_video_id', sheetHeroVideoId);
-    } else {
-      localStorage.removeItem('bs_hero_video_id'); // если в Sheets пусто — убираем видео
     }
     if (typeof applyHeroVideo === 'function') applyHeroVideo();
 
@@ -457,12 +456,14 @@ function saveAdminVideoId() {
   const match = raw.match(/(?:youtu\.be\/|[?&]v=)([\w-]{11})/);
   const id = match ? match[1] : (raw.length === 11 ? raw : '');
   if (!id && raw) { showToast('⚠ Не похоже на YouTube ID. Проверьте ссылку.', 'error'); return; }
-  if (id) { localStorage.setItem('bs_hero_video_id', id); input.value = id; updateAdminVideoStatus(id); showToast('✅ YouTube ID сохранён! Видео появится в Hero.', 'success'); }
-  else { localStorage.removeItem('bs_hero_video_id'); updateAdminVideoStatus(''); showToast('Видео-превью убрано.', 'success'); }
+  if (id) { localStorage.setItem('bs_hero_video_id', id); localStorage.removeItem('bs_hero_video_cleared'); input.value = id; updateAdminVideoStatus(id); if (typeof applyHeroVideo === 'function') applyHeroVideo(); showToast('✅ YouTube ID сохранён! Видео появится в Hero.', 'success'); }
+  else { localStorage.removeItem('bs_hero_video_id'); localStorage.setItem('bs_hero_video_cleared', '1'); updateAdminVideoStatus(''); if (typeof applyHeroVideo === 'function') applyHeroVideo(); showToast('Видео-превью убрано.', 'success'); }
 }
 function clearAdminVideoId() {
   localStorage.removeItem('bs_hero_video_id');
+  localStorage.setItem('bs_hero_video_cleared', '1'); // флаг: админ вручную убрал видео
   const input = $('admin-video-id-input'); if (input) input.value = '';
+  if (typeof applyHeroVideo === 'function') applyHeroVideo();
   updateAdminVideoStatus(''); showToast('🗑 Видео-превью удалено из Hero.', 'success');
 }
 function openAdmin() {
