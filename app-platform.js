@@ -1097,6 +1097,15 @@ function openHeroVideo() {
   const ytId = getHeroVideoId();
   if (!ytId) { showToast('🎬 Добавьте YouTube ID в Админ-панели (⚙ → Видео-превью)', 'info'); return; }
 
+  // Определяем формат: Shorts или обычное видео
+  const heroVideoUrl = localStorage.getItem('bs_hero_video_url') || '';
+  const isHeroShort  = /\/shorts\//i.test(heroVideoUrl) || _isHeroShortById(ytId);
+  const heroWrap = document.getElementById('lp-hero-video-wrap');
+  if (heroWrap) {
+    if (isHeroShort) heroWrap.classList.add('hero-shorts-mode');
+    else             heroWrap.classList.remove('hero-shorts-mode');
+  }
+
   const poster = document.getElementById('lp-hero-video-poster');
   const playerWrap = document.getElementById('lp-hero-video-player');
   if (!poster || !playerWrap) return;
@@ -1165,8 +1174,17 @@ function closeHeroVideo() {
   if (playerWrap) playerWrap.style.display = 'none';
   const poster = document.getElementById('lp-hero-video-poster');
   if (poster) poster.style.display = 'flex';
+  // Сброс Shorts-режима
+  const heroWrap = document.getElementById('lp-hero-video-wrap');
+  if (heroWrap) heroWrap.classList.remove('hero-shorts-mode');
   // Сброс иконок
   _heroVcSyncPlayIcon(false);
+}
+
+// Проверяем: если сохранённый URL содержит /shorts/ — это Shorts-видео
+function _isHeroShortById(id) {
+  const savedUrl = localStorage.getItem('bs_hero_video_url') || '';
+  return /\/shorts\//i.test(savedUrl);
 }
 
 // ── Play / Pause ──────────────────────────────────────────────

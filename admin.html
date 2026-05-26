@@ -296,12 +296,17 @@
       </div>
       <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center">
         <div class="field-wrap" style="flex:1;min-width:180px">
-          <input type="text" id="admin-students-search" class="field-input" placeholder="Поиск по ИИН или имени..." style="padding-left:16px" oninput="filterStudents(this.value)">
+          <input type="text" id="admin-students-search" class="field-input" placeholder="Введите ИИН (12 цифр) или имя..." style="padding-left:16px"
+            oninput="onStudentSearchInput(this.value)"
+            onkeydown="if(event.key==='Enter') searchOrLoadStudents()">
           <div class="field-border-anim"></div>
         </div>
-        <button onclick="loadStudents()" class="login-btn" style="min-width:130px">
-          <span class="btn-content"><span>📥 Загрузить</span></span>
+        <button onclick="searchOrLoadStudents()" class="login-btn" style="min-width:130px">
+          <span class="btn-content"><span>🔍 Найти</span></span>
         </button>
+      </div>
+      <div id="admin-students-hint" style="margin-top:6px;font-size:11px;color:var(--text3)">
+        Введите ИИН для поиска конкретного студента. Пустое поле — загрузит весь список.
       </div>
       <div id="admin-students-status" style="margin-top:8px;font-size:12px;color:var(--text3);display:none"></div>
       <div id="admin-students-table-wrap" style="margin-top:14px;display:none;overflow-x:auto">
@@ -318,6 +323,22 @@
           <tbody id="admin-students-tbody"></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- ══ УРОКИ ИЗ ЛИСТ2 ════════════════════════════════════════ -->
+    <div class="admin-video-block" id="admin-lessons-block" style="margin-top:20px">
+      <div class="admin-video-block-header">
+        <span class="admin-video-block-icon">📚</span>
+        <div>
+          <div class="admin-video-block-title">Уроки из Лист2</div>
+          <div class="admin-video-block-sub">Просмотр всех курсов и уроков — кликните на урок чтобы открыть на YouTube</div>
+        </div>
+      </div>
+      <button onclick="loadAdminLessons()" class="login-btn" style="margin-top:12px">
+        <span class="btn-content"><span>🔄 Загрузить уроки</span></span>
+      </button>
+      <div id="admin-lessons-status" style="margin-top:8px;font-size:12px;color:var(--text3);display:none"></div>
+      <div id="admin-lessons-content" style="margin-top:14px;display:none"></div>
     </div>
 
     <!-- ══ НАСТРОЙКИ ВХОДА ════════════════════════════════════════ -->
@@ -502,32 +523,60 @@
   async function saveAdminVideoId() {
     const input = document.getElementById('admin-video-id-input');
     const raw = (input ? input.value : '').trim();
-    const match = raw.match(/(?:youtu\.be\/|[?&]v=)([\w-]{11})/);
-    const id = match ? match[1] : (raw.length === 11 ? raw : '');
+
+    // Поддерживаем полный URL (в т.ч. Shorts) и голый ID
+    let id = '';
+    let savedUrl = '';
+    const patterns = [
+      /youtube\.com\/shorts\/([\w-]{11})/,
+      /youtu\.be\/([\w-]{11})/,
+      /youtube\.com\/watch\?v=([\w-]{11})/,
+      /youtube\.com\/embed\/([\w-]{11})/,
+      /[?&]v=([\w-]{11})/,
+    ];
+    let matched = false;
+    for (const p of patterns) {
+      const m = raw.match(p);
+      if (m) { id = m[1]; savedUrl = raw; matched = true; break; }
+    }
+    if (!matched) {
+      // Голый 11-символьный ID
+      if (/^[\w-]{11}$/.test(raw)) { id = raw; savedUrl = ''; }
+    }
+
     if (!id && raw) {
-      _showAdminMsg('⚠ Не похоже на YouTube ID. Проверьте ссылку.', 'error');
+      _showAdminMsg('⚠ Не похоже на YouTube ID или ссылку. Проверьте значение.', 'error');
       return;
     }
+
     if (id) {
-      localStorage.setItem('bs_hero_video_id', id);
+      localStorage.setItem('bs_hero_video_id',  id);
+      localStorage.setItem('bs_hero_video_url', savedUrl);  // сохраняем полный URL для определения Shorts
+      localStorage.removeItem('bs_hero_video_cleared');
       if (input) input.value = id;
       _updateVideoStatus(id);
+      const isShort = /\/shorts\//i.test(savedUrl);
       const ok = await _saveSettingsToSheet({ A10: id });
+      const typeLabel = isShort ? ' (Shorts ↕)' : '';
       if (ok) {
-        _showAdminMsg('✅ YouTube ID сохранён в Sheets! Видео появится у всех пользователей.', 'success');
+        _showAdminMsg('✅ YouTube ID сохранён в Sheets' + typeLabel + '! Видео появится у всех пользователей.', 'success');
       } else {
-        _showAdminMsg('✅ YouTube ID сохранён локально. Запись в Sheets не удалась — обновите A10 вручную.', 'success');
+        _showAdminMsg('✅ YouTube ID сохранён локально' + typeLabel + '. Запись в Sheets не удалась — обновите A10 вручную.', 'success');
       }
+      if (typeof applyHeroVideo === 'function') applyHeroVideo();
     } else {
       localStorage.removeItem('bs_hero_video_id');
+      localStorage.removeItem('bs_hero_video_url');
       _updateVideoStatus('');
       await _saveSettingsToSheet({ A10: '' });
       _showAdminMsg('🗑 Видео-превью убрано.', 'success');
+      if (typeof applyHeroVideo === 'function') applyHeroVideo();
     }
   }
 
   async function clearAdminVideoId() {
     localStorage.removeItem('bs_hero_video_id');
+    localStorage.removeItem('bs_hero_video_url');
     localStorage.setItem('bs_hero_video_cleared', '1');
     const input = document.getElementById('admin-video-id-input');
     if (input) input.value = '';
@@ -687,8 +736,42 @@
 
   // ─── Управление студентами ────────────────────────────────────────
   let _allStudents = [];
+  let _lastStudentsLoad = 0;
 
-  async function loadStudents() {
+  // Подсказка при вводе
+  function onStudentSearchInput(val) {
+    const hint = document.getElementById('admin-students-hint');
+    const digits = val.replace(/\D/g, '');
+    if (hint) {
+      if (digits.length >= 8) {
+        hint.textContent = '🔍 Поиск по ИИН: ' + digits;
+        hint.style.color = 'var(--gold)';
+      } else if (val.trim().length > 0) {
+        hint.textContent = '🔍 Поиск по имени...';
+        hint.style.color = 'var(--text3)';
+      } else {
+        hint.textContent = 'Введите ИИН для поиска конкретного студента. Пустое поле — загрузит весь список.';
+        hint.style.color = 'var(--text3)';
+      }
+    }
+  }
+
+  // Главная точка входа — кнопка «Найти»
+  async function searchOrLoadStudents() {
+    const searchEl = document.getElementById('admin-students-search');
+    const query = searchEl ? searchEl.value.trim() : '';
+    if (!query) {
+      if (!confirm('Загрузить весь список студентов?')) return;
+    }
+    const needLoad = !_allStudents.length || (Date.now() - _lastStudentsLoad > 120000);
+    if (needLoad) {
+      await loadStudents(query);
+    } else {
+      filterStudents(query);
+    }
+  }
+
+  async function loadStudents(queryAfterLoad) {
     const gsId = localStorage.getItem('gs_sheet_id') || '';
     const st   = document.getElementById('admin-students-status');
     const wrap = document.getElementById('admin-students-table-wrap');
@@ -701,7 +784,6 @@
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const csv = await res.text();
       const rows = _parseStudentCSV(csv);
-      // Пропускаем заголовок (строка 0)
       _allStudents = rows.slice(1).filter(r => r[0] && r[0].replace(/\D/g,'').length >= 10).map(r => ({
         iin:    (r[0] || '').replace(/"/g,'').trim(),
         name:   (r[1] || '').replace(/"/g,'').trim(),
@@ -710,9 +792,20 @@
         statusP:(r[11] || '').trim(),
         blocked:(r[3] || '').toUpperCase().includes('НАРУШЕНИЕ'),
       }));
-      if (st) { st.textContent = `✅ Загружено студентов: ${_allStudents.length}`; }
-      if (wrap) wrap.style.display = 'block';
-      filterStudents('');
+      _lastStudentsLoad = Date.now();
+      const q = queryAfterLoad || (document.getElementById('admin-students-search') || {}).value || '';
+      if (q) {
+        filterStudents(q);
+        const found = _allStudents.filter(s => _matchStudent(s, q));
+        if (st) st.textContent = found.length
+          ? '✅ Найдено: ' + found.length + ' из ' + _allStudents.length + ' студентов'
+          : '⚠ Студент не найден (всего в базе: ' + _allStudents.length + ')';
+      } else {
+        // Пустой поиск — показываем весь список (вызывается только после confirm)
+        if (st) st.textContent = '✅ Загружено студентов: ' + _allStudents.length;
+        if (wrap) wrap.style.display = 'block';
+        _renderStudentsTable(_allStudents);
+      }
     } catch(e) {
       if (st) st.textContent = '❌ Ошибка загрузки: ' + e.message;
     }
@@ -734,11 +827,25 @@
     return rows;
   }
 
+  function _matchStudent(s, q) {
+    const digits = q.replace(/\D/g, '');
+    if (digits.length >= 8) {
+      const cleanIin = s.iin.replace(/\D/g, '');
+      return cleanIin === digits || cleanIin.startsWith(digits);
+    }
+    return s.name.toLowerCase().includes(q.toLowerCase()) || s.iin.includes(q);
+  }
+
   function filterStudents(query) {
-    const q = (query || '').toLowerCase().trim();
-    const filtered = q
-      ? _allStudents.filter(s => s.iin.includes(q) || s.name.toLowerCase().includes(q))
-      : _allStudents;
+    const q = (query || '').trim();
+    const wrap = document.getElementById('admin-students-table-wrap');
+    if (!q) {
+      // Пустое поле — скрываем таблицу, не показываем весь список
+      if (wrap) wrap.style.display = 'none';
+      return;
+    }
+    const filtered = _allStudents.filter(s => _matchStudent(s, q));
+    if (wrap) wrap.style.display = 'block';
     _renderStudentsTable(filtered);
   }
 
@@ -783,13 +890,89 @@
           if (action === 'block') s.phone = 'НАРУШЕНИЕ ' + s.phone.replace(/^нарушение\s*/i,'').trim();
           else s.phone = s.phone.replace(/^нарушение\s*/i,'').trim();
         }
-        filterStudents(document.getElementById('admin-students-search').value || '');
-        _showAdminMsg(action === 'block' ? `🔴 Студент ${iin} заблокирован.` : `✅ Студент ${iin} разблокирован.`, 'success');
+        filterStudents((document.getElementById('admin-students-search') || {}).value || '');
+        if (action === 'block') {
+          _showAdminMsg('🔴 Студент ' + iin + ' заблокирован.', 'success');
+        } else {
+          _showAdminMsg('✅ Студент ' + iin + ' разблокирован. Записи о входах очищены — студент может войти заново.', 'success');
+        }
       } else {
         _showAdminMsg('❌ Ошибка: ' + (json.error || 'неизвестная ошибка'), 'error');
       }
     } catch(e) {
       _showAdminMsg('❌ Ошибка Apps Script: ' + e.message, 'error');
+    }
+  }
+
+  // ─── Уроки из Лист2 ─────────────────────────────────────────────
+  async function loadAdminLessons() {
+    const gsId = localStorage.getItem('gs_sheet_id') || '';
+    const st = document.getElementById('admin-lessons-status');
+    const content = document.getElementById('admin-lessons-content');
+    if (!gsId) {
+      if (st) { st.textContent = '⚠ Google Sheets ID не задан.'; st.style.display = 'block'; }
+      return;
+    }
+    if (st) { st.textContent = '⏳ Загружаю уроки...'; st.style.display = 'block'; }
+    if (content) content.style.display = 'none';
+    try {
+      const url = `https://docs.google.com/spreadsheets/d/${gsId}/gviz/tq?tqx=out:csv&sheet=Лист2`;
+      const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 12000);
+      const res = await fetch(url, { signal: ctrl.signal });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const csv = await res.text();
+      const rows = _parseStudentCSV(csv);
+
+      // Столбцы: A(0)=настройки, B(1)+C(2)=курс1, D(3)+E(4)=курс2, ...
+      const maxCols = rows.reduce((m, r) => Math.max(m, r.length), 0);
+      const numCourses = Math.floor((maxCols - 1) / 2);
+      let html = '';
+      let totalLessons = 0;
+
+      for (let ci = 0; ci < numCourses; ci++) {
+        const colLinks = 1 + ci * 2;
+        const colNames = 2 + ci * 2;
+        let courseName = 'Курс ' + (ci + 1);
+        const lessons = [];
+
+        for (let ri = 0; ri < rows.length; ri++) {
+          const link = (rows[ri][colLinks] || '').trim();
+          const name = (rows[ri][colNames] || '').trim();
+          if (ri === 0 && name && !link.startsWith('http')) {
+            if (name) courseName = name;
+            continue;
+          }
+          if (link && link.startsWith('http')) {
+            const parts = link.split('|');
+            const cleanLink = parts[0].trim();
+            const lessonName = (parts[1] || name || cleanLink).trim();
+            const isShort = /\/shorts\//i.test(cleanLink);
+            lessons.push({ link: cleanLink, name: lessonName, isShort });
+          }
+        }
+        if (!lessons.length) continue;
+        totalLessons += lessons.length;
+
+        html += '<div style="margin-bottom:20px">';
+        html += '<div style="font-weight:700;font-size:13px;margin-bottom:8px;color:var(--gold);display:flex;align-items:center;gap:8px">📖 ' + courseName + '<span style="font-size:11px;font-weight:400;color:var(--text3)">' + lessons.length + ' ур.</span></div>';
+        html += '<div style="display:flex;flex-direction:column;gap:5px">';
+        lessons.forEach(function(l, idx) {
+          const shortsBadge = l.isShort ? '<span style="font-size:10px;background:#ff0050;color:#fff;border-radius:4px;padding:1px 6px;margin-left:6px;flex-shrink:0">Shorts</span>' : '';
+          html += '<a href="' + l.link + '" target="_blank" rel="noopener" style="font-size:12px;padding:8px 12px;background:var(--surface2);border-radius:8px;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px;transition:background .15s" onmouseover="this.style.background='var(--surface3)'" onmouseout="this.style.background='var(--surface2)'">';
+          html += '<span style="opacity:.4;min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px">' + (idx + 1) + '.</span>';
+          html += '<span style="flex:1;line-height:1.3">' + l.name + '</span>';
+          html += shortsBadge;
+          html += '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="opacity:.4;flex-shrink:0"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+          html += '</a>';
+        });
+        html += '</div></div>';
+      }
+
+      if (!html) html = '<p style="color:var(--text3);font-size:13px">Уроки не найдены в Лист2</p>';
+      if (content) { content.innerHTML = html; content.style.display = 'block'; }
+      if (st) st.textContent = '✅ Загружено: ' + numCourses + ' курсов, ' + totalLessons + ' уроков';
+    } catch(e) {
+      if (st) st.textContent = '❌ Ошибка загрузки: ' + e.message;
     }
   }
 

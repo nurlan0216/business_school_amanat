@@ -1294,10 +1294,32 @@ body.video-theater #theater-esc {
   position: relative;
   border-radius: 20px;
   overflow: hidden;
-  aspect-ratio: 9/16;
+  aspect-ratio: 16/9;
   max-height: 400px;
   box-shadow: 0 24px 64px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.07);
   background: #0a0a12;
+  transition: aspect-ratio .3s ease, max-height .3s ease;
+}
+
+/* Shorts-режим: вертикальное видео */
+.lp-hero-video-wrap.hero-shorts-mode {
+  aspect-ratio: 9/16;
+  max-height: 65vh;
+  max-width: calc(65vh * 9 / 16);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Блокировка прямых касаний iframe — только кастомные кнопки */
+#lp-hero-yt-api {
+  pointer-events: none;
+}
+/* Кастомные кнопки — оставляем кликабельными */
+.lp-hvc-bar,
+.lp-hvc-btn,
+.lp-hvc-progress,
+.lp-hero-video-close {
+  pointer-events: auto;
 }
 
 /* Постер */
