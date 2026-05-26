@@ -1041,7 +1041,7 @@ function closeDemoLesson() {
 // ══ HERO VIDEO (YT IFrame API + custom controls) ══════════════════
 function getHeroVideoId() { return localStorage.getItem('bs_hero_video_id') || ''; }
 
-// ── Применяет hero-видео: показывает/скрывает блок по наличию ID ──
+// ── Применяет hero-видео: показывает/скрывает постер по наличию ID ──
 function applyHeroVideo() {
   const id = (typeof getHeroVideoId === 'function')
     ? getHeroVideoId()
@@ -1050,13 +1050,23 @@ function applyHeroVideo() {
   const poster = document.getElementById('lp-hero-video-poster');
   const player = document.getElementById('lp-hero-video-player');
   if (!wrap) return;
+
+  // wrap всегда видим — блок не убираем с лендинга
+  wrap.style.display = '';
+
   if (id) {
-    wrap.style.display = '';
-    if (poster) poster.style.display = '';
-    if (player) { player.style.display = 'none'; } // сбросить; видео грузится по клику
+    // Есть ID — показываем постер, сбрасываем плеер
     wrap.dataset.ytId = id;
+    if (poster) poster.style.display = '';
+    if (player) player.style.display = 'none';
   } else {
-    wrap.style.display = 'none';
+    // Нет ID — скрываем только постер (плеер уже закрыт или остаётся как есть)
+    wrap.dataset.ytId = '';
+    if (poster) poster.style.display = 'none';
+    // Если плеер был открыт — закрываем его тоже
+    if (player && player.style.display !== 'none') {
+      closeHeroVideo();
+    }
   }
 }
 
