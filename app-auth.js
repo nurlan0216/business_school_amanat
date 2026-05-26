@@ -61,6 +61,38 @@ function triggerInstantBlock() {
   }
 }
 
+// ══════════════════════════════ PARSE LESSON ══════════════════════
+function parseLesson(raw) {
+  if (!raw) return { type: 'empty', url: '', name: '' };
+  if (raw.startsWith('header:')) return { type: 'header', url: '', name: raw.slice(7).trim() };
+  if (raw.startsWith('img:')) {
+    const rest = raw.slice(4).trim(), p = rest.indexOf('|');
+    return p > -1
+      ? { type: 'image', url: rest.slice(0, p).trim(), name: rest.slice(p + 1).trim() }
+      : { type: 'image', url: rest, name: '' };
+  }
+  if (raw.startsWith('file:')) {
+    const rest = raw.slice(5).trim(), p = rest.indexOf('|'), c = rest.indexOf(',');
+    const s = p > -1 ? p : (c > -1 ? c : -1);
+    return s > -1
+      ? { type: 'file', url: rest.slice(0, s).trim(), name: rest.slice(s + 1).trim() }
+      : { type: 'file', url: rest, name: 'Файл' };
+  }
+  if (raw.startsWith('link:')) {
+    const rest = raw.slice(5).trim(), p = rest.indexOf('|');
+    return p > -1
+      ? { type: 'link', url: rest.slice(0, p).trim(), name: rest.slice(p + 1).trim() }
+      : { type: 'link', url: rest, name: rest };
+  }
+  if (raw.startsWith('text:')) return { type: 'text', url: '', name: raw.slice(5).trim() };
+  const lower = raw.toLowerCase();
+  if (/\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/.test(lower)) return { type: 'image', url: raw, name: '' };
+  if (raw.includes('drive.google.com') && raw.includes('thumbnail')) return { type: 'image', url: raw, name: '' };
+  const p = raw.indexOf('|');
+  if (p > -1) return { type: 'video', url: raw.slice(0, p).trim(), name: raw.slice(p + 1).trim() };
+  return { type: 'video', url: raw, name: '' };
+}
+
 // ══════════════════════════════ LOAD SHEET 2 ══════════════════════
 async function loadSheet2() {
   if (!gsSheetId) return;
