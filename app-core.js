@@ -306,6 +306,7 @@ function showLpPopup() {
   const TTL_MS = 48 * 60 * 60 * 1000;
 
   function shouldShow() {
+    if (typeof currentUser !== 'undefined' && currentUser) return false; // уже авторизован
     try {
       const ts = localStorage.getItem(LS_KEY);
       if (ts && (Date.now() - Number(ts)) < TTL_MS) return false;
@@ -548,10 +549,15 @@ function applyTexts() {
   if (calcDisc) calcDisc.textContent = t('lpCalcDisc');
   const calcRetryBtn = document.querySelector('.lp-calc-retry-btn');
   if (calcRetryBtn) {
-    const retrySvg = calcRetryBtn.querySelector('svg');
-    const retrySvgClone = retrySvg ? retrySvg.cloneNode(true) : null;
-    calcRetryBtn.textContent = t('lpCalcRetry');
-    if (retrySvgClone) calcRetryBtn.insertBefore(retrySvgClone, calcRetryBtn.firstChild);
+    let textNode = null;
+    calcRetryBtn.childNodes.forEach(n => {
+      if (n.nodeType === Node.TEXT_NODE) textNode = n;
+    });
+    if (textNode) {
+      textNode.textContent = ' ' + t('lpCalcRetry');
+    } else {
+      calcRetryBtn.appendChild(document.createTextNode(' ' + t('lpCalcRetry')));
+    }
   }
   const calcTagEls = document.querySelectorAll('.lp-calc-tag');
   const tagKeys = ['lpCalcTag1', 'lpCalcTag2', 'lpCalcTag3', 'lpCalcTag4', 'lpCalcTag5', 'lpCalcTag6'];

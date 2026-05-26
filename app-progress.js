@@ -380,8 +380,8 @@ function downloadCert() {
 }
 
 // ══ PATCH markWatched ═════════════════════════════════════════════
-const _origMarkWatched = markWatched;
-markWatched = function(ci, li) {
+const _origMarkWatched = window.markWatched;
+window.markWatched = function(ci, li) {
   _origMarkWatched.call(this, ci, li);
   recordLessonToday();
   checkFirstLesson();
@@ -390,8 +390,8 @@ markWatched = function(ci, li) {
 };
 
 // ══ PATCH showLessons ═════════════════════════════════════════════
-const _origShowLessons = showLessons;
-showLessons = function() {
+const _origShowLessons = window.showLessons;
+window.showLessons = function() {
   _origShowLessons.call(this);
   initAutoTheme();
   checkStreakOnLogin();
@@ -407,8 +407,8 @@ showLessons = function() {
 };
 
 // ══ PATCH logout ══════════════════════════════════════════════════
-const _origLogout = logout;
-logout = function() {
+const _origLogout = window.logout;
+window.logout = function() {
   _origLogout.call(this);
   updateHeaderProgressBar();
   const btn = $('progress-dashboard-btn');

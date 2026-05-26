@@ -154,8 +154,8 @@ function initSocialProofToast() {
 }
 
 function showSpToast() {
-  const lp = $('landing-page');
-  if (!lp || lp.style.display === 'none') { initSocialProofToast(); return; }
+  const lp = document.getElementById('landing-page');
+  if (!lp || lp.style.display !== 'block') { initSocialProofToast(); return; }
   const person = SP_NAMES[Math.floor(Math.random() * SP_NAMES.length)];
   const el = $('social-proof-toast');
   const nameEl = $('sp-toast-name');
@@ -192,14 +192,16 @@ function showSpToast() {
 })();
 
 // Патч showLanding — скрываем sticky bar при возврате на лендинг
-if (typeof showLanding === 'function') {
-  const _origShowLanding = showLanding;
-  window.showLanding = function() {
-    const bar = $('sticky-cta-bar');
-    if (bar) { bar.classList.remove('sticky-visible'); }
-    _origShowLanding.call(this);
-  };
-}
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof window.showLanding === 'function') {
+    const _orig = window.showLanding;
+    window.showLanding = function() {
+      const bar = document.getElementById('sticky-cta-bar');
+      if (bar) bar.classList.remove('sticky-visible');
+      _orig.apply(this, arguments);
+    };
+  }
+});
 
 // Патч toggleTheme — сохраняем ручной выбор
 if (typeof toggleTheme === 'function') {
@@ -249,6 +251,7 @@ if (typeof toggleTheme === 'function') {
   const restored = await tryRestoreSession();
   if (!restored) {
     if (gsSheetId) loadSheet2();
+    else if (typeof applyHeroVideo === 'function') applyHeroVideo();
     const lp = document.getElementById('landing-page');
     if (lp) lp.style.display = 'block';
     $('login-page').style.display   = 'none';

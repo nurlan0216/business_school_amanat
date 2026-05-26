@@ -5,6 +5,11 @@
 // ── Состояние калькулятора ─────────────────────────────────────
 let calcSelectedMkt = 'kaspi';
 
+// ── Предупреждение безопасности ───────────────────────────────
+if (window.ANTHROPIC_API_KEY || localStorage.getItem('bs_anthropic_key')) {
+  console.warn('[SECURITY] Anthropic API key is exposed in browser localStorage. Use a backend proxy for production.');
+}
+
 // ── Утилиты форматирования ────────────────────────────────────
 function fmtMoney(n) {
   return n.toLocaleString('ru-KZ') + ' ₸';

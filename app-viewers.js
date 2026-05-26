@@ -74,6 +74,9 @@ function initOnlineCounter() {
 
   window._showViewersBar = function() {
     if (!bar) return;
+    // Показываем только если виден лендинг
+    const lp = document.getElementById('landing-page');
+    if (!lp || lp.style.display === 'none') return;
     barVisible = true;
     bar.style.display = 'flex';
     void bar.offsetWidth;

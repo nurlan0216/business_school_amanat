@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    BUSINESS SCHOOL AMANAT — AUTH v3.3
    Авторизация, выход, восстановление сессии,
    монитор безопасности, admin-панель
@@ -421,21 +421,8 @@ $('logo-wrap').addEventListener('click', () => {
   logoClickCount++;
   if (logoClickCount === 1) {
     logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 600);
-  } else { clearTimeout(logoClickTimer); logoClickCount = 0; openAdminPw(); }
+  } else { clearTimeout(logoClickTimer); logoClickCount = 0; window.location.href = '/admin'; }
 });
-function openAdminPw() {
-  $('admin-pw-input').value = ''; $('pw-error').style.display = 'none';
-  $('admin-pw-modal').classList.add('show');
-  setTimeout(() => $('admin-pw-input').focus(), 200);
-}
-async function checkAdminPw() {
-  const val = $('admin-pw-input').value;
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(val));
-  const hash = [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2,'0')).join('');
-  if (hash === ADMIN_PW_HASH) { closeModal('admin-pw-modal'); openAdmin(); }
-  else { $('pw-error').textContent = t('wrongPw'); $('pw-error').style.display = 'block'; $('admin-pw-input').value = ''; $('admin-pw-input').focus(); }
-}
-$('admin-pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkAdminPw(); });
 
 function updateAdminVideoStatus(id) {
   const dot = $('admin-video-status-dot'), text = $('admin-video-status-text');

@@ -242,7 +242,7 @@ function applyLpCourseCards() {
           setTimeout(() => applyLpCourseCards(), 50);
         };
       }
-      if (_attempts > 50) clearInterval(_waitInterval);
+      if (_attempts > 100) clearInterval(_waitInterval); // 10 сек вместо 5
     }, 100);
   }
 })();
@@ -267,7 +267,7 @@ function applyLpCourseCards() {
           applyLpCourseCards();
         };
       }
-      if (_attempts > 50) clearInterval(_waitInterval);
+      if (_attempts > 100) clearInterval(_waitInterval); // 10 сек вместо 5
     }, 100);
   }
 })();

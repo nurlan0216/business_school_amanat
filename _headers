@@ -31,5 +31,9 @@
 /platform.css
   Cache-Control: public, max-age=86400
 
+/index.html
+  Cache-Control: no-cache, must-revalidate
+/admin.html
+  Cache-Control: no-cache, must-revalidate
 /*.html
   Cache-Control: public, max-age=3600
