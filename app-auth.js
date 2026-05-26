@@ -237,7 +237,8 @@ async function logLogin(iin, name) {
 
 // ══════════════════════════════ LOGIN ════════════════════════════
 async function doLogin() {
-  const MAX_ATTEMPTS = 5, BLOCK_DURATION = 10 * 60 * 1000;
+  const MAX_ATTEMPTS   = parseInt(localStorage.getItem('bs_max_attempts') || '5', 10);
+  const BLOCK_DURATION = parseInt(localStorage.getItem('bs_block_duration') || '10', 10) * 60 * 1000;
   const ATTEMPTS_KEY = 'login_attempts', BLOCK_KEY = 'login_block_until';
   try {
     const blockUntil = parseInt(localStorage.getItem(BLOCK_KEY) || '0', 10);
@@ -360,9 +361,11 @@ function finishLogin(btn, failed) {
   setTimeout(() => { $('progress-wrap').style.display = 'none'; $('prog-fill').style.width = '0%'; }, 1000);
   if (failed) {
     try {
+      const _maxAttempts = parseInt(localStorage.getItem('bs_max_attempts') || '5', 10);
+      const _blockDuration = parseInt(localStorage.getItem('bs_block_duration') || '10', 10) * 60 * 1000;
       const ATTEMPTS_KEY = 'login_attempts', BLOCK_KEY = 'login_block_until';
       const attempts = parseInt(localStorage.getItem(ATTEMPTS_KEY) || '0', 10) + 1;
-      if (attempts >= 5) { localStorage.setItem(BLOCK_KEY, Date.now() + 10 * 60 * 1000); localStorage.removeItem(ATTEMPTS_KEY); }
+      if (attempts >= _maxAttempts) { localStorage.setItem(BLOCK_KEY, Date.now() + _blockDuration); localStorage.removeItem(ATTEMPTS_KEY); }
       else localStorage.setItem(ATTEMPTS_KEY, attempts);
     } catch(_) {}
   }

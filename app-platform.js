@@ -1055,18 +1055,34 @@ function applyHeroVideo() {
   wrap.style.display = '';
 
   if (id) {
-    // Есть ID — показываем постер, сбрасываем плеер
+    // Есть ID — показываем постер, сбрасываем плеер, убираем плейсхолдер
     wrap.dataset.ytId = id;
     if (poster) poster.style.display = '';
     if (player) player.style.display = 'none';
+    // Убираем плейсхолдер если он есть
+    const ph = document.getElementById('lp-hero-video-placeholder');
+    if (ph) ph.style.display = 'none';
   } else {
-    // Нет ID — скрываем только постер (плеер уже закрыт или остаётся как есть)
+    // Нет ID — скрываем постер и плеер, показываем плейсхолдер
     wrap.dataset.ytId = '';
     if (poster) poster.style.display = 'none';
     // Если плеер был открыт — закрываем его тоже
     if (player && player.style.display !== 'none') {
       closeHeroVideo();
     }
+    if (player) player.style.display = 'none';
+    // Показываем плейсхолдер (серый блок с иконкой ▶)
+    let ph = document.getElementById('lp-hero-video-placeholder');
+    if (!ph) {
+      ph = document.createElement('div');
+      ph.id = 'lp-hero-video-placeholder';
+      ph.style.cssText = 'display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:220px;background:var(--surface2,#1a1a1f);border-radius:16px;pointer-events:none;user-select:none;';
+      ph.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;gap:12px;opacity:0.45"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg><span id="lp-hvp-label" style="font-size:13px;color:currentColor;letter-spacing:0.02em">▶ Загрузите видео</span></div>';
+      wrap.appendChild(ph);
+    }
+    ph.style.display = 'flex';
+    // Обновляем текст плейсхолдера под текущий язык
+    updateHeroVideoTexts();
   }
 }
 
@@ -1275,6 +1291,8 @@ function updateHeroVideoTexts() {
   setText('lp-hvr-period',   isKz ? 'Kaspi-де бірінші айда'   : 'за первый месяц на Kaspi');
   setText('lp-hvr-duration', isKz ? '▶ 28 сек · нақты сатылым': '▶ 28 сек · реальные продажи');
   setText('lp-hvp-text',     isKz ? '2 400+ студент сатуда'   : '2 400+ студентов уже продают');
+  // Плейсхолдер (когда видео не задано) — только для администратора
+  setText('lp-hvp-label',    isKz ? '▶ Бейне жүктеңіз'        : '▶ Загрузите видео');
 }
 
 // ══ RESUME BEACON ════════════════════════════════════════════════

@@ -284,6 +284,73 @@
     </div>
 
     <div id="admin-save-msg" class="msg" style="margin-top:12px;display:none"></div>
+
+    <!-- ══ СТУДЕНТЫ ══════════════════════════════════════════════ -->
+    <div class="admin-video-block" id="admin-students-block" style="margin-top:20px">
+      <div class="admin-video-block-header">
+        <span class="admin-video-block-icon">👥</span>
+        <div>
+          <div class="admin-video-block-title">Управление студентами</div>
+          <div class="admin-video-block-sub">Просмотр, поиск, блокировка студентов из Лист1</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center">
+        <div class="field-wrap" style="flex:1;min-width:180px">
+          <input type="text" id="admin-students-search" class="field-input" placeholder="Поиск по ИИН или имени..." style="padding-left:16px" oninput="filterStudents(this.value)">
+          <div class="field-border-anim"></div>
+        </div>
+        <button onclick="loadStudents()" class="login-btn" style="min-width:130px">
+          <span class="btn-content"><span>📥 Загрузить</span></span>
+        </button>
+      </div>
+      <div id="admin-students-status" style="margin-top:8px;font-size:12px;color:var(--text3);display:none"></div>
+      <div id="admin-students-table-wrap" style="margin-top:14px;display:none;overflow-x:auto">
+        <table id="admin-students-table" style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead>
+            <tr style="border-bottom:1px solid var(--surface3);color:var(--text3);text-align:left">
+              <th style="padding:8px 10px">ИИН</th>
+              <th style="padding:8px 10px">Имя</th>
+              <th style="padding:8px 10px">Телефон</th>
+              <th style="padding:8px 10px">Статус</th>
+              <th style="padding:8px 10px">Действие</th>
+            </tr>
+          </thead>
+          <tbody id="admin-students-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ НАСТРОЙКИ ВХОДА ════════════════════════════════════════ -->
+    <div class="admin-video-block" id="admin-login-settings-block" style="margin-top:20px">
+      <div class="admin-video-block-header">
+        <span class="admin-video-block-icon">🔒</span>
+        <div>
+          <div class="admin-video-block-title">Настройки входа</div>
+          <div class="admin-video-block-sub">Ограничения попыток входа и длительность блокировки</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap">
+        <div style="flex:1;min-width:160px">
+          <label class="field-label">Попыток до блокировки</label>
+          <div class="field-wrap" style="margin-top:4px">
+            <input type="number" id="admin-max-attempts" class="field-input" value="5" min="1" max="20" style="padding-left:16px">
+            <div class="field-border-anim"></div>
+          </div>
+        </div>
+        <div style="flex:1;min-width:160px">
+          <label class="field-label">Блокировка (минут)</label>
+          <div class="field-wrap" style="margin-top:4px">
+            <input type="number" id="admin-block-duration" class="field-input" value="10" min="1" max="1440" style="padding-left:16px">
+            <div class="field-border-anim"></div>
+          </div>
+        </div>
+      </div>
+      <button onclick="saveLoginSettings()" class="login-btn" style="margin-top:12px">
+        <span class="btn-content"><span>💾 Сохранить настройки входа</span></span>
+      </button>
+      <div id="admin-login-settings-status" style="margin-top:8px;font-size:13px;color:#22c48a;display:none"></div>
+    </div>
+
   </div>
 </div>
 
@@ -320,6 +387,10 @@
     if (videoInput) videoInput.value = videoId;
     _updateVideoStatus(videoId);
     _loadTimerFields();
+    loadLoginSettings();
+    const apiKey = localStorage.getItem('bs_anthropic_key') || '';
+    const keyInput = document.getElementById('admin-anthropic-key-input');
+    if (keyInput && apiKey) keyInput.value = apiKey;
   }
 
   async function _saveSettingsToSheet(updates) {
@@ -455,12 +526,30 @@
     }
   }
 
-  function clearAdminVideoId() {
+  async function clearAdminVideoId() {
     localStorage.removeItem('bs_hero_video_id');
+    localStorage.setItem('bs_hero_video_cleared', '1');
     const input = document.getElementById('admin-video-id-input');
     if (input) input.value = '';
     _updateVideoStatus('');
-    document.getElementById('admin-video-preview-row').style.display = 'none';
+    const row = document.getElementById('admin-video-preview-row');
+    if (row) row.style.display = 'none';
+    // БАГ 3.C: отправляем clear_video в Apps Script → очищает A10 в Лист2
+    const scriptUrl = localStorage.getItem('bs_script_url') || '';
+    if (scriptUrl) {
+      try {
+        await fetch(scriptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ _type: 'clear_video' }),
+        });
+        _showAdminMsg('🗑 Видео удалено из Hero и очищено в Google Sheets (A10).', 'success');
+      } catch (e) {
+        _showAdminMsg('🗑 Видео убрано локально. Очистить A10 в Sheets вручную.', 'success');
+      }
+    } else {
+      _showAdminMsg('🗑 Видео-превью удалено из Hero. Apps Script URL не задан — A10 очистите вручную.', 'success');
+    }
   }
 
   // ─── Timer Admin ──────────────────────────────────────────────────
@@ -572,6 +661,135 @@
       msg.className = 'msg ' + type;
       msg.style.display = 'block';
       setTimeout(() => msg.style.display = 'none', 4000);
+    }
+  }
+
+  // ─── Настройки входа ──────────────────────────────────────────────
+  function loadLoginSettings() {
+    const maxA  = parseInt(localStorage.getItem('bs_max_attempts')  || '5',  10);
+    const blockD = parseInt(localStorage.getItem('bs_block_duration') || '10', 10);
+    const maxEl  = document.getElementById('admin-max-attempts');
+    const durEl  = document.getElementById('admin-block-duration');
+    if (maxEl)  maxEl.value  = maxA;
+    if (durEl)  durEl.value  = blockD;
+  }
+
+  function saveLoginSettings() {
+    const maxA  = parseInt((document.getElementById('admin-max-attempts')  || {}).value || '5',  10);
+    const blockD = parseInt((document.getElementById('admin-block-duration') || {}).value || '10', 10);
+    if (isNaN(maxA)  || maxA  < 1 || maxA  > 20)   { _showAdminMsg('⚠ Попыток: от 1 до 20',    'error'); return; }
+    if (isNaN(blockD) || blockD < 1 || blockD > 1440) { _showAdminMsg('⚠ Блокировка: от 1 до 1440 мин', 'error'); return; }
+    localStorage.setItem('bs_max_attempts',   maxA);
+    localStorage.setItem('bs_block_duration', blockD);
+    const st = document.getElementById('admin-login-settings-status');
+    if (st) { st.textContent = `✅ Сохранено: ${maxA} попыток, блокировка ${blockD} мин`; st.style.display = 'block'; setTimeout(() => st.style.display = 'none', 3500); }
+  }
+
+  // ─── Управление студентами ────────────────────────────────────────
+  let _allStudents = [];
+
+  async function loadStudents() {
+    const gsId = localStorage.getItem('gs_sheet_id') || '';
+    const st   = document.getElementById('admin-students-status');
+    const wrap = document.getElementById('admin-students-table-wrap');
+    if (!gsId) { if (st) { st.textContent = '⚠ Google Sheets ID не задан.'; st.style.display = 'block'; } return; }
+    if (st) { st.textContent = '⏳ Загружаю студентов...'; st.style.display = 'block'; }
+    try {
+      const url = `https://docs.google.com/spreadsheets/d/${gsId}/gviz/tq?tqx=out:csv&sheet=Лист1`;
+      const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 12000);
+      const res = await fetch(url, { signal: ctrl.signal });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const csv = await res.text();
+      const rows = _parseStudentCSV(csv);
+      // Пропускаем заголовок (строка 0)
+      _allStudents = rows.slice(1).filter(r => r[0] && r[0].replace(/\D/g,'').length >= 10).map(r => ({
+        iin:    (r[0] || '').replace(/"/g,'').trim(),
+        name:   (r[1] || '').replace(/"/g,'').trim(),
+        phone:  (r[3] || '').replace(/"/g,'').trim(),
+        statusA:(r[10] || '').trim(),
+        statusP:(r[11] || '').trim(),
+        blocked:(r[3] || '').toUpperCase().includes('НАРУШЕНИЕ'),
+      }));
+      if (st) { st.textContent = `✅ Загружено студентов: ${_allStudents.length}`; }
+      if (wrap) wrap.style.display = 'block';
+      filterStudents('');
+    } catch(e) {
+      if (st) st.textContent = '❌ Ошибка загрузки: ' + e.message;
+    }
+  }
+
+  function _parseStudentCSV(text) {
+    const rows = [];
+    for (const line of text.split(/\r?\n/)) {
+      const cells = []; let cur = '', inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if      (ch === '"') inQ = !inQ;
+        else if (ch === ',' && !inQ) { cells.push(cur); cur = ''; }
+        else    cur += ch;
+      }
+      cells.push(cur);
+      rows.push(cells.map(c => c.trim()));
+    }
+    return rows;
+  }
+
+  function filterStudents(query) {
+    const q = (query || '').toLowerCase().trim();
+    const filtered = q
+      ? _allStudents.filter(s => s.iin.includes(q) || s.name.toLowerCase().includes(q))
+      : _allStudents;
+    _renderStudentsTable(filtered);
+  }
+
+  function _renderStudentsTable(list) {
+    const tbody = document.getElementById('admin-students-tbody');
+    if (!tbody) return;
+    if (!list.length) { tbody.innerHTML = '<tr><td colspan="5" style="padding:16px;text-align:center;color:var(--text3)">Студенты не найдены</td></tr>'; return; }
+    tbody.innerHTML = list.map(s => {
+      const statusBadge = s.blocked
+        ? '<span style="color:#ef4444">🔴 Заблокирован</span>'
+        : '<span style="color:#22c55e">🟢 Активен</span>';
+      const actionBtn = s.blocked
+        ? `<button onclick="studentAction('unblock','${s.iin.replace(/'/g,'')}')" style="font-size:11px;padding:4px 10px;border:1px solid #22c55e;background:transparent;color:#22c55e;border-radius:6px;cursor:pointer">✅ Разблок.</button>`
+        : `<button onclick="studentAction('block','${s.iin.replace(/'/g,'')}')" style="font-size:11px;padding:4px 10px;border:1px solid #ef4444;background:transparent;color:#ef4444;border-radius:6px;cursor:pointer">🔴 Заблок.</button>`;
+      const cleanPhone = s.phone.replace(/^нарушение\s*/i,'').trim();
+      return `<tr style="border-bottom:1px solid var(--surface3)">
+        <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px">${s.iin}</td>
+        <td style="padding:8px 10px">${s.name || '—'}</td>
+        <td style="padding:8px 10px;font-size:11px">${cleanPhone || '—'}</td>
+        <td style="padding:8px 10px">${statusBadge}</td>
+        <td style="padding:8px 10px">${actionBtn}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  async function studentAction(action, iin) {
+    const scriptUrl = localStorage.getItem('bs_script_url') || '';
+    if (!scriptUrl) { _showAdminMsg('⚠ Apps Script URL не задан.', 'error'); return; }
+    const type = action === 'block' ? 'block_user' : 'unblock_user';
+    try {
+      const res = await fetch(scriptUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ _type: type, iin }),
+      });
+      const json = await res.json();
+      if (json.ok) {
+        // Обновляем локальный массив
+        const s = _allStudents.find(x => x.iin === iin);
+        if (s) {
+          s.blocked = action === 'block';
+          if (action === 'block') s.phone = 'НАРУШЕНИЕ ' + s.phone.replace(/^нарушение\s*/i,'').trim();
+          else s.phone = s.phone.replace(/^нарушение\s*/i,'').trim();
+        }
+        filterStudents(document.getElementById('admin-students-search').value || '');
+        _showAdminMsg(action === 'block' ? `🔴 Студент ${iin} заблокирован.` : `✅ Студент ${iin} разблокирован.`, 'success');
+      } else {
+        _showAdminMsg('❌ Ошибка: ' + (json.error || 'неизвестная ошибка'), 'error');
+      }
+    } catch(e) {
+      _showAdminMsg('❌ Ошибка Apps Script: ' + e.message, 'error');
     }
   }
 
