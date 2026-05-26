@@ -219,8 +219,8 @@
     const gsInput = document.getElementById('admin-gs-input');
     const scriptInput = document.getElementById('admin-script-input');
     if (gsInput) gsInput.value = localStorage.getItem('gs_sheet_id') || '';
-    if (scriptInput) scriptInput.value = localStorage.getItem('gs_script_url') || '';
-    const videoId = localStorage.getItem('admin_hero_video_id') || '';
+    if (scriptInput) scriptInput.value = localStorage.getItem('bs_script_url') || '';
+    const videoId = localStorage.getItem('bs_hero_video_id') || '';
     const videoInput = document.getElementById('admin-video-id-input');
     if (videoInput) videoInput.value = videoId;
     _updateVideoStatus(videoId);
@@ -230,14 +230,14 @@
     const gsId = (document.getElementById('admin-gs-input') || {}).value || '';
     const scriptUrl = (document.getElementById('admin-script-input') || {}).value || '';
     if (gsId) localStorage.setItem('gs_sheet_id', gsId.trim());
-    if (scriptUrl) localStorage.setItem('gs_script_url', scriptUrl.trim());
+    if (scriptUrl) localStorage.setItem('bs_script_url', scriptUrl.trim());
     const msg = document.getElementById('admin-save-msg');
-    if (msg) { msg.textContent = '✅ Сохранено!'; msg.className = 'msg success'; msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 2500); }
+    if (msg) { msg.textContent = '✅ Сохранено! Перезагрузите сайт для применения.'; msg.className = 'msg success'; msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 4000); }
   }
 
   function runAdminDiag() {
     const gsId = localStorage.getItem('gs_sheet_id') || '';
-    const scriptUrl = localStorage.getItem('gs_script_url') || '';
+    const scriptUrl = localStorage.getItem('bs_script_url') || '';
     const s2 = document.getElementById('diag-sheet2');
     const sc = document.getElementById('diag-script');
     const log = document.getElementById('admin-diag-log');
@@ -303,15 +303,30 @@
 
   function saveAdminVideoId() {
     const input = document.getElementById('admin-video-id-input');
-    const v = (input ? input.value : '').trim();
-    localStorage.setItem('admin_hero_video_id', v);
-    _updateVideoStatus(v);
-    const msg = document.getElementById('admin-save-msg');
-    if (msg) { msg.textContent = '✅ Видео сохранено!'; msg.className = 'msg success'; msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 2500); }
+    const raw = (input ? input.value : '').trim();
+    const match = raw.match(/(?:youtu\.be\/|[?&]v=)([\w-]{11})/);
+    const id = match ? match[1] : (raw.length === 11 ? raw : '');
+    if (!id && raw) {
+      const msg = document.getElementById('admin-save-msg');
+      if (msg) { msg.textContent = '⚠ Не похоже на YouTube ID. Проверьте ссылку.'; msg.className = 'msg error'; msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000); }
+      return;
+    }
+    if (id) {
+      localStorage.setItem('bs_hero_video_id', id);
+      if (input) input.value = id;
+      _updateVideoStatus(id);
+      const msg = document.getElementById('admin-save-msg');
+      if (msg) { msg.textContent = '✅ YouTube ID сохранён! Видео появится в Hero.'; msg.className = 'msg success'; msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 2500); }
+    } else {
+      localStorage.removeItem('bs_hero_video_id');
+      _updateVideoStatus('');
+      const msg = document.getElementById('admin-save-msg');
+      if (msg) { msg.textContent = '🗑 Видео-превью убрано.'; msg.className = 'msg success'; msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 2500); }
+    }
   }
 
   function clearAdminVideoId() {
-    localStorage.removeItem('admin_hero_video_id');
+    localStorage.removeItem('bs_hero_video_id');
     const input = document.getElementById('admin-video-id-input');
     if (input) input.value = '';
     _updateVideoStatus('');
