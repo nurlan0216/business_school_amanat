@@ -1311,9 +1311,7 @@ body.video-theater #theater-esc {
 }
 
 /* Блокировка прямых касаний iframe — только кастомные кнопки */
-#lp-hero-yt-api {
-  pointer-events: none;
-}
+/* #lp-hero-yt-api правила перенесены в блок .lp-hero-video-player выше */
 /* Кастомные кнопки — оставляем кликабельными */
 .lp-hvc-bar,
 .lp-hvc-btn,
@@ -1427,6 +1425,29 @@ body.video-theater #theater-esc {
 .lp-hero-video-player {
   position: absolute; inset: 0;
   background: #000;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Контейнер iframe занимает всё доступное пространство */
+#lp-hero-yt-api {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0 !important;
+  overflow: hidden;
+  pointer-events: none;
+  position: relative;
+}
+
+#lp-hero-yt-api > div,
+#lp-hero-yt-api iframe {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 0 !important;
 }
 .lp-hero-video-close {
   position: absolute;
@@ -1536,12 +1557,7 @@ body.video-theater #theater-esc {
   margin-left: 4px;
 }
 
-/* iframe внутри api-контейнера: убираем border-radius от iframe напрямую */
-#lp-hero-yt-api iframe {
-  width: 100% !important;
-  height: 100% !important;
-  border-radius: 0 !important;
-}
+/* iframe стили объединены в блоке .lp-hero-video-player выше */
 
 /* Социальное доказательство под видео */
 .lp-hero-video-proof {

@@ -1111,7 +1111,7 @@ function openHeroVideo() {
   if (!poster || !playerWrap) return;
 
   poster.style.display = 'none';
-  playerWrap.style.display = 'block';
+  playerWrap.style.display = 'flex';
 
   // Уничтожаем старый инстанс если был
   if (heroYtPlayer) { try { heroYtPlayer.destroy(); } catch(_) {} heroYtPlayer = null; }
