@@ -69,6 +69,14 @@ function triggerInstantBlock() {
   $('mobile-nav').style.display     = 'none';
   const hdrCenter = $('header-center');
   if (hdrCenter) hdrCenter.style.display = 'none';
+  // Убираем всплывашку "Продолжить урок" (resume beacon)
+  const resumeBeacon = document.getElementById('resume-beacon-el');
+  if (resumeBeacon) resumeBeacon.remove();
+  // Убираем viewers bar
+  if (typeof window._hideViewersBar === 'function') window._hideViewersBar();
+  // Убираем sticky CTA bar
+  const stickyBar = document.getElementById('sticky-cta-bar');
+  if (stickyBar) stickyBar.classList.remove('sticky-visible');
 
   // 4. Очищаем форму входа
   ['inp-name', 'inp-iin', 'inp-phone'].forEach(id => {
