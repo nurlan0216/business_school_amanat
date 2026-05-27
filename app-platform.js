@@ -1042,7 +1042,13 @@ function closeDemoLesson() {
 function getHeroVideoId() { return localStorage.getItem('bs_hero_video_id') || ''; }
 
 // ── Применяет hero-видео: показывает/скрывает постер по наличию ID ──
+let _applyHeroVideoTimer = null;
 function applyHeroVideo() {
+  // Дебаунс: если вызывается несколько раз подряд — выполняем один раз
+  clearTimeout(_applyHeroVideoTimer);
+  _applyHeroVideoTimer = setTimeout(_doApplyHeroVideo, 60);
+}
+function _doApplyHeroVideo() {
   const id = (typeof getHeroVideoId === 'function')
     ? getHeroVideoId()
     : (localStorage.getItem('bs_hero_video_id') || '');

@@ -130,20 +130,8 @@
         <tr><td>A6</td><td>Ссылка Telegram куратора</td></tr>
         <tr><td>A7</td><td>Ссылка ТГ-канал отзывов</td></tr>
       </table>
-      <strong style="display:block;margin-top:14px;color:var(--text)">📌 Курсы: B+C = курс 1, D+E = курс 2...</strong>
-      <table class="sheet-table" style="margin-top:6px">
-        <tr><th>Строка</th><th>KZ столбец (B,D,F…)</th><th>RU столбец (C,E,G…)</th></tr>
-        <tr><td>1</td><td>Название курса на KZ</td><td>Название курса на RU</td></tr>
-        <tr><td>2</td><td>Ссылка на иконку курса</td><td>Hex цвет карточки</td></tr>
-        <tr><td>3+</td><td>Урок / img: / file: / header:</td><td>Урок / img: / file: / header:</td></tr>
-      </table>
       <p style="margin-top:8px;font-size:11px;color:var(--text3);line-height:1.8">
-        🎬 Видео: <code class="hint-code">https://youtu.be/xxx|Название урока</code><br>
-        🖼 Картинка: <code class="hint-code">img:https://url|Подпись</code><br>
-        📝 Заголовок: <code class="hint-code">header:Название раздела</code><br>
-        📎 Файл: <code class="hint-code">file:https://url|Название</code><br>
-        🔗 Ссылка: <code class="hint-code">link:https://url|Текст</code><br>
-        💬 Текст: <code class="hint-code">text:Любой текст</code>
+        💡 Структура курсов и уроков редактируется в разделе <strong>«Редактор курсов и уроков»</strong> ниже.
       </p>
     </div>
 
@@ -302,7 +290,8 @@
       </div>
       <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center">
         <div class="field-wrap" style="flex:1;min-width:180px">
-          <input type="text" id="admin-students-search" class="field-input" placeholder="Введите ИИН (12 цифр) или имя..." style="padding-left:16px"
+          <input type="text" id="admin-students-search" class="field-input" placeholder="ИИН, телефон или имя..."
+            style="padding-left:16px"
             oninput="onStudentSearchInput(this.value)"
             onkeydown="if(event.key==='Enter') searchOrLoadStudents()">
           <div class="field-border-anim"></div>
@@ -312,7 +301,7 @@
         </button>
       </div>
       <div id="admin-students-hint" style="margin-top:6px;font-size:11px;color:var(--text3)">
-        Введите ИИН для поиска конкретного студента. Пустое поле — загрузит весь список.
+        Поиск по ИИН, номеру телефона или имени. Пустое поле — загрузит весь список.
       </div>
       <div id="admin-students-status" style="margin-top:8px;font-size:12px;color:var(--text3);display:none"></div>
       <div id="admin-students-table-wrap" style="margin-top:14px;display:none;overflow-x:auto">
@@ -329,34 +318,6 @@
           <tbody id="admin-students-tbody"></tbody>
         </table>
       </div>
-    </div>
-
-    <!-- ══ УРОКИ ИЗ ЛИСТ2 ════════════════════════════════════════ -->
-    <div class="admin-video-block" id="admin-lessons-block" style="margin-top:20px">
-      <div class="admin-video-block-header">
-        <span class="admin-video-block-icon">📚</span>
-        <div>
-          <div class="admin-video-block-title">Уроки из Лист2</div>
-          <div class="admin-video-block-sub">Просмотр всех курсов и уроков — кликните на урок чтобы открыть на YouTube</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:12px;margin-top:12px">
-        <button id="admin-lessons-lang-ru" onclick="setAdminLessonsLang('ru')"
-          style="padding:6px 16px;border-radius:8px;border:1px solid var(--gold);
-                 background:var(--gold);color:#000;font-weight:700;cursor:pointer;font-size:12px">
-          RU
-        </button>
-        <button id="admin-lessons-lang-kz" onclick="setAdminLessonsLang('kz')"
-          style="padding:6px 16px;border-radius:8px;border:1px solid var(--surface3);
-                 background:transparent;color:var(--text2);cursor:pointer;font-size:12px">
-          KZ
-        </button>
-      </div>
-      <button onclick="loadAdminLessons()" class="login-btn">
-        <span class="btn-content"><span>🔄 Загрузить уроки</span></span>
-      </button>
-      <div id="admin-lessons-status" style="margin-top:8px;font-size:12px;color:var(--text3);display:none"></div>
-      <div id="admin-lessons-content" style="margin-top:14px;display:none"></div>
     </div>
 
     <!-- ══ РЕДАКТОР КУРСОВ ════════════════════════════════════════ -->
@@ -854,14 +815,17 @@
     const hint = document.getElementById('admin-students-hint');
     const digits = val.replace(/\D/g, '');
     if (hint) {
-      if (digits.length >= 8) {
+      if (digits.length >= 10) {
+        hint.textContent = '🔍 Поиск по телефону / ИИН: ' + digits;
+        hint.style.color = 'var(--gold)';
+      } else if (digits.length >= 6) {
         hint.textContent = '🔍 Поиск по ИИН: ' + digits;
         hint.style.color = 'var(--gold)';
       } else if (val.trim().length > 0) {
         hint.textContent = '🔍 Поиск по имени...';
         hint.style.color = 'var(--text3)';
       } else {
-        hint.textContent = 'Введите ИИН для поиска конкретного студента. Пустое поле — загрузит весь список.';
+        hint.textContent = 'Поиск по ИИН, номеру телефона или имени. Пустое поле — загрузит весь список.';
         hint.style.color = 'var(--text3)';
       }
     }
@@ -940,9 +904,18 @@
 
   function _matchStudent(s, q) {
     const digits = q.replace(/\D/g, '');
-    if (digits.length >= 8) {
-      const cleanIin = s.iin.replace(/\D/g, '');
-      return cleanIin === digits || cleanIin.startsWith(digits);
+    if (digits.length >= 10) {
+      // Поиск по телефону или ИИН (10+ цифр)
+      const cleanPhone = s.phone.replace(/\D/g, '');
+      const cleanIin   = s.iin.replace(/\D/g, '');
+      // Нормализуем: если начинается с 8, заменяем на 7
+      const normPhone  = cleanPhone.startsWith('8') ? '7' + cleanPhone.slice(1) : cleanPhone;
+      const normQuery  = digits.startsWith('8') ? '7' + digits.slice(1) : digits;
+      return normPhone.includes(normQuery) || cleanIin.startsWith(digits) || cleanIin === digits;
+    }
+    if (digits.length >= 6) {
+      // Поиск по части ИИН
+      return s.iin.replace(/\D/g,'').startsWith(digits);
     }
     return s.name.toLowerCase().includes(q.toLowerCase()) || s.iin.includes(q);
   }
