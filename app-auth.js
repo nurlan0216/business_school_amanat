@@ -171,15 +171,37 @@ async function loadSheet2() {
     const cdDeadlineRaw   = strip((rows[8] || [])[0]) || '';
     initCountdown(cdDeadlineRaw);
 
-    // ── A10: YouTube ID hero-видео (новая строка) ─────────────────
-    const sheetHeroVideoId = strip((rows[9] || [])[0]) || '';
+    // ── A10: YouTube ID/URL hero-видео (поддерживает Shorts) ─────────
+    const sheetHeroVideoRaw = strip((rows[9] || [])[0]) || '';
     const heroClearedManually = localStorage.getItem('bs_hero_video_cleared') === '1';
-    if (sheetHeroVideoId && !heroClearedManually) {
-      localStorage.setItem('bs_hero_video_id', sheetHeroVideoId);
+    if (sheetHeroVideoRaw && !heroClearedManually) {
+      // Поддерживаем как голый ID, так и полный URL (включая /shorts/)
+      const _ytPatterns = [
+        /youtube\.com\/shorts\/([\w-]{11})/,
+        /youtu\.be\/([\w-]{11})/,
+        /youtube\.com\/watch\?v=([\w-]{11})/,
+        /youtube\.com\/embed\/([\w-]{11})/,
+        /[?&]v=([\w-]{11})/,
+      ];
+      let extractedId = '';
+      let extractedUrl = sheetHeroVideoRaw;
+      for (const p of _ytPatterns) {
+        const m = sheetHeroVideoRaw.match(p);
+        if (m) { extractedId = m[1]; break; }
+      }
+      // Если URL не совпал — это голый ID
+      if (!extractedId && /^[\w-]{11}$/.test(sheetHeroVideoRaw)) {
+        extractedId = sheetHeroVideoRaw;
+        extractedUrl = 'https://youtu.be/' + sheetHeroVideoRaw;
+      }
+      if (extractedId) {
+        localStorage.setItem('bs_hero_video_id',  extractedId);
+        localStorage.setItem('bs_hero_video_url', extractedUrl);
+      }
     }
     if (typeof applyHeroVideo === 'function') applyHeroVideo();
 
-    // ── A11: JSON конфига таймера акции (новая строка) ────────────
+    // ── A11: JSON конфига таймера акции ──────────────────────────────
     const sheetTimerRaw = strip((rows[10] || [])[0]) || '';
     if (sheetTimerRaw) {
       try {
@@ -188,6 +210,18 @@ async function loadSheet2() {
         localStorage.removeItem('lp_timer_deadline');
       } catch (jsonErr) {
         console.warn('[loadSheet2] A11 не является валидным JSON, игнорируем:', sheetTimerRaw);
+      }
+    }
+
+    // ── A12: JSON текстов постера hero-видео ─────────────────────────
+    const sheetPosterTextsRaw = strip((rows[11] || [])[0]) || '';
+    if (sheetPosterTextsRaw) {
+      try {
+        JSON.parse(sheetPosterTextsRaw); // валидация JSON
+        localStorage.setItem('bs_hero_poster_texts', sheetPosterTextsRaw);
+        if (typeof updateHeroVideoTexts === 'function') updateHeroVideoTexts();
+      } catch (jsonErr) {
+        console.warn('[loadSheet2] A12 не является валидным JSON, игнорируем:', sheetPosterTextsRaw);
       }
     }
 

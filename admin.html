@@ -129,6 +129,9 @@
         <tr><td>A5</td><td>Ссылка WhatsApp куратора</td></tr>
         <tr><td>A6</td><td>Ссылка Telegram куратора</td></tr>
         <tr><td>A7</td><td>Ссылка ТГ-канал отзывов</td></tr>
+        <tr><td>A10</td><td>URL или ID YouTube hero-видео (в т.ч. Shorts)</td></tr>
+        <tr><td>A11</td><td>JSON конфига таймера акции</td></tr>
+        <tr><td style="color:var(--gold)">A12</td><td style="color:var(--gold)">JSON текстов постера — синхронизируется между всеми устройствами</td></tr>
       </table>
       <p style="margin-top:8px;font-size:11px;color:var(--text3);line-height:1.8">
         💡 Структура курсов и уроков редактируется в разделе <strong>«Редактор курсов и уроков»</strong> ниже.
@@ -712,8 +715,11 @@
       durationRU: _gv('admin-hvr-duration-ru'),
       durationKZ: _gv('admin-hvr-duration-kz'),
     };
-    localStorage.setItem('bs_hero_poster_texts', JSON.stringify(posterTexts));
+    const posterTextsJson = JSON.stringify(posterTexts);
+    localStorage.setItem('bs_hero_poster_texts', posterTextsJson);
     if (typeof updateHeroVideoTexts === 'function') updateHeroVideoTexts();
+    // Синхронизируем тексты постера в Sheets A12 (читается на всех устройствах)
+    _saveSettingsToSheet({ A12: posterTextsJson });
 
     if (id) {
       localStorage.setItem('bs_hero_video_id',  id);
@@ -722,12 +728,13 @@
       if (input) input.value = id;
       _updateVideoStatus(id);
       const isShort = /\/shorts\//i.test(savedUrl);
-      const ok = await _saveSettingsToSheet({ A10: id });
+      // Сохраняем полный URL в A10 (а не голый ID) — чтобы телефон знал Shorts-формат
+      const ok = await _saveSettingsToSheet({ A10: savedUrl || id });
       const typeLabel = isShort ? ' (Shorts ↕)' : '';
       if (ok) {
-        _showAdminMsg('✅ YouTube ID сохранён в Sheets' + typeLabel + '! Видео появится у всех пользователей.', 'success');
+        _showAdminMsg('✅ Видео и тексты сохранены в Sheets' + typeLabel + '! Изменения видны на всех устройствах.', 'success');
       } else {
-        _showAdminMsg('✅ YouTube ID сохранён локально' + typeLabel + '. Запись в Sheets не удалась — обновите A10 вручную.', 'success');
+        _showAdminMsg('✅ Сохранено локально' + typeLabel + '. Запись в Sheets не удалась — обновите A10 вручную.', 'success');
       }
       if (typeof applyHeroVideo === 'function') applyHeroVideo();
     } else {
@@ -735,7 +742,7 @@
       localStorage.removeItem('bs_hero_video_url');
       _updateVideoStatus('');
       await _saveSettingsToSheet({ A10: '' });
-      _showAdminMsg('🗑 Видео-превью убрано.', 'success');
+      _showAdminMsg('🗑 Видео убрано. Тексты постера сохранены в Sheets.', 'success');
       if (typeof applyHeroVideo === 'function') applyHeroVideo();
     }
   }
