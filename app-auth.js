@@ -149,7 +149,7 @@ function parseLesson(raw) {
 async function loadSheet2() {
   if (!gsSheetId) return;
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:csv&sheet=Лист2`;
+    const url = `https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:csv&sheet=Лист2&_cb=${Date.now()}`;
     const controller = new AbortController();
     const timeoutId  = setTimeout(() => controller.abort(), 12000);
     let res;
