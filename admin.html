@@ -132,6 +132,7 @@
         <tr><td>A10</td><td>URL или ID YouTube hero-видео (в т.ч. Shorts)</td></tr>
         <tr><td>A11</td><td>JSON конфига таймера акции</td></tr>
         <tr><td style="color:var(--gold)">A12</td><td style="color:var(--gold)">JSON текстов постера — синхронизируется между всеми устройствами</td></tr>
+        <tr><td style="color:var(--gold)">A13</td><td style="color:var(--gold)">Apps Script URL — автосинхронизация между всеми устройствами</td></tr>
       </table>
       <p style="margin-top:8px;font-size:11px;color:var(--text3);line-height:1.8">
         💡 Структура курсов и уроков редактируется в разделе <strong>«Редактор курсов и уроков»</strong> ниже.
@@ -525,11 +526,36 @@
     }
   }
 
-  function _loadAdminFields() {
+  async function _loadAdminFields() {
     const gsInput = document.getElementById('admin-gs-input');
     const scriptInput = document.getElementById('admin-script-input');
     if (gsInput) gsInput.value = localStorage.getItem('gs_sheet_id') || '';
-    if (scriptInput) scriptInput.value = localStorage.getItem('bs_script_url') || '';
+    const localScriptUrl = localStorage.getItem('bs_script_url') || '';
+    if (scriptInput) scriptInput.value = localScriptUrl;
+
+    // Если Script URL нет локально — пытаемся получить его из Sheets A13
+    if (!localScriptUrl) {
+      const gsId = localStorage.getItem('gs_sheet_id') || '';
+      if (gsId) {
+        try {
+          const _url = `https://docs.google.com/spreadsheets/d/${gsId}/gviz/tq?tqx=out:csv&sheet=Лист2&_cb=${Date.now()}`;
+          const _res = await fetch(_url);
+          if (_res.ok) {
+            const _csv = await _res.text();
+            const _lines = _csv.split('\n');
+            if (_lines[12]) {
+              const _val = _lines[12].replace(/^"+|"+$/g, '').trim();
+              if (_val && _val.startsWith('https://script.google.com/')) {
+                localStorage.setItem('bs_script_url', _val);
+                if (scriptInput) scriptInput.value = _val;
+                const _m = document.getElementById('admin-save-msg');
+                if (_m) { _m.textContent = '🔄 Script URL автоматически загружен из Google Sheets!'; _m.className = 'msg success'; _m.style.display = 'block'; setTimeout(() => _m.style.display = 'none', 4000); }
+              }
+            }
+          }
+        } catch(_e) {}
+      }
+    }
     const videoId = localStorage.getItem('bs_hero_video_id') || '';
     const videoInput = document.getElementById('admin-video-id-input');
     if (videoInput) videoInput.value = videoId;
@@ -587,13 +613,26 @@
     }
   }
 
-  function saveAdmin() {
+  async function saveAdmin() {
     const gsId = (document.getElementById('admin-gs-input') || {}).value || '';
     const scriptUrl = (document.getElementById('admin-script-input') || {}).value || '';
     if (gsId) localStorage.setItem('gs_sheet_id', gsId.trim());
     if (scriptUrl) localStorage.setItem('bs_script_url', scriptUrl.trim());
     const msg = document.getElementById('admin-save-msg');
-    if (msg) { msg.textContent = '✅ Сохранено! Перезагрузите сайт для применения.'; msg.className = 'msg success'; msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 4000); }
+    // Синхронизация Script URL в A13 — другие устройства получат его автоматически
+    if (scriptUrl && scriptUrl.trim().startsWith('https://script.google.com/')) {
+      const ok = await _saveSettingsToSheet({ A13: scriptUrl.trim() });
+      if (msg) {
+        msg.textContent = ok
+          ? '✅ Сохранено! Script URL записан в Sheets (A13) — настройка синхронизируется для всех устройств.'
+          : '✅ Сохранено локально. Запись в Sheets не удалась — проверьте подключение.';
+        msg.className = 'msg ' + (ok ? 'success' : 'error');
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 5000);
+      }
+    } else {
+      if (msg) { msg.textContent = '✅ Сохранено. Перезагрузите сайт для применения.'; msg.className = 'msg success'; msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 4000); }
+    }
   }
 
   function runAdminDiag() {
