@@ -225,6 +225,16 @@ async function loadSheet2() {
       }
     }
 
+    // ── A13: Apps Script URL (синхронизация между устройствами) ──────
+    const sheetScriptUrl = strip((rows[12] || [])[0]) || '';
+    if (sheetScriptUrl && sheetScriptUrl.startsWith('https://script.google.com/')) {
+      const localScriptUrl = localStorage.getItem('bs_script_url') || '';
+      if (!localScriptUrl) {
+        localStorage.setItem('bs_script_url', sheetScriptUrl);
+        console.log('[loadSheet2] Apps Script URL получен из Sheets (A13):', sheetScriptUrl.slice(0, 60) + '\u2026');
+      }
+    }
+
     courses = [];
     let maxCol = 0;
     rows.forEach(r => { if (r.length > maxCol) maxCol = r.length; });
