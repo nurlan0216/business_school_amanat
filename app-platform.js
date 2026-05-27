@@ -1068,6 +1068,8 @@ function _doApplyHeroVideo() {
     // Убираем плейсхолдер если он есть
     const ph = document.getElementById('lp-hero-video-placeholder');
     if (ph) ph.style.display = 'none';
+    // Применяем кастомные тексты постера
+    updateHeroVideoTexts();
   } else {
     // Нет ID — скрываем постер и плеер, показываем плейсхолдер
     wrap.dataset.ytId = '';
@@ -1311,9 +1313,28 @@ function _heroVcSyncPlayIcon(playing) {
 
 function updateHeroVideoTexts() {
   const isKz = lang === 'kz';
-  setText('lp-hvr-label',    isKz ? 'Студент нәтижесі'        : 'Результат студента');
-  setText('lp-hvr-period',   isKz ? 'Kaspi-де бірінші айда'   : 'за первый месяц на Kaspi');
-  setText('lp-hvr-duration', isKz ? '▶ 28 сек · нақты сатылым': '▶ 28 сек · реальные продажи');
+  // Кастомные тексты из админки
+  let hvrCfg = {};
+  try { hvrCfg = JSON.parse(localStorage.getItem('bs_hero_poster_texts') || '{}'); } catch(_) {}
+
+  const _or = (custom, def) => (custom && custom.trim()) ? custom.trim() : def;
+
+  setText('lp-hvr-label',
+    _or(isKz ? hvrCfg.labelKZ : hvrCfg.labelRU,
+        isKz ? 'Студент нәтижесі' : 'Результат студента'));
+
+  // Сумма — одна для обоих языков
+  const amountEl = document.getElementById('lp-hvr-amount');
+  if (amountEl) amountEl.textContent = _or(hvrCfg.amount, '₸ 847 200');
+
+  setText('lp-hvr-period',
+    _or(isKz ? hvrCfg.periodKZ : hvrCfg.periodRU,
+        isKz ? 'Kaspi-де бірінші айда' : 'за первый месяц на Kaspi'));
+
+  setText('lp-hvr-duration',
+    _or(isKz ? hvrCfg.durationKZ : hvrCfg.durationRU,
+        isKz ? '▶ 28 сек · нақты сатылым' : '▶ 28 сек · реальные продажи'));
+
   setText('lp-hvp-text',     isKz ? '2 400+ студент сатуда'   : '2 400+ студентов уже продают');
   // Плейсхолдер (когда видео не задано) — только для администратора
   setText('lp-hvp-label',    isKz ? '▶ Бейне жүктеңіз'        : '▶ Загрузите видео');

@@ -172,9 +172,78 @@
         <code class="hint-code">https://youtube.com/watch?v=<strong>dQw4w9WgXcQ</strong></code> → ID = <strong>dQw4w9WgXcQ</strong><br><br>
         <strong>💡 Идеальное видео:</strong> 15–30 секунд, без звука (mute), скриншот отчёта Kaspi или WB с реальными продажами.
       </div>
-      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+
+      <!-- ══ ТЕКСТ НА ПОСТЕРЕ ══════════════════════════════════════ -->
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--surface3)">
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">🖼 Текст на постере видео</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field">
+            <label class="field-label">Метка RU</label>
+            <div class="field-wrap">
+              <input type="text" id="admin-hvr-label-ru" class="field-input" placeholder="Результат студента" style="padding-left:16px">
+              <div class="field-border-anim"></div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label">Метка KZ</label>
+            <div class="field-wrap">
+              <input type="text" id="admin-hvr-label-kz" class="field-input" placeholder="Студент нәтижесі" style="padding-left:16px">
+              <div class="field-border-anim"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:10px">
+          <label class="field-label">Сумма дохода (одна для всех языков)</label>
+          <div class="field-wrap">
+            <input type="text" id="admin-hvr-amount" class="field-input" placeholder="₸ 847 200" style="padding-left:16px">
+            <div class="field-border-anim"></div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+          <div class="field">
+            <label class="field-label">Период RU</label>
+            <div class="field-wrap">
+              <input type="text" id="admin-hvr-period-ru" class="field-input" placeholder="за первый месяц на Kaspi" style="padding-left:16px">
+              <div class="field-border-anim"></div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label">Период KZ</label>
+            <div class="field-wrap">
+              <input type="text" id="admin-hvr-period-kz" class="field-input" placeholder="Kaspi-де бірінші айда" style="padding-left:16px">
+              <div class="field-border-anim"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+          <div class="field">
+            <label class="field-label">Подпись под плеем RU</label>
+            <div class="field-wrap">
+              <input type="text" id="admin-hvr-duration-ru" class="field-input" placeholder="▶ 28 сек · реальные продажи" style="padding-left:16px">
+              <div class="field-border-anim"></div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label">Подпись под плеем KZ</label>
+            <div class="field-wrap">
+              <input type="text" id="admin-hvr-duration-kz" class="field-input" placeholder="▶ 28 сек · нақты сатылым" style="padding-left:16px">
+              <div class="field-border-anim"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:8px;padding:8px 12px;background:var(--surface3);border-radius:8px;font-size:11px;color:var(--text3);line-height:1.6">
+          💡 Пустые поля — используются значения по умолчанию. Изменения вступают в силу при нажатии «Сохранить».
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
         <button onclick="saveAdminVideoId()" class="login-btn" style="flex:1;min-width:120px">
-          <span class="btn-content"><span>💾 Сохранить видео</span></span>
+          <span class="btn-content"><span>💾 Сохранить</span></span>
         </button>
         <button onclick="clearAdminVideoId()" class="login-btn" style="flex:1;min-width:120px;background:var(--surface3)!important;color:var(--text2)!important">
           <span class="btn-content"><span>🗑 Убрать видео</span></span>
@@ -466,6 +535,17 @@
     const savedHeroUrl = localStorage.getItem('bs_hero_video_url') || '';
     const shortsChk = document.getElementById('admin-video-is-shorts');
     if (shortsChk) shortsChk.checked = /\/shorts\//i.test(savedHeroUrl);
+    // Restore poster text fields
+    let hvrCfg = {};
+    try { hvrCfg = JSON.parse(localStorage.getItem('bs_hero_poster_texts') || '{}'); } catch(_) {}
+    const _hf = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+    _hf('admin-hvr-label-ru',    hvrCfg.labelRU);
+    _hf('admin-hvr-label-kz',    hvrCfg.labelKZ);
+    _hf('admin-hvr-amount',      hvrCfg.amount);
+    _hf('admin-hvr-period-ru',   hvrCfg.periodRU);
+    _hf('admin-hvr-period-kz',   hvrCfg.periodKZ);
+    _hf('admin-hvr-duration-ru', hvrCfg.durationRU);
+    _hf('admin-hvr-duration-kz', hvrCfg.durationKZ);
     _loadTimerFields();
     loadLoginSettings();
     const apiKey = localStorage.getItem('bs_anthropic_key') || '';
@@ -620,6 +700,20 @@
       _showAdminMsg('⚠ Не похоже на YouTube ID или ссылку. Проверьте значение.', 'error');
       return;
     }
+
+    // Сохраняем тексты постера независимо от ID
+    const _gv = id2 => { const el = document.getElementById(id2); return el ? el.value.trim() : ''; };
+    const posterTexts = {
+      labelRU:    _gv('admin-hvr-label-ru'),
+      labelKZ:    _gv('admin-hvr-label-kz'),
+      amount:     _gv('admin-hvr-amount'),
+      periodRU:   _gv('admin-hvr-period-ru'),
+      periodKZ:   _gv('admin-hvr-period-kz'),
+      durationRU: _gv('admin-hvr-duration-ru'),
+      durationKZ: _gv('admin-hvr-duration-kz'),
+    };
+    localStorage.setItem('bs_hero_poster_texts', JSON.stringify(posterTexts));
+    if (typeof updateHeroVideoTexts === 'function') updateHeroVideoTexts();
 
     if (id) {
       localStorage.setItem('bs_hero_video_id',  id);
