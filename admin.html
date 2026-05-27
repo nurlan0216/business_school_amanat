@@ -185,14 +185,14 @@
           <div class="field">
             <label class="field-label">Метка RU</label>
             <div class="field-wrap">
-              <input type="text" id="admin-hvr-label-ru" class="field-input" placeholder="Результат студента" style="padding-left:16px">
+              <input type="text" id="admin-hvr-label-ru" class="field-input" placeholder="Результат студента" style="padding-left:16px" autocomplete="off">
               <div class="field-border-anim"></div>
             </div>
           </div>
           <div class="field">
             <label class="field-label">Метка KZ</label>
             <div class="field-wrap">
-              <input type="text" id="admin-hvr-label-kz" class="field-input" placeholder="Студент нәтижесі" style="padding-left:16px">
+              <input type="text" id="admin-hvr-label-kz" class="field-input" placeholder="Студент нәтижесі" style="padding-left:16px" autocomplete="off">
               <div class="field-border-anim"></div>
             </div>
           </div>
@@ -201,7 +201,7 @@
         <div class="field" style="margin-top:10px">
           <label class="field-label">Сумма дохода (одна для всех языков)</label>
           <div class="field-wrap">
-            <input type="text" id="admin-hvr-amount" class="field-input" placeholder="₸ 847 200" style="padding-left:16px">
+            <input type="text" id="admin-hvr-amount" class="field-input" placeholder="₸ 847 200" style="padding-left:16px" autocomplete="off">
             <div class="field-border-anim"></div>
           </div>
         </div>
@@ -210,14 +210,14 @@
           <div class="field">
             <label class="field-label">Период RU</label>
             <div class="field-wrap">
-              <input type="text" id="admin-hvr-period-ru" class="field-input" placeholder="за первый месяц на Kaspi" style="padding-left:16px">
+              <input type="text" id="admin-hvr-period-ru" class="field-input" placeholder="за первый месяц на Kaspi" style="padding-left:16px" autocomplete="off">
               <div class="field-border-anim"></div>
             </div>
           </div>
           <div class="field">
             <label class="field-label">Период KZ</label>
             <div class="field-wrap">
-              <input type="text" id="admin-hvr-period-kz" class="field-input" placeholder="Kaspi-де бірінші айда" style="padding-left:16px">
+              <input type="text" id="admin-hvr-period-kz" class="field-input" placeholder="Kaspi-де бірінші айда" style="padding-left:16px" autocomplete="off">
               <div class="field-border-anim"></div>
             </div>
           </div>
@@ -227,14 +227,14 @@
           <div class="field">
             <label class="field-label">Подпись под плеем RU</label>
             <div class="field-wrap">
-              <input type="text" id="admin-hvr-duration-ru" class="field-input" placeholder="▶ 28 сек · реальные продажи" style="padding-left:16px">
+              <input type="text" id="admin-hvr-duration-ru" class="field-input" placeholder="▶ 28 сек · реальные продажи" style="padding-left:16px" autocomplete="off">
               <div class="field-border-anim"></div>
             </div>
           </div>
           <div class="field">
             <label class="field-label">Подпись под плеем KZ</label>
             <div class="field-wrap">
-              <input type="text" id="admin-hvr-duration-kz" class="field-input" placeholder="▶ 28 сек · нақты сатылым" style="padding-left:16px">
+              <input type="text" id="admin-hvr-duration-kz" class="field-input" placeholder="▶ 28 сек · нақты сатылым" style="padding-left:16px" autocomplete="off">
               <div class="field-border-anim"></div>
             </div>
           </div>
@@ -754,6 +754,14 @@
       durationRU: _gv('admin-hvr-duration-ru'),
       durationKZ: _gv('admin-hvr-duration-kz'),
     };
+
+    // Защита от автозаполнения: предупреждаем о подозрительно коротких значениях
+    const _posterLabels = { labelRU: 'Метка RU', labelKZ: 'Метка KZ', amount: 'Сумма', periodRU: 'Период RU', periodKZ: 'Период KZ', durationRU: 'Подпись RU', durationKZ: 'Подпись KZ' };
+    const _suspicious = Object.entries(posterTexts).filter(([k, v]) => v.length > 0 && v.length <= 3);
+    if (_suspicious.length > 0) {
+      const _msg = '⚠️ Внимание! Возможно автозаполнение браузера.\n\nПоля с короткими значениями:\n' + _suspicious.map(([k,v]) => _posterLabels[k] + ': \ + v + \\').join('\n') + '\n\nНажмите OK чтобы сохранить, ОТМЕНА — для проверки.';
+      if (!confirm(_msg)) return;
+    }
     const posterTextsJson = JSON.stringify(posterTexts);
     localStorage.setItem('bs_hero_poster_texts', posterTextsJson);
     if (typeof updateHeroVideoTexts === 'function') updateHeroVideoTexts();
