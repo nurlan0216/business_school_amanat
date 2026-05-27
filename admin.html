@@ -171,6 +171,12 @@
         <span class="admin-video-preview-label">Ссылка:</span>
         <a class="admin-video-preview-link" id="admin-video-preview-link" href="#" target="_blank" rel="noopener">—</a>
       </div>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:10px;
+                    font-size:13px;color:var(--text2);cursor:pointer">
+        <input type="checkbox" id="admin-video-is-shorts"
+               style="accent-color:var(--gold);width:16px;height:16px">
+        Это Shorts-видео (вертикальное 9:16)
+      </label>
       <div class="admin-video-hint">
         <strong>📋 Как найти YouTube ID:</strong><br>
         Откройте видео на YouTube → скопируйте ссылку<br>
@@ -334,7 +340,19 @@
           <div class="admin-video-block-sub">Просмотр всех курсов и уроков — кликните на урок чтобы открыть на YouTube</div>
         </div>
       </div>
-      <button onclick="loadAdminLessons()" class="login-btn" style="margin-top:12px">
+      <div style="display:flex;gap:8px;margin-bottom:12px;margin-top:12px">
+        <button id="admin-lessons-lang-ru" onclick="setAdminLessonsLang('ru')"
+          style="padding:6px 16px;border-radius:8px;border:1px solid var(--gold);
+                 background:var(--gold);color:#000;font-weight:700;cursor:pointer;font-size:12px">
+          RU
+        </button>
+        <button id="admin-lessons-lang-kz" onclick="setAdminLessonsLang('kz')"
+          style="padding:6px 16px;border-radius:8px;border:1px solid var(--surface3);
+                 background:transparent;color:var(--text2);cursor:pointer;font-size:12px">
+          KZ
+        </button>
+      </div>
+      <button onclick="loadAdminLessons()" class="login-btn">
         <span class="btn-content"><span>🔄 Загрузить уроки</span></span>
       </button>
       <div id="admin-lessons-status" style="margin-top:8px;font-size:12px;color:var(--text3);display:none"></div>
@@ -380,6 +398,24 @@
 <script>
   // ─── Standalone admin page auth & UI ──────────────────────────────
   const ADMIN_PW_KEY = 'amanat_admin_pw';
+  let _adminLessonsLang = 'ru';
+
+  function setAdminLessonsLang(l) {
+    _adminLessonsLang = l;
+    const btnRu = document.getElementById('admin-lessons-lang-ru');
+    const btnKz = document.getElementById('admin-lessons-lang-kz');
+    if (btnRu) {
+      btnRu.style.background   = l === 'ru' ? 'var(--gold)' : 'transparent';
+      btnRu.style.color        = l === 'ru' ? '#000' : 'var(--text2)';
+      btnRu.style.borderColor  = l === 'ru' ? 'var(--gold)' : 'var(--surface3)';
+    }
+    if (btnKz) {
+      btnKz.style.background   = l === 'kz' ? 'var(--gold)' : 'transparent';
+      btnKz.style.color        = l === 'kz' ? '#000' : 'var(--text2)';
+      btnKz.style.borderColor  = l === 'kz' ? 'var(--gold)' : 'var(--surface3)';
+    }
+    loadAdminLessons();
+  }
 
   async function checkAdminPw() {
     const input = document.getElementById('admin-pw-input');
@@ -420,6 +456,10 @@
     const videoInput = document.getElementById('admin-video-id-input');
     if (videoInput) videoInput.value = videoId;
     _updateVideoStatus(videoId);
+    // Restore Shorts checkbox from saved URL
+    const savedHeroUrl = localStorage.getItem('bs_hero_video_url') || '';
+    const shortsChk = document.getElementById('admin-video-is-shorts');
+    if (shortsChk) shortsChk.checked = /\/shorts\//i.test(savedHeroUrl);
     _loadTimerFields();
     loadLoginSettings();
     const apiKey = localStorage.getItem('bs_anthropic_key') || '';
@@ -510,12 +550,16 @@
   function previewAdminVideoId(val) {
     const row = document.getElementById('admin-video-preview-row');
     const link = document.getElementById('admin-video-preview-link');
+    const chk = document.getElementById('admin-video-is-shorts');
     const v = val.trim();
     if (v && row && link) {
-      const url = `https://youtu.be/${v}`;
+      const isShorts = /\/shorts\//i.test(v);
+      const cleanId = v.replace(/.*youtu\.be\//, '').replace(/.*[?&]v=/, '').slice(0, 11);
+      const url = isShorts ? v : 'https://youtu.be/' + cleanId;
       row.style.display = 'flex';
       link.href = url;
       link.textContent = url;
+      if (chk && isShorts) chk.checked = true;
     } else if (row) {
       row.style.display = 'none';
     }
@@ -554,7 +598,16 @@
     }
     if (!matched) {
       // Голый 11-символьный ID
-      if (/^[\w-]{11}$/.test(raw)) { id = raw; savedUrl = ''; }
+      if (/^[\w-]{11}$/.test(raw)) {
+        id = raw;
+        savedUrl = 'https://youtu.be/' + raw;  // всегда сохраняем URL
+      }
+    }
+
+    // Чекбокс "Это Shorts" — принудительно переключаем URL на shorts-формат
+    const isManualShorts = document.getElementById('admin-video-is-shorts')?.checked;
+    if (isManualShorts && id && !savedUrl.includes('/shorts/')) {
+      savedUrl = 'https://youtube.com/shorts/' + id;
     }
 
     if (!id && raw) {
@@ -943,25 +996,32 @@
       let totalLessons = 0;
 
       for (let ci = 0; ci < numCourses; ci++) {
-        const colLinks = 1 + ci * 2;
-        const colNames = 2 + ci * 2;
+        const colKZ = 1 + ci * 2;
+        const colRU = 2 + ci * 2;
+        const colLinks = _adminLessonsLang === 'ru' ? colRU : colKZ;
+        const colAlt   = _adminLessonsLang === 'ru' ? colKZ : colRU;
         let courseName = 'Курс ' + (ci + 1);
         const lessons = [];
 
         for (let ri = 0; ri < rows.length; ri++) {
-          const link = (rows[ri][colLinks] || '').trim();
-          const name = (rows[ri][colNames] || '').trim();
-          if (ri === 0 && name && !link.startsWith('http')) {
-            if (name) courseName = name;
+          if (ri === 0) {
+            const kzName = (rows[0][colKZ] || '').trim();
+            const ruName = (rows[0][colRU] || '').trim();
+            courseName = (_adminLessonsLang === 'ru' ? ruName : kzName) || ruName || kzName || ('Курс ' + (ci + 1));
             continue;
           }
-          if (link && link.startsWith('http')) {
-            const parts = link.split('|');
-            const cleanLink = parts[0].trim();
-            const lessonName = (parts[1] || name || cleanLink).trim();
-            const isShort = /\/shorts\//i.test(cleanLink);
-            lessons.push({ link: cleanLink, name: lessonName, isShort });
-          }
+          const link    = (rows[ri][colLinks] || '').trim();
+          const linkAlt = (rows[ri][colAlt]   || '').trim();
+          const name = link.includes('|')
+            ? link.split('|')[1].trim()
+            : (linkAlt.includes('|') ? linkAlt.split('|')[1].trim() : '');
+          const finalLink = (link && link.startsWith('http'))
+            ? link.split('|')[0].trim()
+            : ((linkAlt && linkAlt.startsWith('http')) ? linkAlt.split('|')[0].trim() : '');
+          if (!finalLink) continue;
+          const lessonName = name || finalLink;
+          const isShort = /\/shorts\//i.test(finalLink);
+          lessons.push({ link: finalLink, name: lessonName, isShort });
         }
         if (!lessons.length) continue;
         totalLessons += lessons.length;

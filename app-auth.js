@@ -43,22 +43,66 @@ function startSecurityMonitor() {
 }
 
 function triggerInstantBlock() {
-  if (securityCheckInterval) clearInterval(securityCheckInterval);
-  currentUser = null; currentCourseIdx = null;
-  try { sessionStorage.removeItem('bs_user'); sessionStorage.removeItem('bs_iin'); } catch (_) {}
-  const slot = $('video-slot'); if (slot) slot.innerHTML = '';
-  $('lesson-modal').classList.remove('show', 'video-active');
-  $('video-section').style.display = 'none';
-  $('lessons-page').style.display = 'none';
-  $('logout-btn').style.display   = 'none';
-  $('mobile-nav').style.display   = 'none';
-  const blockOverlay = $('block-overlay');
-  if (blockOverlay) {
-    blockOverlay.style.display = 'flex';
-  } else {
-    const lp = $('landing-page'); if (lp) lp.style.display = 'block';
-    $('login-page').style.display = 'none';
+  // 1. Останавливаем монитор
+  if (securityCheckInterval) {
+    clearInterval(securityCheckInterval);
+    securityCheckInterval = null;
   }
+
+  // 2. Полностью очищаем сессию (включая localStorage!)
+  currentUser = null;
+  currentCourseIdx = null;
+  try {
+    sessionStorage.removeItem('bs_user');
+    sessionStorage.removeItem('bs_iin');
+    sessionStorage.removeItem('bs_phone');
+  } catch(_) {}
+  try { localStorage.removeItem('bs_session'); } catch(_) {}
+
+  // 3. Закрываем всё открытое
+  const slot = $('video-slot');
+  if (slot) slot.innerHTML = '';
+  $('lesson-modal').classList.remove('show', 'video-active');
+  $('video-section').style.display  = 'none';
+  $('lessons-page').style.display   = 'none';
+  $('logout-btn').style.display     = 'none';
+  $('mobile-nav').style.display     = 'none';
+  const hdrCenter = $('header-center');
+  if (hdrCenter) hdrCenter.style.display = 'none';
+
+  // 4. Очищаем форму входа
+  ['inp-name', 'inp-iin', 'inp-phone'].forEach(id => {
+    const e = $(id); if (e) e.value = '';
+  });
+  ['login-error', 'login-success'].forEach(id => {
+    const e = $(id); if (e) e.style.display = 'none';
+  });
+  const pw = $('progress-wrap'); if (pw) pw.style.display = 'none';
+  const pf = $('prog-fill'); if (pf) pf.style.width = '0%';
+  const btn = $('login-btn');
+  if (btn) { btn.disabled = false; btn.classList.remove('loading'); }
+
+  // 5. Переходим на лендинг
+  const lp = $('landing-page');
+  if (lp) {
+    lp.style.display = 'block';
+    lp.classList.add('page-fade-in');
+    setTimeout(() => lp.classList.remove('page-fade-in'), 400);
+  }
+  $('login-page').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // 6. Toast-уведомление
+  setTimeout(() => {
+    showToast(
+      typeof lang !== 'undefined' && lang === 'kz'
+        ? '🔴 Сіздің қол жеткізуіңіз тоқтатылды. Куратормен байланысыңыз.'
+        : '🔴 Ваш доступ был отозван. Обратитесь к куратору.',
+      'error'
+    );
+  }, 500);
+
+  if (typeof resetIdleBeacon === 'function') resetIdleBeacon();
 }
 
 // ══════════════════════════════ PARSE LESSON ══════════════════════
