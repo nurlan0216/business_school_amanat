@@ -719,7 +719,11 @@
     localStorage.setItem('bs_hero_poster_texts', posterTextsJson);
     if (typeof updateHeroVideoTexts === 'function') updateHeroVideoTexts();
     // Синхронизируем тексты постера в Sheets A12 (читается на всех устройствах)
-    _saveSettingsToSheet({ A12: posterTextsJson });
+    const okA12 = await _saveSettingsToSheet({ A12: posterTextsJson });
+if (!okA12) {
+  console.warn('[admin] A12 не записалась в Sheets — проверьте bs_script_url');
+  _showAdminMsg('⚠ Текст постера сохранён локально, но не синхронизирован в Sheets.', 'error');
+}
 
     if (id) {
       localStorage.setItem('bs_hero_video_id',  id);
