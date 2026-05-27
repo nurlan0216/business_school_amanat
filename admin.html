@@ -359,6 +359,51 @@
       <div id="admin-lessons-content" style="margin-top:14px;display:none"></div>
     </div>
 
+    <!-- ══ РЕДАКТОР КУРСОВ ════════════════════════════════════════ -->
+    <div class="admin-video-block" id="admin-course-editor-block" style="margin-top:20px">
+      <div class="admin-video-block-header">
+        <span class="admin-video-block-icon">✏️</span>
+        <div>
+          <div class="admin-video-block-title">Редактор курсов и уроков</div>
+          <div class="admin-video-block-sub">Добавляйте, редактируйте и удаляйте курсы и уроки прямо из браузера</div>
+        </div>
+      </div>
+
+      <!-- Шаг 1: загрузить данные -->
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button onclick="ceLoad()" class="login-btn" style="flex:1;min-width:140px">
+          <span class="btn-content"><span>📥 Загрузить курсы</span></span>
+        </button>
+        <button onclick="ceAddCourse()" class="login-btn" id="ce-add-course-btn"
+          style="flex:1;min-width:140px;background:var(--surface3)!important;color:var(--text2)!important;display:none">
+          <span class="btn-content"><span>➕ Добавить курс</span></span>
+        </button>
+      </div>
+
+      <div id="ce-status" style="margin-top:8px;font-size:12px;color:var(--text3);display:none"></div>
+      <div id="ce-hint" class="admin-video-hint" style="margin-top:12px">
+        <strong>💡 Формат уроков:</strong><br>
+        🎬 Видео: <code class="hint-code">https://youtu.be/ID|Название урока</code><br>
+        🎬 Shorts: <code class="hint-code">https://youtube.com/shorts/ID|Название</code><br>
+        📝 Заголовок раздела: <code class="hint-code">header:Название раздела</code><br>
+        🖼 Картинка: <code class="hint-code">img:https://url|Подпись</code><br>
+        📎 Файл: <code class="hint-code">file:https://url|Название</code><br>
+        🔗 Ссылка: <code class="hint-code">link:https://url|Текст</code><br>
+        💬 Текст: <code class="hint-code">text:Любой текст</code>
+      </div>
+
+      <!-- Список курсов -->
+      <div id="ce-courses-wrap" style="margin-top:16px;display:none"></div>
+    </div>
+
+    <!-- Модальное окно редактора курса -->
+    <div id="ce-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;padding:16px">
+      <div style="background:var(--surface);border-radius:16px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;padding:24px;position:relative">
+        <button onclick="ceCloseModal()" style="position:absolute;top:14px;right:14px;background:var(--surface3);border:none;color:var(--text);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">✕</button>
+        <div id="ce-modal-content"></div>
+      </div>
+    </div>
+
     <!-- ══ НАСТРОЙКИ ВХОДА ════════════════════════════════════════ -->
     <div class="admin-video-block" id="admin-login-settings-block" style="margin-top:20px">
       <div class="admin-video-block-header">
@@ -1046,6 +1091,381 @@
       if (st) st.textContent = '✅ Загружено: ' + numCourses + ' курсов, ' + totalLessons + ' уроков';
     } catch(e) {
       if (st) st.textContent = '❌ Ошибка загрузки: ' + e.message;
+    }
+  }
+
+  // ─── РЕДАКТОР КУРСОВ (Course Editor) ────────────────────────────
+  let _ceRows = [];       // все строки Лист2 (массив массивов)
+  let _ceNumCourses = 0;
+
+  function _ceStatus(msg, type) {
+    const el = document.getElementById('ce-status');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.color = type === 'error' ? '#ef4444' : type === 'ok' ? '#22c55e' : 'var(--text3)';
+    el.style.display = 'block';
+  }
+
+  async function ceLoad() {
+    const gsId = localStorage.getItem('gs_sheet_id') || '';
+    if (!gsId) { _ceStatus('⚠ Google Sheets ID не задан.', 'error'); return; }
+    _ceStatus('⏳ Загружаю данные...', '');
+    try {
+      const url = `https://docs.google.com/spreadsheets/d/${gsId}/gviz/tq?tqx=out:csv&sheet=Лист2`;
+      const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 12000);
+      const res = await fetch(url, { signal: ctrl.signal });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const csv = await res.text();
+      _ceRows = _parseStudentCSV(csv);
+      const maxCols = _ceRows.reduce((m, r) => Math.max(m, r.length), 0);
+      _ceNumCourses = Math.floor((maxCols - 1) / 2);
+      _ceStatus(`✅ Загружено курсов: ${_ceNumCourses}`, 'ok');
+      document.getElementById('ce-add-course-btn').style.display = '';
+      _ceRenderCourseList();
+    } catch(e) {
+      _ceStatus('❌ Ошибка: ' + e.message, 'error');
+    }
+  }
+
+  function _ceRenderCourseList() {
+    const wrap = document.getElementById('ce-courses-wrap');
+    if (!wrap) return;
+    wrap.style.display = 'block';
+    let html = '';
+    for (let ci = 0; ci < _ceNumCourses; ci++) {
+      const colKZ = 1 + ci * 2;
+      const colRU = 2 + ci * 2;
+      const nameRU = (_ceRows[0] && _ceRows[0][colRU] || '').trim() || `Курс ${ci + 1}`;
+      const nameKZ = (_ceRows[0] && _ceRows[0][colKZ] || '').trim() || nameRU;
+      const iconUrl = (_ceRows[1] && _ceRows[1][colKZ] || '').trim();
+      const color   = (_ceRows[1] && _ceRows[1][colRU] || '').trim();
+      // Считаем уроки
+      let lessonCountRU = 0, lessonCountKZ = 0;
+      for (let ri = 2; ri < _ceRows.length; ri++) {
+        const kz = (_ceRows[ri][colKZ] || '').trim();
+        const ru = (_ceRows[ri][colRU] || '').trim();
+        if (kz && kz.startsWith('http')) lessonCountKZ++;
+        if (ru && ru.startsWith('http')) lessonCountRU++;
+      }
+      html += `<div style="border:1px solid var(--surface3);border-radius:12px;padding:14px 16px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          ${iconUrl ? `<img src="${iconUrl}" style="width:32px;height:32px;object-fit:contain;border-radius:6px" onerror="this.style.display='none'">` : '<span style="font-size:24px">📖</span>'}
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700;font-size:13px;color:var(--text)">${nameRU}</div>
+            <div style="font-size:11px;color:var(--text3)">${nameKZ} · RU: ${lessonCountRU} ур. · KZ: ${lessonCountKZ} ур.</div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0">
+            <button onclick="ceEditCourse(${ci})" style="padding:5px 12px;border-radius:7px;border:1px solid var(--gold);background:transparent;color:var(--gold);cursor:pointer;font-size:12px">✏️ Изменить</button>
+            <button onclick="ceEditLessons(${ci})" style="padding:5px 12px;border-radius:7px;border:1px solid var(--surface3);background:var(--surface2);color:var(--text);cursor:pointer;font-size:12px">📝 Уроки</button>
+            <button onclick="ceDeleteCourse(${ci})" style="padding:5px 12px;border-radius:7px;border:1px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:12px">🗑</button>
+          </div>
+        </div>
+      </div>`;
+    }
+    if (!html) html = '<p style="color:var(--text3);font-size:13px">Курсы не найдены</p>';
+    wrap.innerHTML = html;
+  }
+
+  function ceOpenModal(html) {
+    const overlay = document.getElementById('ce-modal-overlay');
+    const content = document.getElementById('ce-modal-content');
+    if (overlay) overlay.style.display = 'flex';
+    if (content) content.innerHTML = html;
+  }
+
+  function ceCloseModal() {
+    const overlay = document.getElementById('ce-modal-overlay');
+    if (overlay) overlay.style.display = 'none';
+  }
+
+  // ── Добавить новый курс ──────────────────────────────────────
+  function ceAddCourse() {
+    ceOpenModal(`
+      <h3 style="font-size:16px;font-weight:700;margin:0 0 16px">➕ Новый курс</h3>
+      <div class="field" style="margin-bottom:10px">
+        <label class="field-label">Название RU</label>
+        <div class="field-wrap"><input type="text" id="ce-new-name-ru" class="field-input" placeholder="Wildberries" style="padding-left:12px"><div class="field-border-anim"></div></div>
+      </div>
+      <div class="field" style="margin-bottom:10px">
+        <label class="field-label">Название KZ</label>
+        <div class="field-wrap"><input type="text" id="ce-new-name-kz" class="field-input" placeholder="Wildberries" style="padding-left:12px"><div class="field-border-anim"></div></div>
+      </div>
+      <div class="field" style="margin-bottom:10px">
+        <label class="field-label">URL иконки (необязательно)</label>
+        <div class="field-wrap"><input type="text" id="ce-new-icon" class="field-input" placeholder="https://..." style="padding-left:12px"><div class="field-border-anim"></div></div>
+      </div>
+      <div class="field" style="margin-bottom:16px">
+        <label class="field-label">Цвет карточки hex (необязательно)</label>
+        <div class="field-wrap"><input type="text" id="ce-new-color" class="field-input" placeholder="#f5c842" style="padding-left:12px"><div class="field-border-anim"></div></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button onclick="ceSaveNewCourse()" class="login-btn" style="flex:1"><span class="btn-content"><span>💾 Создать курс</span></span></button>
+        <button onclick="ceCloseModal()" class="login-btn" style="flex:1;background:var(--surface3)!important;color:var(--text2)!important"><span class="btn-content"><span>Отмена</span></span></button>
+      </div>
+      <div id="ce-modal-status" style="margin-top:10px;font-size:12px;display:none"></div>
+    `);
+  }
+
+  async function ceSaveNewCourse() {
+    const nameRU = (document.getElementById('ce-new-name-ru') || {}).value.trim();
+    const nameKZ = (document.getElementById('ce-new-name-kz') || {}).value.trim() || nameRU;
+    const icon   = (document.getElementById('ce-new-icon')    || {}).value.trim();
+    const color  = (document.getElementById('ce-new-color')   || {}).value.trim();
+    if (!nameRU) { _ceModalStatus('⚠ Введите название', 'error'); return; }
+    _ceModalStatus('⏳ Сохраняю...', '');
+    // Добавляем колонки в _ceRows
+    const newColKZ = 1 + _ceNumCourses * 2;
+    const newColRU = 2 + _ceNumCourses * 2;
+    // Строка 0 — названия
+    while (_ceRows.length < 3) _ceRows.push([]);
+    _ceSetCell(0, newColKZ, nameKZ);
+    _ceSetCell(0, newColRU, nameRU);
+    // Строка 1 — иконка/цвет
+    _ceSetCell(1, newColKZ, icon);
+    _ceSetCell(1, newColRU, color);
+    _ceNumCourses++;
+    const ok = await _ceSaveToSheet();
+    if (ok) {
+      _ceModalStatus('✅ Курс создан!', 'ok');
+      setTimeout(() => { ceCloseModal(); _ceRenderCourseList(); }, 800);
+    } else {
+      _ceModalStatus('❌ Ошибка сохранения в Sheets', 'error');
+    }
+  }
+
+  // ── Редактировать название и иконку курса ────────────────────
+  function ceEditCourse(ci) {
+    const colKZ = 1 + ci * 2, colRU = 2 + ci * 2;
+    const nameRU = (_ceRows[0] && _ceRows[0][colRU] || '').trim();
+    const nameKZ = (_ceRows[0] && _ceRows[0][colKZ] || '').trim();
+    const icon   = (_ceRows[1] && _ceRows[1][colKZ] || '').trim();
+    const color  = (_ceRows[1] && _ceRows[1][colRU] || '').trim();
+    ceOpenModal(`
+      <h3 style="font-size:16px;font-weight:700;margin:0 0 16px">✏️ Редактировать курс</h3>
+      <div class="field" style="margin-bottom:10px">
+        <label class="field-label">Название RU</label>
+        <div class="field-wrap"><input type="text" id="ce-edit-name-ru" class="field-input" value="${_esc(nameRU)}" style="padding-left:12px"><div class="field-border-anim"></div></div>
+      </div>
+      <div class="field" style="margin-bottom:10px">
+        <label class="field-label">Название KZ</label>
+        <div class="field-wrap"><input type="text" id="ce-edit-name-kz" class="field-input" value="${_esc(nameKZ)}" style="padding-left:12px"><div class="field-border-anim"></div></div>
+      </div>
+      <div class="field" style="margin-bottom:10px">
+        <label class="field-label">URL иконки</label>
+        <div class="field-wrap"><input type="text" id="ce-edit-icon" class="field-input" value="${_esc(icon)}" style="padding-left:12px"><div class="field-border-anim"></div></div>
+      </div>
+      <div class="field" style="margin-bottom:16px">
+        <label class="field-label">Цвет hex</label>
+        <div class="field-wrap"><input type="text" id="ce-edit-color" class="field-input" value="${_esc(color)}" placeholder="#f5c842" style="padding-left:12px"><div class="field-border-anim"></div></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button onclick="ceSaveEditCourse(${ci})" class="login-btn" style="flex:1"><span class="btn-content"><span>💾 Сохранить</span></span></button>
+        <button onclick="ceCloseModal()" class="login-btn" style="flex:1;background:var(--surface3)!important;color:var(--text2)!important"><span class="btn-content"><span>Отмена</span></span></button>
+      </div>
+      <div id="ce-modal-status" style="margin-top:10px;font-size:12px;display:none"></div>
+    `);
+  }
+
+  async function ceSaveEditCourse(ci) {
+    const colKZ = 1 + ci * 2, colRU = 2 + ci * 2;
+    const nameRU = (document.getElementById('ce-edit-name-ru') || {}).value.trim();
+    const nameKZ = (document.getElementById('ce-edit-name-kz') || {}).value.trim() || nameRU;
+    const icon   = (document.getElementById('ce-edit-icon')    || {}).value.trim();
+    const color  = (document.getElementById('ce-edit-color')   || {}).value.trim();
+    if (!nameRU) { _ceModalStatus('⚠ Введите название', 'error'); return; }
+    _ceModalStatus('⏳ Сохраняю...', '');
+    _ceSetCell(0, colRU, nameRU);
+    _ceSetCell(0, colKZ, nameKZ);
+    _ceSetCell(1, colKZ, icon);
+    _ceSetCell(1, colRU, color);
+    const ok = await _ceSaveToSheet();
+    if (ok) {
+      _ceModalStatus('✅ Сохранено!', 'ok');
+      setTimeout(() => { ceCloseModal(); _ceRenderCourseList(); }, 700);
+    } else {
+      _ceModalStatus('❌ Ошибка сохранения', 'error');
+    }
+  }
+
+  // ── Удалить курс ─────────────────────────────────────────────
+  async function ceDeleteCourse(ci) {
+    const colRU = 2 + ci * 2;
+    const name = (_ceRows[0] && _ceRows[0][colRU] || '').trim() || `Курс ${ci + 1}`;
+    if (!confirm(`Удалить курс «${name}» и все его уроки? Это действие нельзя отменить.`)) return;
+    // Удаляем 2 столбца из каждой строки
+    const colKZ = 1 + ci * 2;
+    _ceRows = _ceRows.map(row => {
+      const r = [...row];
+      r.splice(colKZ, 2);
+      return r;
+    });
+    _ceNumCourses--;
+    _ceStatus('⏳ Удаляю...', '');
+    const ok = await _ceSaveToSheet();
+    _ceStatus(ok ? `✅ Курс «${name}» удалён` : '❌ Ошибка удаления', ok ? 'ok' : 'error');
+    _ceRenderCourseList();
+  }
+
+  // ── Редактор уроков ──────────────────────────────────────────
+  function ceEditLessons(ci) {
+    const colKZ = 1 + ci * 2, colRU = 2 + ci * 2;
+    const nameRU = (_ceRows[0] && _ceRows[0][colRU] || '').trim() || `Курс ${ci + 1}`;
+    const lessons = [];
+    for (let ri = 2; ri < _ceRows.length; ri++) {
+      lessons.push({ ri, kz: (_ceRows[ri][colKZ] || '').trim(), ru: (_ceRows[ri][colRU] || '').trim() });
+    }
+    // Убираем пустые хвосты
+    while (lessons.length && !lessons[lessons.length - 1].kz && !lessons[lessons.length - 1].ru) lessons.pop();
+
+    let rows = lessons.map((l, i) => `
+      <tr id="ce-row-${i}" style="border-bottom:1px solid var(--surface3)">
+        <td style="padding:4px 6px;color:var(--text3);font-size:11px;font-family:monospace;width:24px">${i + 1}</td>
+        <td style="padding:3px 4px">
+          <input type="text" value="${_esc(l.ru)}" data-ri="${l.ri}" data-col="ru"
+            style="width:100%;background:var(--surface2);border:1px solid var(--surface3);border-radius:5px;padding:5px 8px;font-size:11px;color:var(--text);outline:none"
+            placeholder="https://youtu.be/ID|Название">
+        </td>
+        <td style="padding:3px 4px">
+          <input type="text" value="${_esc(l.kz)}" data-ri="${l.ri}" data-col="kz"
+            style="width:100%;background:var(--surface2);border:1px solid var(--surface3);border-radius:5px;padding:5px 8px;font-size:11px;color:var(--text);outline:none"
+            placeholder="https://youtu.be/ID|Атауы">
+        </td>
+        <td style="padding:3px 4px;width:28px">
+          <button onclick="ceDeleteLesson(${ci},${i})" title="Удалить" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px;padding:2px 4px">🗑</button>
+        </td>
+      </tr>`).join('');
+
+    ceOpenModal(`
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px">📝 Уроки: ${_esc(nameRU)}</h3>
+      <div style="overflow-x:auto;max-height:50vh;overflow-y:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:12px" id="ce-lessons-table">
+          <thead style="position:sticky;top:0;background:var(--surface);z-index:1">
+            <tr style="border-bottom:1px solid var(--surface3);color:var(--text3)">
+              <th style="padding:6px 4px;text-align:left;font-weight:500">#</th>
+              <th style="padding:6px 4px;text-align:left;font-weight:500">RU ссылка|Название</th>
+              <th style="padding:6px 4px;text-align:left;font-weight:500">KZ ссылка|Атауы</th>
+              <th style="padding:6px 4px"></th>
+            </tr>
+          </thead>
+          <tbody id="ce-lessons-tbody">${rows || '<tr><td colspan="4" style="padding:12px;text-align:center;color:var(--text3)">Уроков нет</td></tr>'}</tbody>
+        </table>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <button onclick="ceAddLesson(${ci})" style="padding:7px 14px;border-radius:8px;border:1px solid var(--gold);background:transparent;color:var(--gold);cursor:pointer;font-size:12px;font-weight:600">➕ Добавить урок</button>
+        <button onclick="ceSaveLessons(${ci})" class="login-btn" style="flex:1;min-width:120px"><span class="btn-content"><span>💾 Сохранить всё</span></span></button>
+        <button onclick="ceCloseModal()" class="login-btn" style="min-width:80px;background:var(--surface3)!important;color:var(--text2)!important"><span class="btn-content"><span>Закрыть</span></span></button>
+      </div>
+      <div id="ce-modal-status" style="margin-top:8px;font-size:12px;display:none"></div>
+    `);
+    // Сохраняем ci в атрибуте для доступа из функций
+    document.getElementById('ce-lessons-table').dataset.ci = ci;
+  }
+
+  function ceAddLesson(ci) {
+    const tbody = document.getElementById('ce-lessons-tbody');
+    if (!tbody) return;
+    // Найти следующий свободный ri
+    const colKZ = 1 + ci * 2, colRU = 2 + ci * 2;
+    let nextRi = _ceRows.length; // добавим строку
+    const emptyRow = [];
+    _ceRows.push(emptyRow);
+    const i = tbody.querySelectorAll('tr').length;
+    const tr = document.createElement('tr');
+    tr.id = 'ce-row-' + i;
+    tr.style.borderBottom = '1px solid var(--surface3)';
+    tr.innerHTML = `
+      <td style="padding:4px 6px;color:var(--text3);font-size:11px;font-family:monospace;width:24px">${i + 1}</td>
+      <td style="padding:3px 4px">
+        <input type="text" value="" data-ri="${nextRi}" data-col="ru"
+          style="width:100%;background:var(--surface2);border:1px solid var(--gold);border-radius:5px;padding:5px 8px;font-size:11px;color:var(--text);outline:none"
+          placeholder="https://youtu.be/ID|Название" autofocus>
+      </td>
+      <td style="padding:3px 4px">
+        <input type="text" value="" data-ri="${nextRi}" data-col="kz"
+          style="width:100%;background:var(--surface2);border:1px solid var(--surface3);border-radius:5px;padding:5px 8px;font-size:11px;color:var(--text);outline:none"
+          placeholder="https://youtu.be/ID|Атауы">
+      </td>
+      <td style="padding:3px 4px;width:28px">
+        <button onclick="this.closest('tr').remove()" title="Удалить" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px;padding:2px 4px">🗑</button>
+      </td>`;
+    tbody.appendChild(tr);
+    tr.querySelector('input').focus();
+  }
+
+  function ceDeleteLesson(ci, rowIdx) {
+    const tr = document.getElementById('ce-row-' + rowIdx);
+    if (tr) {
+      const ri = parseInt(tr.querySelector('input').dataset.ri);
+      // Очищаем строку в _ceRows
+      const colKZ = 1 + ci * 2, colRU = 2 + ci * 2;
+      if (_ceRows[ri]) { _ceRows[ri][colKZ] = ''; _ceRows[ri][colRU] = ''; }
+      tr.remove();
+    }
+  }
+
+  async function ceSaveLessons(ci) {
+    const colKZ = 1 + ci * 2, colRU = 2 + ci * 2;
+    _ceModalStatus('⏳ Сохраняю...', '');
+    // Читаем все инпуты из модального окна
+    const tbody = document.getElementById('ce-lessons-tbody');
+    if (!tbody) return;
+    const inputs = tbody.querySelectorAll('input[data-ri]');
+    inputs.forEach(inp => {
+      const ri = parseInt(inp.dataset.ri);
+      const col = inp.dataset.col === 'ru' ? colRU : colKZ;
+      while (_ceRows.length <= ri) _ceRows.push([]);
+      _ceSetCell(ri, col, inp.value.trim());
+    });
+    const ok = await _ceSaveToSheet();
+    _ceModalStatus(ok ? '✅ Уроки сохранены!' : '❌ Ошибка сохранения', ok ? 'ok' : 'error');
+    if (ok) { setTimeout(() => { ceCloseModal(); _ceRenderCourseList(); }, 700); }
+  }
+
+  // ── Вспомогательные ─────────────────────────────────────────
+  function _ceSetCell(ri, ci, val) {
+    while (_ceRows.length <= ri) _ceRows.push([]);
+    while (_ceRows[ri].length <= ci) _ceRows[ri].push('');
+    _ceRows[ri][ci] = val || '';
+  }
+
+  function _ceModalStatus(msg, type) {
+    const el = document.getElementById('ce-modal-status');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.color = type === 'error' ? '#ef4444' : type === 'ok' ? '#22c55e' : 'var(--text3)';
+    el.style.display = 'block';
+  }
+
+  function _esc(s) {
+    return (s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── Сохранение всей таблицы в Sheets через Apps Script ──────
+  async function _ceSaveToSheet() {
+    const scriptUrl = localStorage.getItem('bs_script_url') || '';
+    if (!scriptUrl) {
+      _showAdminMsg('⚠ Apps Script URL не задан — изменения сохранены только локально.', 'error');
+      return false;
+    }
+    try {
+      // Нормализуем: все строки одинаковой длины
+      const maxLen = _ceRows.reduce((m, r) => Math.max(m, r.length), 0);
+      const normalized = _ceRows.map(r => {
+        const row = [...r];
+        while (row.length < maxLen) row.push('');
+        return row;
+      });
+      const res = await fetch(scriptUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ _type: 'write_sheet2', rows: normalized }),
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const json = await res.json();
+      return json.ok === true;
+    } catch(e) {
+      console.error('[CourseEditor] save error:', e);
+      return false;
     }
   }
 
