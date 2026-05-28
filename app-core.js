@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    BUSINESS SCHOOL AMANAT — CORE v3.3
    Константы, состояние, утилиты, язык, переводы,
    курсор, idle-маяк, тема, отзывы, popup лендинга,
@@ -166,6 +166,11 @@ function _startRevRotation() {
   }, 3000);
 }
 
+// Останавливает ротацию отзывов — вызывается при переходе на страницу платформы
+window._stopRevRotation = function() {
+  if (_revGridTimer) { clearInterval(_revGridTimer); _revGridTimer = null; }
+};
+
 function renderLandingCarousel() { renderReviewsGrid(); }
 function goCarousel() {}
 function startCarouselTimer() {}
@@ -276,6 +281,7 @@ function initAutoTheme() {
   }
 }
 initTheme();
+initAutoTheme();
 
 // ══════════════════════════════ LP POPUP ═════════════════════════
 function closeLpPopup(e, force) {
@@ -325,11 +331,12 @@ function showLpPopup() {
 
   function onExitIntent(e) { if (e.clientY < 10) triggerPopup(); }
 
+  let fallbackTimer;
   if (window.innerWidth >= 768) {
     document.addEventListener('mouseleave', onExitIntent);
-    var fallbackTimer = setTimeout(triggerPopup, 40000);
+    fallbackTimer = setTimeout(triggerPopup, 40000);
   } else {
-    var fallbackTimer = setTimeout(triggerPopup, 40000);
+    fallbackTimer = setTimeout(triggerPopup, 40000);
     var _mobileScrolledDown = false;
     window.addEventListener('scroll', function _mobileScrollTrigger() {
       if (!_mobileScrolledDown && window.scrollY > 300) {

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    BUSINESS SCHOOL AMANAT — PROGRESS v3.3
    Стрик, дашборд прогресса, сертификат, конфетти,
    достижения, хедер прогресс-бар
@@ -382,7 +382,7 @@ function downloadCert() {
 // ══ PATCH markWatched ═════════════════════════════════════════════
 const _origMarkWatched = window.markWatched;
 window.markWatched = function(ci, li) {
-  _origMarkWatched.call(this, ci, li);
+  if (typeof _origMarkWatched === 'function') _origMarkWatched.call(this, ci, li);
   recordLessonToday();
   checkFirstLesson();
   checkCourseCompletion(ci);
@@ -392,8 +392,9 @@ window.markWatched = function(ci, li) {
 // ══ PATCH showLessons ═════════════════════════════════════════════
 const _origShowLessons = window.showLessons;
 window.showLessons = function() {
-  _origShowLessons.call(this);
-  initAutoTheme();
+  if (typeof _origShowLessons === 'function') _origShowLessons.call(this);
+  // initAutoTheme не вызываем здесь — она уже вызвана в app-core.js при старте
+  // и вызов при каждом входе показывает нежелательный toast смены темы
   checkStreakOnLogin();
   updateStreakBadge();
   updateHeaderProgressBar();
@@ -409,7 +410,7 @@ window.showLessons = function() {
 // ══ PATCH logout ══════════════════════════════════════════════════
 const _origLogout = window.logout;
 window.logout = function() {
-  _origLogout.call(this);
+  if (typeof _origLogout === 'function') _origLogout.call(this);
   updateHeaderProgressBar();
   const btn = $('progress-dashboard-btn');
   if (btn) btn.style.display = 'none';

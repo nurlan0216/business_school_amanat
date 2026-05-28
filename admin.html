@@ -185,14 +185,14 @@
           <div class="field">
             <label class="field-label">Метка RU</label>
             <div class="field-wrap">
-              <input type="text" id="admin-hvr-label-ru" class="field-input" placeholder="Результат студента" style="padding-left:16px" autocomplete="off">
+              <input type="text" id="admin-hvr-label-ru" class="field-input" placeholder="Результат студента" style="padding-left:16px" autocomplete="off" autocomplete="off">
               <div class="field-border-anim"></div>
             </div>
           </div>
           <div class="field">
             <label class="field-label">Метка KZ</label>
             <div class="field-wrap">
-              <input type="text" id="admin-hvr-label-kz" class="field-input" placeholder="Студент нәтижесі" style="padding-left:16px" autocomplete="off">
+              <input type="text" id="admin-hvr-label-kz" class="field-input" placeholder="Студент нәтижесі" style="padding-left:16px" autocomplete="off" autocomplete="off">
               <div class="field-border-anim"></div>
             </div>
           </div>
@@ -201,7 +201,7 @@
         <div class="field" style="margin-top:10px">
           <label class="field-label">Сумма дохода (одна для всех языков)</label>
           <div class="field-wrap">
-            <input type="text" id="admin-hvr-amount" class="field-input" placeholder="₸ 847 200" style="padding-left:16px" autocomplete="off">
+            <input type="text" id="admin-hvr-amount" class="field-input" placeholder="₸ 847 200" style="padding-left:16px" autocomplete="off" autocomplete="off">
             <div class="field-border-anim"></div>
           </div>
         </div>
@@ -210,14 +210,14 @@
           <div class="field">
             <label class="field-label">Период RU</label>
             <div class="field-wrap">
-              <input type="text" id="admin-hvr-period-ru" class="field-input" placeholder="за первый месяц на Kaspi" style="padding-left:16px" autocomplete="off">
+              <input type="text" id="admin-hvr-period-ru" class="field-input" placeholder="за первый месяц на Kaspi" style="padding-left:16px" autocomplete="off" autocomplete="off">
               <div class="field-border-anim"></div>
             </div>
           </div>
           <div class="field">
             <label class="field-label">Период KZ</label>
             <div class="field-wrap">
-              <input type="text" id="admin-hvr-period-kz" class="field-input" placeholder="Kaspi-де бірінші айда" style="padding-left:16px" autocomplete="off">
+              <input type="text" id="admin-hvr-period-kz" class="field-input" placeholder="Kaspi-де бірінші айда" style="padding-left:16px" autocomplete="off" autocomplete="off">
               <div class="field-border-anim"></div>
             </div>
           </div>
@@ -227,14 +227,14 @@
           <div class="field">
             <label class="field-label">Подпись под плеем RU</label>
             <div class="field-wrap">
-              <input type="text" id="admin-hvr-duration-ru" class="field-input" placeholder="▶ 28 сек · реальные продажи" style="padding-left:16px" autocomplete="off">
+              <input type="text" id="admin-hvr-duration-ru" class="field-input" placeholder="▶ 28 сек · реальные продажи" style="padding-left:16px" autocomplete="off" autocomplete="off">
               <div class="field-border-anim"></div>
             </div>
           </div>
           <div class="field">
             <label class="field-label">Подпись под плеем KZ</label>
             <div class="field-wrap">
-              <input type="text" id="admin-hvr-duration-kz" class="field-input" placeholder="▶ 28 сек · нақты сатылым" style="padding-left:16px" autocomplete="off">
+              <input type="text" id="admin-hvr-duration-kz" class="field-input" placeholder="▶ 28 сек · нақты сатылым" style="padding-left:16px" autocomplete="off" autocomplete="off">
               <div class="field-border-anim"></div>
             </div>
           </div>
@@ -322,13 +322,8 @@
         <strong>🔄 Сбросить таймер</strong> — удаляет сохранённый дедлайн из браузера. При следующем открытии лендинга таймер запустится заново по текущим настройкам.
       </div>
     </div>
-
-    <!-- ══ ANTHROPIC API KEY ═══════════════════════════════════════ -->
-    <div class="admin-video-block" id="admin-anthropic-block" style="margin-top:20px">
-      <div class="admin-video-block-header">
-        <span class="admin-video-block-icon">🤖</span>
-        <div>
-          <div class="admin-video-block-title">Anthropic API Key (AI-калькулятор)</div>
+    <!-- API-ключ Anthropic перенесён на сервер (env ANTHROPIC_API_KEY).
+         Запросы проксируются через /api/calc — ключ не хранится в браузере. -->
           <div class="admin-video-block-sub">Ключ для работы AI-прогноза доходов в калькуляторе лендинга</div>
         </div>
       </div>
@@ -533,41 +528,18 @@
     const localScriptUrl = localStorage.getItem('bs_script_url') || '';
     if (scriptInput) scriptInput.value = localScriptUrl;
 
-    // Если Script URL нет локально — пытаемся получить его из Sheets A13
-    if (!localScriptUrl) {
-      const gsId = localStorage.getItem('gs_sheet_id') || '';
-      if (gsId) {
-        try {
-          const _url = `https://docs.google.com/spreadsheets/d/${gsId}/gviz/tq?tqx=out:csv&sheet=Лист2&_cb=${Date.now()}`;
-          const _res = await fetch(_url);
-          if (_res.ok) {
-            const _csv = await _res.text();
-            const _lines = _csv.split('\n');
-            if (_lines[12]) {
-              const _val = _lines[12].replace(/^"+|"+$/g, '').trim();
-              if (_val && _val.startsWith('https://script.google.com/')) {
-                localStorage.setItem('bs_script_url', _val);
-                if (scriptInput) scriptInput.value = _val;
-                const _m = document.getElementById('admin-save-msg');
-                if (_m) { _m.textContent = '🔄 Script URL автоматически загружен из Google Sheets!'; _m.className = 'msg success'; _m.style.display = 'block'; setTimeout(() => _m.style.display = 'none', 4000); }
-              }
-            }
-          }
-        } catch(_e) {}
-      }
-    }
+    const _hf = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+
+    // ── СНАЧАЛА заполняем из localStorage (мгновенно) ──────────
+    let hvrCfg = {};
+    try { hvrCfg = JSON.parse(localStorage.getItem('bs_hero_poster_texts') || '{}'); } catch(_) {}
     const videoId = localStorage.getItem('bs_hero_video_id') || '';
     const videoInput = document.getElementById('admin-video-id-input');
     if (videoInput) videoInput.value = videoId;
     _updateVideoStatus(videoId);
-    // Restore Shorts checkbox from saved URL
     const savedHeroUrl = localStorage.getItem('bs_hero_video_url') || '';
     const shortsChk = document.getElementById('admin-video-is-shorts');
     if (shortsChk) shortsChk.checked = /\/shorts\//i.test(savedHeroUrl);
-    // Restore poster text fields
-    let hvrCfg = {};
-    try { hvrCfg = JSON.parse(localStorage.getItem('bs_hero_poster_texts') || '{}'); } catch(_) {}
-    const _hf = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
     _hf('admin-hvr-label-ru',    hvrCfg.labelRU);
     _hf('admin-hvr-label-kz',    hvrCfg.labelKZ);
     _hf('admin-hvr-amount',      hvrCfg.amount);
@@ -577,9 +549,98 @@
     _hf('admin-hvr-duration-kz', hvrCfg.durationKZ);
     _loadTimerFields();
     loadLoginSettings();
-    const apiKey = localStorage.getItem('bs_anthropic_key') || '';
-    const keyInput = document.getElementById('admin-anthropic-key-input');
-    if (keyInput && apiKey) keyInput.value = apiKey;
+
+    // ── ЗАТЕМ загружаем актуальные данные из Google Sheets ──────
+    // Sheets — единственный источник правды, перезаписывает localStorage
+    const gsId = localStorage.getItem('gs_sheet_id') || '';
+    if (!gsId) return;
+
+    const _syncMsg = document.getElementById('admin-save-msg');
+    const _showSync = (text, type) => {
+      if (!_syncMsg) return;
+      _syncMsg.textContent = text;
+      _syncMsg.className = 'msg ' + type;
+      _syncMsg.style.display = 'block';
+    };
+    _showSync('🔄 Загружаю актуальные данные из Google Sheets...', 'success');
+
+    try {
+      const _url = `https://docs.google.com/spreadsheets/d/${gsId}/gviz/tq?tqx=out:csv&sheet=Лист2&_cb=${Date.now()}`;
+      const _res = await fetch(_url);
+      if (!_res.ok) throw new Error('HTTP ' + _res.status);
+      const _csv = await _res.text();
+      const _lines = _csv.split('\n');
+
+      // Вспомогательная функция: убрать CSV-кавычки
+      const _unquote = s => (s || '').replace(/^"+|"+$/g, '').trim();
+
+      // A10 — hero video URL
+      const _a10 = _unquote(_lines[9]);
+      if (_a10) {
+        // Определяем ID из URL
+        let _vid = _a10, _vurl = _a10;
+        const _patterns = [
+          /youtube\.com\/shorts\/([\w-]{11})/,
+          /youtu\.be\/([\w-]{11})/,
+          /youtube\.com\/watch\?v=([\w-]{11})/,
+          /[?&]v=([\w-]{11})/,
+        ];
+        for (const p of _patterns) { const m = _a10.match(p); if (m) { _vid = m[1]; break; } }
+        if (/^[\w-]{11}$/.test(_a10)) _vid = _a10;
+        localStorage.setItem('bs_hero_video_id', _vid);
+        localStorage.setItem('bs_hero_video_url', _vurl);
+        if (videoInput) videoInput.value = _vid;
+        _updateVideoStatus(_vid);
+        if (shortsChk) shortsChk.checked = /\/shorts\//i.test(_vurl);
+      }
+
+      // A12 — poster texts JSON
+      const _a12raw = _unquote(_lines[11]);
+      if (_a12raw) {
+        try {
+          // CSV может двойно экранировать кавычки: "" → "
+          const _a12clean = _a12raw.replace(/""/g, '"');
+          const _cfg = JSON.parse(_a12clean);
+          // Обновляем поля и localStorage
+          localStorage.setItem('bs_hero_poster_texts', JSON.stringify(_cfg));
+          _hf('admin-hvr-label-ru',    _cfg.labelRU);
+          _hf('admin-hvr-label-kz',    _cfg.labelKZ);
+          _hf('admin-hvr-amount',      _cfg.amount);
+          _hf('admin-hvr-period-ru',   _cfg.periodRU);
+          _hf('admin-hvr-period-kz',   _cfg.periodKZ);
+          _hf('admin-hvr-duration-ru', _cfg.durationRU);
+          _hf('admin-hvr-duration-kz', _cfg.durationKZ);
+        } catch(_je) {
+          console.warn('[admin] A12 JSON parse error:', _je, 'raw:', _a12raw);
+        }
+      }
+
+      // A11 — timer config
+      const _a11raw = _unquote(_lines[10]);
+      if (_a11raw) {
+        try {
+          const _a11clean = _a11raw.replace(/""/g, '"');
+          JSON.parse(_a11clean); // валидируем
+          localStorage.setItem('lp_timer_config', _a11clean);
+          _loadTimerFields();
+        } catch(_) {}
+      }
+
+      // A13 — script URL
+      const _a13 = _unquote(_lines[12]);
+      if (_a13 && _a13.startsWith('https://script.google.com/')) {
+        localStorage.setItem('bs_script_url', _a13);
+        if (scriptInput) scriptInput.value = _a13;
+      }
+
+      _showSync('✅ Данные загружены из Google Sheets — актуальная версия.', 'success');
+      setTimeout(() => { if (_syncMsg) _syncMsg.style.display = 'none'; }, 3000);
+
+    } catch(_e) {
+      console.warn('[admin] Sheets load error:', _e);
+      _showSync('⚠️ Не удалось загрузить из Sheets — показаны локальные данные.', 'error');
+      setTimeout(() => { if (_syncMsg) _syncMsg.style.display = 'none'; }, 4000);
+    }
   }
 
   async function _saveSettingsToSheet(updates) {
@@ -603,15 +664,6 @@
     }
   }
 
-  function saveAnthropicKey() {
-    const key = (document.getElementById('admin-anthropic-key-input') || {}).value || '';
-    if (key.trim()) {
-      localStorage.setItem('bs_anthropic_key', key.trim());
-      _showAdminMsg('✅ API-ключ сохранён локально. AI-калькулятор будет использовать его при следующем запросе.', 'success');
-    } else {
-      _showAdminMsg('⚠ Введите API-ключ в формате sk-ant-...', 'error');
-    }
-  }
 
   async function saveAdmin() {
     const gsId = (document.getElementById('admin-gs-input') || {}).value || '';

@@ -5,10 +5,8 @@
 // ── Состояние калькулятора ─────────────────────────────────────
 let calcSelectedMkt = 'kaspi';
 
-// ── Предупреждение безопасности ───────────────────────────────
-if (window.ANTHROPIC_API_KEY || localStorage.getItem('bs_anthropic_key')) {
-  console.warn('[SECURITY] Anthropic API key is exposed in browser localStorage. Use a backend proxy for production.');
-}
+// ── Прокси-эндпоинт (API-ключ хранится на сервере) ─────────────
+const CALC_PROXY_URL = '/api/calc';
 
 // ── Утилиты форматирования ────────────────────────────────────
 function fmtMoney(n) {
@@ -48,17 +46,9 @@ function _calcShow(id) {
 }
 
 // ── Enter в поле ввода ────────────────────────────────────────
+// Скрипт загружается с defer — DOM уже готов, DOMContentLoaded уже сработал.
 (function initCalcInput() {
-  document.addEventListener('DOMContentLoaded', function() {
-    const inp = document.getElementById('lp-calc-input');
-    if (inp) {
-      inp.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') runAiCalc();
-      });
-    }
-  });
-  // Если DOMContentLoaded уже произошёл
-  if (document.readyState !== 'loading') {
+  function _bind() {
     const inp = document.getElementById('lp-calc-input');
     if (inp) {
       inp.addEventListener('keydown', function(e) {
@@ -66,6 +56,8 @@ function _calcShow(id) {
       });
     }
   }
+  if (document.readyState !== 'loading') { _bind(); }
+  else { document.addEventListener('DOMContentLoaded', _bind); }
 })();
 
 // ── Анимация прогресс-бара загрузки ──────────────────────────
@@ -139,7 +131,7 @@ function _parseCalcResponse(text) {
     return obj;
   } catch(e) {
     // Попытка вытащить числа из текста как fallback
-    const nums = (text.match(/\d[\d\s]*/g) || []).map(s => parseInt(s.replace(/\s/g, ''), 10)).filter(n => n > 10000);
+    const nums = (text.match(/\d{5,}/g) || []).map(s => parseInt(s, 10)).filter(n => n > 10000);
     return {
       month1: nums[0] || 120000,
       month2: nums[1] || 280000,
@@ -220,6 +212,12 @@ async function runAiCalc() {
     return;
   }
 
+  if (product.length > 200) {
+    if (typeof showToast === 'function') showToast('Название товара слишком длинное (макс. 200 символов)', 'error');
+    if (input) input.focus();
+    return;
+  }
+
   const mkt = calcSelectedMkt;
   const mktNames = { kaspi: 'Kaspi', wb: 'Wildberries', ozon: 'Ozon' };
   const mktName = mktNames[mkt] || mkt;
@@ -233,44 +231,11 @@ async function runAiCalc() {
     { title: t('lpCalcLoadStep4Title'), sub: t('lpCalcLoadStep4Sub') },
   ]);
 
-  const SYSTEM_PROMPT = `Ты — эксперт по продажам на маркетплейсах Казахстана и СНГ с 10-летним опытом.
-
-ЗАДАЧА: Рассчитай реалистичный прогноз дохода для новичка, начинающего с нуля.
-
-ПРАВИЛА ОТВЕТА:
-1. Отвечай ТОЛЬКО валидным JSON — без \`\`\`json, без пояснений, без текста до или после.
-2. Все суммы в тенге (₸), целые числа.
-3. Прогноз реалистичный: 1-й месяц — скромный старт, 2-й — рост, 3-й — выход на темп.
-4. insight — 1-2 предложения: спрос, сезонность, конкуренция именно для этого товара.
-5. tips — 3 конкретных совета для этого товара и маркетплейса, не общие фразы.
-
-СТРУКТУРА JSON (строго):
-{"month1":<число>,"month2":<число>,"month3":<число>,"revenue":<month1+month2+month3>,"profit":<~35% от revenue>,"startCapital":<минимальный капитал для первой партии>,"insight":"<текст>","tips":["<совет 1>","<совет 2>","<совет 3>"]}
-
-ОРИЕНТИРЫ (Казахстан 2024-2025):
-- Kaspi: комиссия 12-15%, высокая конверсия, быстрый старт
-- Wildberries: комиссия 15-25%, нужны фото и SEO
-- Ozon: комиссия 15-23%, менее конкурентен в KZ
-- Средний чек: 3 000–25 000 ₸, стартовая партия: 20-50 единиц
-- Типичный month1 новичка: 80 000–250 000 ₸`;
-
-  const userMessage = `Товар: «${product}». Маркетплейс: ${mktName}. Рассчитай прогноз.`;
-
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch(CALC_PROXY_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': window.ANTHROPIC_API_KEY || localStorage.getItem('bs_anthropic_key') || '',
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 800,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: userMessage }],
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product, mkt }),
     });
 
     progressTimers.forEach(clearTimeout);
@@ -278,7 +243,8 @@ async function runAiCalc() {
     if (!response.ok) throw new Error('API error ' + response.status);
 
     const apiData = await response.json();
-    const text = (apiData.content || []).map(b => b.text || '').join('');
+    // Прокси возвращает { text: "..." } — уже извлечённый ответ модели
+    const text = apiData.text || (apiData.content || []).map(b => b.text || '').join('');
     const data = _parseCalcResponse(text);
 
     // Завершаем прогресс-бар до 100%
@@ -293,7 +259,8 @@ async function runAiCalc() {
 
     // Fallback: локальный расчёт
     const base = { kaspi: 1.0, wb: 1.15, ozon: 1.05 }[mkt] || 1;
-    const seed = product.length * 7919 % 100;
+    // Хеш от содержимого строки (charCode сумма), а не только длина
+    const seed = Array.from(product).reduce((acc, ch) => acc + ch.charCodeAt(0), 0) % 100;
     const m1 = Math.round((80000 + seed * 1200) * base / 10000) * 10000;
     const m2 = Math.round(m1 * 2.1 / 10000) * 10000;
     const m3 = Math.round(m1 * 3.8 / 10000) * 10000;

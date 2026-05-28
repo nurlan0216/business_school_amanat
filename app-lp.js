@@ -13,18 +13,22 @@ function toggleFaq(item) {
 }
 
 /* FAQ section scroll-in observer */
-(function () {
-  const faqSection = document.querySelector('.lp-faq-section');
-  if (!faqSection) return;
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        setTimeout(() => faqSection.classList.add('in-view'), 50);
-        io.disconnect();
-      }
-    });
-  }, { threshold: 0.05 });
-  io.observe(faqSection);
+(function() {
+  function _initFaqObserver() {
+    const faqSection = document.querySelector('.lp-faq-section');
+    if (!faqSection) return;
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          setTimeout(() => faqSection.classList.add('in-view'), 50);
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.05 });
+    io.observe(faqSection);
+  }
+  if (document.readyState !== 'loading') { _initFaqObserver(); }
+  else { document.addEventListener('DOMContentLoaded', _initFaqObserver); }
 })();
 
 // ══ LANDING TIMER ═════════════════════════════════════════════════
@@ -144,9 +148,11 @@ const SP_NAMES = [
 ];
 
 let spToastTimer = null;
+let spToastEnabled = false; // управляется из showLanding() / showLessonsPage()
 
 function initSocialProofToast() {
   function scheduleNext() {
+    if (!spToastEnabled) return; // не планируем если лендинг неактивен
     const delay = 45000 + Math.random() * 45000;
     spToastTimer = setTimeout(showSpToast, delay);
   }
@@ -154,6 +160,7 @@ function initSocialProofToast() {
 }
 
 function showSpToast() {
+  if (!spToastEnabled) return; // не планируем следующий показ если лендинг неактивен
   const lp = document.getElementById('landing-page');
   if (!lp || lp.style.display !== 'block') { initSocialProofToast(); return; }
   const person = SP_NAMES[Math.floor(Math.random() * SP_NAMES.length)];
@@ -192,16 +199,25 @@ function showSpToast() {
 })();
 
 // Патч showLanding — скрываем sticky bar при возврате на лендинг
-document.addEventListener('DOMContentLoaded', function() {
+// и включаем social proof toast
+(function() {
   if (typeof window.showLanding === 'function') {
     const _orig = window.showLanding;
     window.showLanding = function() {
       const bar = document.getElementById('sticky-cta-bar');
       if (bar) bar.classList.remove('sticky-visible');
+      spToastEnabled = true;
       _orig.apply(this, arguments);
     };
   }
-});
+})();
+
+// Глобальная функция для остановки toast при уходе с лендинга
+// Вызывается из showLessonsPage() и triggerInstantBlock()
+window._stopSpToast = function() {
+  spToastEnabled = false;
+  if (spToastTimer) { clearTimeout(spToastTimer); spToastTimer = null; }
+};
 
 // Патч toggleTheme — сохраняем ручной выбор
 if (typeof toggleTheme === 'function') {
@@ -214,20 +230,10 @@ if (typeof toggleTheme === 'function') {
 
 // ══ INIT FEATURES ═════════════════════════════════════════════════
 (function initFeatures() {
-  setTimeout(initSocialProofToast, 15000);
+  setTimeout(() => { spToastEnabled = true; initSocialProofToast(); }, 15000);
 
-  // Auto theme при загрузке (без toast)
-  const manualTheme = localStorage.getItem('manualTheme');
-  if (!manualTheme) {
-    const hour = new Date().getHours();
-    const shouldBeDark = hour >= 22 || hour < 7;
-    const target = shouldBeDark ? 'dark' : 'light';
-    if (currentTheme !== target) {
-      currentTheme = target;
-      localStorage.setItem('theme', currentTheme);
-      document.documentElement.setAttribute('data-theme', currentTheme);
-    }
-  }
+  // Auto theme при загрузке — делегируем app-core.js (без toast, manualTheme проверяется внутри)
+  if (typeof initAutoTheme === 'function') initAutoTheme();
 
   // Compare section — scroll-triggered animation
   (function initCompareAnimation() {

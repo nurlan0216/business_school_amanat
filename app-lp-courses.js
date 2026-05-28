@@ -220,66 +220,25 @@ function applyLpCourseCards() {
   });
 }
 
-// ── Перехват loadSheet2: обновляем карточки после загрузки ──
-(function patchLoadSheet2() {
-  const _origLoadSheet2 = window.loadSheet2;
-  if (typeof _origLoadSheet2 === 'function') {
-    window.loadSheet2 = async function() {
-      await _origLoadSheet2.apply(this, arguments);
-      // setTimeout гарантирует что renderCoursesGrid() внутри loadSheet2 уже выполнился
-      setTimeout(() => applyLpCourseCards(), 50);
-    };
-  } else {
-    // loadSheet2 ещё не определена — ждём
-    let _attempts = 0;
-    const _waitInterval = setInterval(() => {
-      _attempts++;
-      if (typeof window.loadSheet2 === 'function') {
-        clearInterval(_waitInterval);
-        const _orig = window.loadSheet2;
-        window.loadSheet2 = async function() {
-          await _orig.apply(this, arguments);
-          setTimeout(() => applyLpCourseCards(), 50);
-        };
-      }
-      if (_attempts > 100) clearInterval(_waitInterval); // 10 сек вместо 5
-    }, 100);
-  }
-})();
+// ── Обновляем карточки после загрузки Sheets (событие sheet2Loaded) ──
+// Событие dispatchEvent(new CustomEvent('sheet2Loaded')) вызывается в конце
+// loadSheet2() (app-auth.js) — нет гонок, нет интервальных опросников.
+window.addEventListener('sheet2Loaded', function() {
+  setTimeout(() => applyLpCourseCards(), 50);
+});
 
 // ── Перехват setLang: переводим карточки при смене языка ────
+// Все скрипты defer — setLang из app-core.js гарантированно доступна здесь
 (function patchSetLang() {
-  const _origSetLang = window.setLang;
-  if (typeof _origSetLang === 'function') {
+  if (typeof window.setLang === 'function') {
+    const _origSetLang = window.setLang;
     window.setLang = function(l) {
       _origSetLang.apply(this, arguments);
       applyLpCourseCards();
     };
-  } else {
-    let _attempts = 0;
-    const _waitInterval = setInterval(() => {
-      _attempts++;
-      if (typeof window.setLang === 'function') {
-        clearInterval(_waitInterval);
-        const _orig = window.setLang;
-        window.setLang = function(l) {
-          _orig.apply(this, arguments);
-          applyLpCourseCards();
-        };
-      }
-      if (_attempts > 100) clearInterval(_waitInterval); // 10 сек вместо 5
-    }, 100);
   }
 })();
 
 // ── Инициализация при загрузке страницы ─────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  // Первый прогон — переводы без иконок (Sheets ещё не загружены)
-  applyLpCourseCards();
-  // После загрузки Sheets иконки подставятся через патч loadSheet2
-});
-
-// Если DOMContentLoaded уже сработал
-if (document.readyState !== 'loading') {
-  applyLpCourseCards();
-}
+// defer гарантирует, что DOM уже готов
+applyLpCourseCards();

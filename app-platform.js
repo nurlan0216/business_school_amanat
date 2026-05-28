@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    BUSINESS SCHOOL AMANAT — PLATFORM v3.3
    Курсы, уроки, видеоплеер, демо-режим, hero-видео,
    просмотр изображений, мобильная навигация
@@ -1410,6 +1410,14 @@ function showLessons() {
   const blockOverlay = $('block-overlay');
   if (blockOverlay) blockOverlay.style.display = 'none';
 
+  // Останавливаем таймер ротации отзывов — он не нужен на платформе
+  if (typeof _revGridTimer !== 'undefined' && _revGridTimer) {
+    clearInterval(_revGridTimer);
+    _revGridTimer = null;
+  }
+  // Останавливаем social proof toast
+  if (typeof window._stopSpToast === 'function') window._stopSpToast();
+
   applyTexts(); applyLinks();
   updateHeroStats();
   startSecurityMonitor();
@@ -1468,6 +1476,9 @@ function showLanding() {
     if (mobWaBar && window.innerWidth <= 768) mobWaBar.style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
     resetIdleBeacon();
+    // Перезапускаем ротацию отзывов
+    if (typeof renderReviewsGrid === 'function') renderReviewsGrid();
+    // Включаем social proof toast (управляется патчем в app-lp.js через closure)
     if (window._showViewersBar) window._showViewersBar();
   }, 220);
 }

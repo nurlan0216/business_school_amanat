@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    BUSINESS SCHOOL AMANAT — AUTH v3.3
    Авторизация, выход, восстановление сессии,
    монитор безопасности, admin-панель
@@ -74,6 +74,8 @@ function triggerInstantBlock() {
   if (resumeBeacon) resumeBeacon.remove();
   // Убираем viewers bar
   if (typeof window._hideViewersBar === 'function') window._hideViewersBar();
+  // Останавливаем social proof toast
+  if (typeof window._stopSpToast === 'function') window._stopSpToast();
   // Убираем sticky CTA bar
   const stickyBar = document.getElementById('sticky-cta-bar');
   if (stickyBar) stickyBar.classList.remove('sticky-visible');
@@ -208,6 +210,8 @@ async function loadSheet2() {
         JSON.parse(sheetTimerRaw); // валидация JSON
         localStorage.setItem('lp_timer_config', sheetTimerRaw);
         localStorage.removeItem('lp_timer_deadline');
+        // Перезапускаем таймер с актуальным конфигом из Sheets (баг #6)
+        if (typeof initLandingTimer === 'function') initLandingTimer();
       } catch (jsonErr) {
         console.warn('[loadSheet2] A11 не является валидным JSON, игнорируем:', sheetTimerRaw);
       }
@@ -269,6 +273,8 @@ async function loadSheet2() {
     applyTexts();
     renderCoursesGrid();
     updateHeroStats();
+    // Сигнализируем подписчикам (app-lp-courses.js) что данные готовы
+    window.dispatchEvent(new CustomEvent('sheet2Loaded'));
   } catch (e) {
     console.error('Sheet2 load error', e);
     showSheetError();
@@ -322,7 +328,12 @@ async function logLogin(iin, name) {
     const now = new Date();
     const { device, os, browser } = getDeviceInfo();
     let ip = '—';
-    try { const r = await fetch('https://api.ipify.org?format=json', { signal: AbortSignal.timeout(3000) }); ip = (await r.json()).ip || '—'; } catch (_) {}
+    try {
+      const ipCtrl = new AbortController();
+      const ipTimer = setTimeout(() => ipCtrl.abort(), 3000);
+      try { const r = await fetch('https://api.ipify.org?format=json', { signal: ipCtrl.signal }); ip = (await r.json()).ip || '—'; } catch (_) {}
+      finally { clearTimeout(ipTimer); }
+    } catch (_) {}
     fetch(scriptUrl, {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
@@ -392,8 +403,10 @@ async function doLogin() {
       await animProg(40, 42, 100, steps[1]);
       const sheetUrl = `https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:csv&sheet=Лист1`;
       const ctrl2 = new AbortController();
-      setTimeout(() => ctrl2.abort(), 12000);
-      const res2 = await fetch(sheetUrl, { signal: ctrl2.signal });
+      const ctrl2Timer = setTimeout(() => ctrl2.abort(), 12000);
+      let res2;
+      try { res2 = await fetch(sheetUrl, { signal: ctrl2.signal }); }
+      finally { clearTimeout(ctrl2Timer); }
       if (!res2.ok) throw new Error('sheet_http_' + res2.status);
       const csv  = await res2.text();
       const rows = parseCSV(csv);
@@ -510,18 +523,35 @@ async function tryRestoreSession() {
 }
 
 // ══════════════════════════════ INPUT HELPERS ═════════════════════
-$('inp-iin').addEventListener('input',   function () { this.value = this.value.replace(/\D/g, ''); });
-$('inp-iin').addEventListener('keydown', e => { if (e.key === 'Enter') $('inp-phone').focus(); });
-$('inp-name').addEventListener('keydown',  e => { if (e.key === 'Enter') $('inp-iin').focus(); });
-$('inp-phone').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+(function initInputHelpers() {
+  function _bind() {
+    const inpIin   = $('inp-iin');
+    const inpName  = $('inp-name');
+    const inpPhone = $('inp-phone');
+    if (inpIin)   inpIin.addEventListener('input',   function () { this.value = this.value.replace(/\D/g, ''); });
+    if (inpIin)   inpIin.addEventListener('keydown', e => { if (e.key === 'Enter' && inpPhone) inpPhone.focus(); });
+    if (inpName)  inpName.addEventListener('keydown',  e => { if (e.key === 'Enter' && inpIin) inpIin.focus(); });
+    if (inpPhone) inpPhone.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  }
+  if (document.readyState !== 'loading') { _bind(); }
+  else { document.addEventListener('DOMContentLoaded', _bind); }
+})();
 
 // ══════════════════════════════ ADMIN ════════════════════════════
-$('logo-wrap').addEventListener('click', () => {
-  logoClickCount++;
-  if (logoClickCount === 1) {
-    logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 600);
-  } else { clearTimeout(logoClickTimer); logoClickCount = 0; window.location.href = '/admin'; }
-});
+(function initLogoClickAdmin() {
+  function _bind() {
+    const logoWrap = $('logo-wrap');
+    if (!logoWrap) return;
+    logoWrap.addEventListener('click', () => {
+      logoClickCount++;
+      if (logoClickCount === 1) {
+        logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 600);
+      } else { clearTimeout(logoClickTimer); logoClickCount = 0; window.location.href = '/admin'; }
+    });
+  }
+  if (document.readyState !== 'loading') { _bind(); }
+  else { document.addEventListener('DOMContentLoaded', _bind); }
+})();
 
 function updateAdminVideoStatus(id) {
   const dot = $('admin-video-status-dot'), text = $('admin-video-status-text');
@@ -587,8 +617,11 @@ async function runAdminDiag() {
   if (s2El) s2El.textContent = '⏳ проверяем...';
   try {
     const url = `https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:csv&sheet=Лист2`;
-    const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 8000);
-    const res = await fetch(url, { signal: ctrl.signal });
+    const ctrl = new AbortController();
+    const t1 = setTimeout(() => ctrl.abort(), 8000);
+    let res;
+    try { res = await fetch(url, { signal: ctrl.signal }); }
+    finally { clearTimeout(t1); }
     if (res.ok) {
       const text = await res.text();
       if (text && text.length > 5) { if (s2El) s2El.textContent = '✅ доступна'; log(`✅ Лист2 загружен (${text.length} байт)`, true); }
@@ -600,8 +633,11 @@ async function runAdminDiag() {
   if (scEl) scEl.textContent = '⏳ проверяем...';
   const scriptUrl = getScriptUrl();
   try {
-    const ctrl2 = new AbortController(); setTimeout(() => ctrl2.abort(), 10000);
-    const res2 = await fetch(scriptUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ _type: 'auth', iin: '000000000000', phone: '' }), signal: ctrl2.signal });
+    const ctrl2 = new AbortController();
+    const t2 = setTimeout(() => ctrl2.abort(), 10000);
+    let res2;
+    try { res2 = await fetch(scriptUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ _type: 'auth', iin: '000000000000', phone: '' }), signal: ctrl2.signal }); }
+    finally { clearTimeout(t2); }
     if (res2.ok) {
       const json2 = await res2.json();
       if (typeof json2.found !== 'undefined') { if (scEl) scEl.textContent = '✅ отвечает'; log(`✅ Apps Script работает. Ответ: found=${json2.found}`, true); }

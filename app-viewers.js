@@ -35,7 +35,10 @@ function initOnlineCounter() {
 
   // Показываем viewers bar с задержкой 5 сек
   let barVisible = false;
+  // Флаг: 5 секунд прошло — bar готов к показу при следующем показе лендинга
+  window._viewersBarReady = false;
   setTimeout(() => {
+    window._viewersBarReady = true;
     if (window._showViewersBar) window._showViewersBar();
   }, 5000);
 
@@ -70,10 +73,19 @@ function initOnlineCounter() {
     barVisible = false;
     bar.classList.remove('vb-visible');
     bar.classList.add('vb-hidden');
+    // Сбрасываем флаг готовности — при следующем показе лендинга
+    // задержка 5 сек начнётся заново (UX: не мозолить глаза сразу после logout)
+    window._viewersBarReady = false;
+    setTimeout(() => {
+      window._viewersBarReady = true;
+      if (window._showViewersBar) window._showViewersBar();
+    }, 5000);
   };
 
   window._showViewersBar = function() {
     if (!bar) return;
+    // Не показываем раньше 5 секунд
+    if (!window._viewersBarReady) return;
     // Показываем только если виден лендинг
     const lp = document.getElementById('landing-page');
     if (!lp || lp.style.display === 'none') return;
@@ -84,5 +96,18 @@ function initOnlineCounter() {
     bar.classList.add('vb-visible');
     _updateBarLabel();
   };
+
+  // Fallback: если 5 сек истекли пока лендинг был скрыт (быстрый логин),
+  // показываем bar при следующем появлении landing-page через MutationObserver.
+  (function _watchLandingVisibility() {
+    const lp = document.getElementById('landing-page');
+    if (!lp) return;
+    const mo = new MutationObserver(function() {
+      if (window._viewersBarReady && lp.style.display !== 'none' && !barVisible) {
+        window._showViewersBar();
+      }
+    });
+    mo.observe(lp, { attributes: true, attributeFilter: ['style'] });
+  })();
 }
 
