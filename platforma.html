@@ -460,13 +460,24 @@
 </p>
 </div>
 </footer><script defer="" src="translations.js"></script><script defer="" src="app-core.js"></script><script defer="" src="app-auth.js"></script><script defer="" src="app-platform.js"></script><script defer="" src="app-progress.js"></script><script>
-// platforma.html — auto-init: check session, redirect to / if none
+// platforma.html — auto-init: restore session or redirect to landing
 (function waitForInit() {
-  if (typeof tryRestoreSession !== "function") {
+  // Prevent double-init
+  if (window.__platformaInitDone) return;
+  // Wait until defer scripts are ready
+  if (typeof tryRestoreSession !== "function" || typeof showLessons !== "function") {
     return setTimeout(waitForInit, 30);
   }
+  window.__platformaInitDone = true;
   tryRestoreSession().then(function(restored) {
-    if (!restored) window.location.replace("index.html");
+    if (!restored) {
+      // No valid session — redirect to landing page
+      window.location.replace("index.html");
+    }
+    // If restored=true, tryRestoreSession already called showLessons()
+  }).catch(function(err) {
+    console.error("[platforma] session restore error:", err);
+    window.location.replace("index.html");
   });
 })();
 </script></body></html>

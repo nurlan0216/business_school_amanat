@@ -62,11 +62,11 @@ function triggerInstantBlock() {
   // 3. Закрываем всё открытое
   const slot = $('video-slot');
   if (slot) slot.innerHTML = '';
-  $('lesson-modal').classList.remove('show', 'video-active');
-  $('video-section').style.display  = 'none';
-  $('lessons-page').style.display   = 'none';
-  $('logout-btn').style.display     = 'none';
-  $('mobile-nav').style.display     = 'none';
+  const _lm = $('lesson-modal'); if (_lm) _lm.classList.remove('show', 'video-active');
+  const _vs = $('video-section'); if (_vs) _vs.style.display  = 'none';
+  const _lsp = $('lessons-page'); if (_lsp) _lsp.style.display = 'none';
+  const _lb = $('logout-btn'); if (_lb) _lb.style.display     = 'none';
+  const _mn = $('mobile-nav'); if (_mn) _mn.style.display     = 'none';
   const hdrCenter = $('header-center');
   if (hdrCenter) hdrCenter.style.display = 'none';
   // Убираем всплывашку "Продолжить урок" (resume beacon)
@@ -99,7 +99,7 @@ function triggerInstantBlock() {
     lp.classList.add('page-fade-in');
     setTimeout(() => lp.classList.remove('page-fade-in'), 400);
   }
-  $('login-page').style.display = 'none';
+  const _lgp = $('login-page'); if (_lgp) _lgp.style.display = 'none';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   // 6. Toast-уведомление
