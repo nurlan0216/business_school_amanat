@@ -23,26 +23,66 @@ function parseCSV(text) {
 const strip = s => (s || '').replace(/^"|"$/g, '').trim();
 
 // ══════════════════════════════ SECURITY LIVE MONITOR ═════════════
+// Проверяет статус каждые 2 минуты: сначала через Apps Script,
+// при ошибке — напрямую из Google Sheets (Лист1).
+// Различает: 🚫 ЗАБЛОКИРОВАНО / 🚫 НАРУШЕНИЕ → сообщение о нарушении.
 function startSecurityMonitor() {
   if (securityCheckInterval) clearInterval(securityCheckInterval);
   securityCheckInterval = setInterval(async () => {
-    let currentIin = null;
-    try { currentIin = sessionStorage.getItem('bs_iin'); } catch(_) {}
+    let currentIin = null, currentPhone = '';
+    try { currentIin = sessionStorage.getItem('bs_iin'); currentPhone = sessionStorage.getItem('bs_phone') || localStorage.getItem('bs_phone') || ''; } catch(_) {}
     if (!currentUser || !currentIin) return;
+
+    // -- Попытка 1: Apps Script -----------------------------------------
     try {
-      const res = await fetch(getScriptUrl(), {
-        method:  'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body:    JSON.stringify({ _type: 'auth', iin: currentIin, phone: sessionStorage.getItem('bs_phone') || localStorage.getItem('bs_phone') || '' })
-      });
-      if (!res.ok) return;
-      const result = await res.json();
-      if (!result.found || !result.isAllowed || !result.isPaid) triggerInstantBlock();
-    } catch (e) { console.warn('Security monitor tick failed:', e); }
+      const ctrl = new AbortController();
+      const tid  = setTimeout(() => ctrl.abort(), 10000);
+      let res;
+      try { res = await fetch(getScriptUrl(), { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ _type: 'auth', iin: currentIin, phone: currentPhone }), signal: ctrl.signal }); }
+      finally { clearTimeout(tid); }
+      if (res.ok) {
+        const result = await res.json();
+        if (!result.found) { triggerInstantBlock('notfound'); return; }
+        const blocked   = !!result.isBlocked;
+        const violation = !!result.isViolation;
+        if (blocked || violation) { triggerInstantBlock('violation'); return; }
+        if (!result.isAllowed || !result.isPaid) { triggerInstantBlock('noaccess'); return; }
+        return;
+      }
+    } catch (e) { console.warn('[monitor] Apps Script unavailable, falling back to Sheets:', e.message); }
+
+    // -- Попытка 2: прямая проверка Лист1 ------------------------------
+    try {
+      const ctrl2 = new AbortController();
+      const tid2  = setTimeout(() => ctrl2.abort(), 10000);
+      let res2;
+      try { res2 = await fetch('https://docs.google.com/spreadsheets/d/' + gsSheetId + '/gviz/tq?tqx=out:csv&sheet=Лист1&_cb=' + Date.now(), { signal: ctrl2.signal }); }
+      finally { clearTimeout(tid2); }
+      if (!res2.ok) return;
+      const csv  = await res2.text();
+      const rows = parseCSV(csv);
+      const matchIin = currentIin.replace(/\D/g, '').trim();
+      let found = false;
+      for (const row of rows) {
+        const rowIin = (row[0] || '').replace(/\D/g, '').trim();
+        if (rowIin !== matchIin) continue;
+        found = true;
+        const statusA  = (row[10] || '').toUpperCase();
+        const statusP  = (row[11] || '').toUpperCase();
+        const isBlocked   = statusA.includes('ЗАБЛОКИ') || statusA.includes('БҰҒАТТА') || statusP.includes('НАРУШЕНИЕ') || statusP.includes('БҰЗУШЫЛЫ');
+        const isAllowed   = statusA.includes('РАЗРЕШЕНО') || statusA.includes('РҰҚСАТ');
+        const isPaid      = statusP.includes('ОПЛАЧЕНО')  || statusP.includes('ТӨЛЕНДІ');
+        if (isBlocked)             { triggerInstantBlock('violation'); return; }
+        if (!isAllowed || !isPaid) { triggerInstantBlock('noaccess');  return; }
+        break;
+      }
+      if (!found) triggerInstantBlock('notfound');
+    } catch (e2) { console.warn('[monitor] Sheets direct check failed:', e2.message); }
   }, 120000);
 }
 
-function triggerInstantBlock() {
+function triggerInstantBlock(reason) {
+  // reason: 'violation' | 'noaccess' | 'notfound' | undefined
   // 1. Останавливаем монитор
   if (securityCheckInterval) {
     clearInterval(securityCheckInterval);
@@ -102,15 +142,38 @@ function triggerInstantBlock() {
   const _lgp = $('login-page'); if (_lgp) _lgp.style.display = 'none';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // 6. Toast-уведомление
+  // 6. Уведомление с причиной блокировки
   setTimeout(() => {
-    showToast(
-      typeof lang !== 'undefined' && lang === 'kz'
+    const isKz = typeof lang !== 'undefined' && lang === 'kz';
+    let msg;
+    if (reason === 'violation') {
+      msg = isKz
+        ? '🚫 Сіз ережелерді бұздыңыз. Аккаунтыңыз уақытша бұғатталды. Әкімшіге хабарласыңыз.'
+        : '🚫 Вы нарушили правила. Ваш аккаунт временно заблокирован. Обратитесь к администратору.';
+    } else if (reason === 'notfound') {
+      msg = isKz
+        ? '🔴 Аккаунт табылмады. Куратормен байланысыңыз.'
+        : '🔴 Аккаунт не найден. Обратитесь к куратору.';
+    } else {
+      msg = isKz
         ? '🔴 Сіздің қол жеткізуіңіз тоқтатылды. Куратормен байланысыңыз.'
-        : '🔴 Ваш доступ был отозван. Обратитесь к куратору.',
-      'error'
-    );
-  }, 500);
+        : '🔴 Ваш доступ был отозван. Обратитесь к куратору.';
+    }
+    // Показываем toast
+    if (typeof showToast === 'function') showToast(msg, 'error');
+    // Если на platforma.html — показываем block-overlay с детальным сообщением
+    const blockOverlay = document.getElementById('block-overlay');
+    if (blockOverlay) {
+      const isViolation = reason === 'violation';
+      const title = blockOverlay.querySelector('h1');
+      const text  = blockOverlay.querySelector('p');
+      if (title) title.textContent = isViolation ? (isKz ? 'АККАУНТ БҰҒАТТАЛДЫ' : 'АККАУНТ ЗАБЛОКИРОВАН') : (isKz ? 'ҚОЛЖЕТІМДІЛІК ТОҚТАТЫЛДЫ' : 'ДОСТУП ПРИОСТАНОВЛЕН');
+      if (text)  text.textContent  = isViolation
+        ? (isKz ? 'Сіз платформа ережелерін бұздыңыз. Аккаунтыңыз уақытша бұғатталды. Толық ақпарат алу үшін әкімшіге хабарласыңыз.' : 'Вы нарушили правила платформы. Ваш аккаунт временно заблокирован. Обратитесь к администратору для выяснения деталей.')
+        : (isKz ? 'Сіздің қол жеткізуіңіз тоқтатылды. Толық ақпарат алу үшін куратормен байланысыңыз.' : 'Ваш доступ к образовательной платформе приостановлен. Обратитесь к куратору.');
+      blockOverlay.style.display = 'flex';
+    }
+  }, 400);
 
   if (typeof resetIdleBeacon === 'function') resetIdleBeacon();
 }
@@ -345,13 +408,20 @@ async function logLogin(iin, name) {
 // ══════════════════════════════ LOGIN ════════════════════════════
 async function doLogin() {
   const MAX_ATTEMPTS   = parseInt(localStorage.getItem('bs_max_attempts') || '5', 10);
-  const BLOCK_DURATION = parseInt(localStorage.getItem('bs_block_duration') || '10', 10) * 60 * 1000;
+  const BLOCK_DURATION = parseInt(localStorage.getItem('bs_block_duration') || '2', 10) * 60 * 1000;
   const ATTEMPTS_KEY = 'login_attempts', BLOCK_KEY = 'login_block_until';
   try {
     const blockUntil = parseInt(localStorage.getItem(BLOCK_KEY) || '0', 10);
     if (Date.now() < blockUntil) {
-      const remaining = Math.ceil((blockUntil - Date.now()) / 60000);
-      showMsg('error', lang === 'kz' ? `Тым көп әрекет. ${remaining} минут күтіңіз.` : `Слишком много попыток. Подождите ${remaining} мин.`);
+      const remainMs  = blockUntil - Date.now();
+      const remainSec = Math.ceil(remainMs / 1000);
+      const remainMin = Math.ceil(remainMs / 60000);
+      const timeStr   = remainSec <= 90
+        ? (lang === 'kz' ? remainSec + ' секунд' : remainSec + ' сек.')
+        : (lang === 'kz' ? remainMin + ' минут' : remainMin + ' мин.');
+      showMsg('error', lang === 'kz'
+        ? `Тым көп әрекет. ${timeStr} күтіңіз.`
+        : `Слишком много попыток. Подождите ${timeStr}`);
       return;
     }
   } catch(_) {}
@@ -394,6 +464,12 @@ async function doLogin() {
     const result = await res.json();
     scriptOk = true;
     if (!result.found) { finishLogin(btn, true); showMsg('error', t('errNotFound')); return; }
+    // Проверяем блокировку / нарушение из Apps Script
+    if (result.isBlocked || result.isViolation) {
+      finishLogin(btn, true);
+      showMsg('error', lang === 'kz' ? '🚫 Сіз ережелерді бұздыңыз. Аккаунт уақытша бұғатталды. Әкімшіге хабарласыңыз.' : '🚫 Вы нарушили правила. Аккаунт временно заблокирован. Обратитесь к администратору.');
+      return;
+    }
     foundName = result.name || name;
     isPaid    = !!result.isPaid;
     isAllowed = !!result.isAllowed;
@@ -419,10 +495,12 @@ async function doLogin() {
         found = true;
         const rowPhone = normPhone(row[3]||'');
         if (rowPhone && matchPhone && rowPhone !== matchPhone) { finishLogin(btn, true); showMsg('error', t('errNotFound')); return; }
-        if ((row[3]||'').includes('НАРУШЕНИЕ')) { finishLogin(btn, true); showMsg('error', t('errNoAccess')); return; }
         foundName = (row[1]||'').trim() || name;
         const statusA = (row[10]||'').toUpperCase();
         const statusP = (row[11]||'').toUpperCase();
+        // Проверяем блокировку / нарушение
+        const _isBlocked = statusA.includes('ЗАБЛОКИ') || statusA.includes('БҰҒАТТА') || statusP.includes('НАРУШЕНИЕ') || statusP.includes('БҰЗУШЫЛЫ');
+        if (_isBlocked) { finishLogin(btn, true); showMsg('error', lang === 'kz' ? '🚫 Сіз ережелерді бұздыңыз. Аккаунт уақытша бұғатталды. Әкімшіге хабарласыңыз.' : '🚫 Вы нарушили правила. Аккаунт временно заблокирован. Обратитесь к администратору.'); return; }
         isAllowed = statusA.includes('✅') && (statusA.includes('РАЗРЕШЕНО') || statusA.includes('РҰҚСАТ'));
         isPaid    = statusP.includes('✅') && (statusP.includes('ОПЛАЧЕНО')  || statusP.includes('ТӨЛЕНДІ'));
         break;
@@ -470,7 +548,7 @@ function finishLogin(btn, failed) {
   if (failed) {
     try {
       const _maxAttempts = parseInt(localStorage.getItem('bs_max_attempts') || '5', 10);
-      const _blockDuration = parseInt(localStorage.getItem('bs_block_duration') || '10', 10) * 60 * 1000;
+      const _blockDuration = parseInt(localStorage.getItem('bs_block_duration') || '2', 10) * 60 * 1000;
       const ATTEMPTS_KEY = 'login_attempts', BLOCK_KEY = 'login_block_until';
       const attempts = parseInt(localStorage.getItem(ATTEMPTS_KEY) || '0', 10) + 1;
       if (attempts >= _maxAttempts) { localStorage.setItem(BLOCK_KEY, Date.now() + _blockDuration); localStorage.removeItem(ATTEMPTS_KEY); }
