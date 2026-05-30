@@ -1437,29 +1437,8 @@ function logout() {
     sessionStorage.removeItem('bs_phone');
   } catch(_) {}
   try { localStorage.removeItem('bs_session'); } catch(_) {}
-
-  $('logout-btn').style.display    = 'none';
-  $('mobile-nav').style.display    = 'none';
-  $('header-center').style.display = 'none';
-  $('lessons-page').style.display  = 'none';
-  $('login-page').style.display    = 'none';
-
-  ['inp-name','inp-iin','inp-phone'].forEach(id => { const e=$(id); if(e) e.value=''; });
-  ['login-error','login-success'].forEach(id => { const e=$(id); if(e) e.style.display='none'; });
-  $('progress-wrap').style.display = 'none';
-  $('prog-fill').style.width = '0%';
-  const btn = $('login-btn'); btn.disabled = false; btn.classList.remove('loading');
-
-  const lp = $('landing-page');
-  if (lp) {
-    lp.style.display = 'block';
-    lp.classList.add('page-fade-in');
-    setTimeout(() => lp.classList.remove('page-fade-in'), 400);
-  }
-  const backBtn = $('lp-back-btn');
-  if (backBtn) backBtn.style.display = 'none';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  resetIdleBeacon();
+  // Редиректим на лендинг (platforma.html → index.html)
+  window.location.replace('/');
 }
 
 function showLanding() {

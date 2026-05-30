@@ -1,0 +1,51 @@
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://www.youtube.com https://www.googleapis.com; frame-src https://www.youtube.com https://vk.com https://vkvideo.ru https://drive.google.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://script.google.com https://docs.google.com https://api.ipify.org /api/;
+
+/app-core.js
+  Cache-Control: public, max-age=86400
+
+/app-auth.js
+  Cache-Control: public, max-age=86400
+
+/app-platform.js
+  Cache-Control: public, max-age=86400
+
+/app-progress.js
+  Cache-Control: public, max-age=86400
+
+/app-viewers.js
+  Cache-Control: public, max-age=86400
+
+/app-lp.js
+  Cache-Control: public, max-age=86400
+
+/app-lp-courses.js
+  Cache-Control: public, max-age=86400
+
+/translations.js
+  Cache-Control: public, max-age=604800
+
+/calc.js
+  Cache-Control: public, max-age=86400
+
+/style.css
+  Cache-Control: public, max-age=86400
+
+/platform.css
+  Cache-Control: public, max-age=86400
+
+/index.html
+  Cache-Control: no-cache, must-revalidate
+
+/admin.html
+  Cache-Control: no-cache, must-revalidate
+
+/platforma.html
+  Cache-Control: no-cache, must-revalidate
+  X-Robots-Tag: noindex
+
+/*.html
+  Cache-Control: public, max-age=3600

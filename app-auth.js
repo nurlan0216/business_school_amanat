@@ -460,9 +460,8 @@ async function doLogin() {
 
   $('login-success').textContent   = t('ok') + ' ' + currentUser + '!';
   $('login-success').style.display = 'block';
-  await loadSheet2();
   await sleep(700);
-  showLessons();
+  window.location.href = '/platforma';
 }
 
 function finishLogin(btn, failed) {
@@ -518,7 +517,12 @@ async function tryRestoreSession() {
   if (!savedUser || !savedIin) return false;
   currentUser = savedUser;
   await loadSheet2();
-  showLessons();
+  // Платформа: показываем lessons; лендинг: редиректим на /platforma
+  if (typeof showLessons === 'function' && window.location.pathname.includes('platforma')) {
+    showLessons();
+  } else if (!window.location.pathname.includes('platforma')) {
+    window.location.href = '/platforma';
+  }
   return true;
 }
 
