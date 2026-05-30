@@ -1399,8 +1399,9 @@ function mobileNavTo(section, btn) {
 
 // ══ SHOW LESSONS / LOGOUT / SHOW LANDING ════════════════════════
 function showLessons() {
-  $('landing-page').style.display  = 'none';
-  $('login-page').style.display    = 'none';
+  // landing-page / login-page exist only in index.html, not in platforma.html
+  const _lp  = $('landing-page');  if (_lp)  _lp.style.display  = 'none';
+  const _lgp = $('login-page');    if (_lgp) _lgp.style.display  = 'none';
   $('lessons-page').style.display  = 'block';
   $('logout-btn').style.display    = 'flex';
   $('header-center').style.display = 'flex';
