@@ -1438,7 +1438,7 @@ function logout() {
   } catch(_) {}
   try { localStorage.removeItem('bs_session'); } catch(_) {}
   // Редиректим на лендинг (platforma.html → index.html)
-  window.location.replace('/');
+  window.location.replace('index.html');
 }
 
 function showLanding() {

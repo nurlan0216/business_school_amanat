@@ -461,7 +461,7 @@ async function doLogin() {
   $('login-success').textContent   = t('ok') + ' ' + currentUser + '!';
   $('login-success').style.display = 'block';
   await sleep(700);
-  window.location.href = '/platforma';
+  window.location.href = 'platforma.html';
 }
 
 function finishLogin(btn, failed) {
@@ -521,7 +521,7 @@ async function tryRestoreSession() {
   if (typeof showLessons === 'function' && window.location.pathname.includes('platforma')) {
     showLessons();
   } else if (!window.location.pathname.includes('platforma')) {
-    window.location.href = '/platforma';
+    window.location.href = 'platforma.html';
   }
   return true;
 }
@@ -550,7 +550,7 @@ async function tryRestoreSession() {
       logoClickCount++;
       if (logoClickCount === 1) {
         logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 600);
-      } else { clearTimeout(logoClickTimer); logoClickCount = 0; window.location.href = '/admin'; }
+      } else { clearTimeout(logoClickTimer); logoClickCount = 0; window.location.href = 'admin.html'; }
     });
   }
   if (document.readyState !== 'loading') { _bind(); }
