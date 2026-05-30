@@ -43,7 +43,7 @@
     <span class="btn-content"><span>Войти</span></span>
   </button>
   <p style="text-align:center;margin-top:16px;font-size:12px;color:var(--text3)">
-    <a href="/" style="color:var(--text3)">← Вернуться на сайт</a>
+    <a href="index.html" style="color:var(--text3)">← Вернуться на сайт</a>
   </p>
 </div>
 
@@ -52,7 +52,7 @@
   <div class="admin-header">
     <span style="font-size:22px">⚙️</span>
     <h1>Настройки администратора</h1>
-    <a href="/" class="admin-back">← На сайт</a>
+    <a href="index.html" class="admin-back">← На сайт</a>
   </div>
 
   <div class="modal" style="position:relative;padding:28px">
@@ -322,8 +322,12 @@
         <strong>🔄 Сбросить таймер</strong> — удаляет сохранённый дедлайн из браузера. При следующем открытии лендинга таймер запустится заново по текущим настройкам.
       </div>
     </div>
-    <!-- API-ключ Anthropic перенесён на сервер (env ANTHROPIC_API_KEY).
-         Запросы проксируются через /api/calc — ключ не хранится в браузере. -->
+    <!-- ══ AI КАЛЬКУЛЯТОР (Claude API key) ════════════════════════════ -->
+    <div class="admin-video-block" style="margin-top:20px">
+      <div class="admin-video-block-header">
+        <span class="admin-video-block-icon">🤖</span>
+        <div>
+          <div class="admin-video-block-title">AI Калькулятор (Claude API)</div>
           <div class="admin-video-block-sub">Ключ для работы AI-прогноза доходов в калькуляторе лендинга</div>
         </div>
       </div>
