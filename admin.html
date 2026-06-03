@@ -1061,10 +1061,21 @@
     if (!gsId) { if (st) { st.textContent = '⚠ Google Sheets ID не задан.'; st.style.display = 'block'; } return; }
     if (st) { st.textContent = '⏳ Загружаю студентов...'; st.style.display = 'block'; }
     try {
-      const url = `https://docs.google.com/spreadsheets/d/${gsId}/gviz/tq?tqx=out:csv&sheet=Лист1`;
-      const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 12000);
-      const res = await fetch(url, { signal: ctrl.signal });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const url = `https://docs.google.com/spreadsheets/d/${gsId}/gviz/tq?tqx=out:csv&sheet=Лист1&_cb=${Date.now()}`;
+      const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 25000);
+      let res;
+      try { res = await fetch(url, { signal: ctrl.signal }); }
+      catch(fetchErr) {
+        // Fallback: попробуем через Apps Script
+        const scriptUrl = localStorage.getItem('bs_script_url') || '';
+        if (scriptUrl) {
+          const ctrl2 = new AbortController(); setTimeout(() => ctrl2.abort(), 20000);
+          const r2 = await fetch(scriptUrl + '?action=getStudentList', { signal: ctrl2.signal });
+          if (!r2.ok) throw fetchErr;
+          res = r2;
+        } else { throw fetchErr; }
+      }
+      if (!res.ok) throw new Error('HTTP ' + res.status + '. Убедитесь, что таблица открыта для просмотра (Поделиться → Все с ссылкой → Читатель)');
       const csv = await res.text();
       const rows = _parseStudentCSV(csv);
       _allStudents = rows.slice(1).filter(r => r[0] && r[0].replace(/\D/g,'').length >= 10).map(r => ({
@@ -1090,7 +1101,11 @@
         _renderStudentsTable(_allStudents);
       }
     } catch(e) {
-      if (st) st.textContent = '❌ Ошибка загрузки: ' + e.message;
+      const isAbort = e.name === 'AbortError' || e.message.includes('aborted');
+      const msg = isAbort
+        ? '❌ Таймаут. Убедитесь что таблица открыта (Поделиться → Все с ссылкой → Читатель), затем попробуйте снова.'
+        : '❌ Ошибка загрузки: ' + e.message;
+      if (st) st.textContent = msg;
     }
   }
 
