@@ -43,9 +43,9 @@ function startSecurityMonitor() {
       if (res.ok) {
         const result = await res.json();
         if (!result.found) { triggerInstantBlock('notfound'); return; }
-        const blocked   = !!result.isBlocked;
+        const leak      = !!result.isLeak || !!result.isMultiAccount;
+        const blocked   = !!result.blocked || !!result.isBlocked || !!result.isAdminBlock;
         const violation = !!result.isViolation;
-        const leak      = !!result.isLeak;
         if (leak)                { triggerInstantBlock('leak');      return; }
         if (blocked || violation) { triggerInstantBlock('violation'); return; }
         if (!result.isAllowed || !result.isPaid) { triggerInstantBlock('noaccess'); return; }
@@ -69,11 +69,15 @@ function startSecurityMonitor() {
         const rowIin = (row[0] || '').replace(/\D/g, '').trim();
         if (rowIin !== matchIin) continue;
         found = true;
-        // Колонка D (row[3]): НАРУШЕНИЕ перед номером → утечка материалов
-        if (/^НАРУШЕНИЕ\s*/i.test((row[3] || '').trim())) { triggerInstantBlock('leak'); return; }
-        const statusA  = (row[10] || '').toUpperCase();
-        const statusP  = (row[11] || '').toUpperCase();
-        const isBlocked   = statusA.includes('ЗАБЛОКИ') || statusA.includes('БҰҒАТТА') || statusP.includes('НАРУШЕНИЕ') || statusP.includes('БҰЗУШЫЛЫ');
+        // Колонка D (row[3]): НАРУШЕНИЕ перед номером → определяем тип по statusP
+        const _rawD3  = (row[3] || '').trim();
+        const statusA = (row[10] || '').toUpperCase();
+        const statusP = (row[11] || '').toUpperCase();
+        if (/^НАРУШЕНИЕ\s*/i.test(_rawD3)) {
+          triggerInstantBlock(statusP.includes('МУЛЬТИАККАУНТ') ? 'leak' : 'violation');
+          return;
+        }
+        const isBlocked   = statusA.includes('ЗАБЛОКИ') || statusA.includes('БҰҒАТТА');
         const isAllowed   = statusA.includes('РАЗРЕШЕНО') || statusA.includes('РҰҚСАТ');
         const isPaid      = statusP.includes('ОПЛАЧЕНО')  || statusP.includes('ТӨЛЕНДІ');
         if (isBlocked)             { triggerInstantBlock('violation'); return; }
@@ -154,26 +158,32 @@ function triggerInstantBlock(reason) {
     const OVERLAY_DATA = {
       leak: {
         icon:  '🚫',
-        title: { ru: 'НАРУШЕНИЕ ПРАВИЛ',           kz: 'ЕРЕЖЕЛЕР БҰЗЫЛДЫ' },
-        text:  { ru: 'Вы нарушили правила компании: передали обучающие материалы третьему лицу. Ваш аккаунт заблокирован. Обратитесь в техподдержку для выяснения деталей.',
-                 kz: 'Сіз компания ережелерін бұздыңыз: оқу материалдарын үшінші тұлғаға бердіңіз. Аккаунт бұғатталды. Толық ақпарат алу үшін техқолдауға хабарласыңыз.' },
-        waMsg: { ru: 'Здравствуйте, мой аккаунт заблокирован за нарушение правил (передача материалов). Прошу разобраться.',
-                 kz: 'Сәлеметсіз бе, аккаунтым ережелерді бұзғаны үшін бұғатталды (материалдар берілді). Шешуді сұраймын.' }
+        title: { ru: 'НАРУШЕНИЕ ДОГОВОРА',                kz: 'ШАРТ БҰЗЫЛДЫ' },
+        text:  { ru: 'Вы нарушили правила компании и договор, передав доступ третьему лицу (пункт договора 5-10). Ваш аккаунт заблокирован.',
+                 kz: 'Сіз компания ережелері мен шартты бұздыңыз, үшінші тұлғаға рұқсат бердіңіз (шарттың 5-10 тармағы). Аккаунт бұғатталды.' },
+        contact: { ru: 'Напишите куратору или администратору сайта',
+                   kz: 'Куратормен немесе сайт әкімшісіне жазыңыз' },
+        waMsg: { ru: 'Здравствуйте, мой аккаунт заблокирован за нарушение договора (пункт 5-10). Прошу разобраться.',
+                 kz: 'Сәлеметсіз бе, аккаунтым шартты бұзғаны үшін бұғатталды (5-10 тармақ). Шешуді сұраймын.' }
       },
       violation: {
         icon:  '🔒',
-        title: { ru: 'АККАУНТ ЗАБЛОКИРОВАН',        kz: 'АККАУНТ БҰҒАТТАЛДЫ' },
-        text:  { ru: 'Вы нарушили правила платформы. Ваш аккаунт временно заблокирован. Обратитесь в техподдержку.',
-                 kz: 'Сіз платформа ережелерін бұздыңыз. Аккаунтыңыз уақытша бұғатталды. Техқолдауға хабарласыңыз.' },
-        waMsg: { ru: 'Здравствуйте, мой аккаунт заблокирован. Прошу разобраться.',
-                 kz: 'Сәлеметсіз бе, аккаунтым бұғатталды. Шешуді сұраймын.' }
+        title: { ru: 'ДОСТУП ПРИОСТАНОВЛЕН',              kz: 'ҚАТЫНАС ТОҚТАТЫЛДЫ' },
+        text:  { ru: 'Ваш доступ приостановлен администратором.',
+                 kz: 'Сіздің қатынасыңыз әкімші тарапынан тоқтатылды.' },
+        contact: { ru: 'Напишите куратору или администратору сайта',
+                   kz: 'Куратормен немесе сайт әкімшісіне жазыңыз' },
+        waMsg: { ru: 'Здравствуйте, мой доступ приостановлен администратором. Прошу разобраться.',
+                 kz: 'Сәлеметсіз бе, қатынасым әкімші тарапынан тоқтатылды. Шешуді сұраймын.' }
       },
       noaccess: null,
       notfound: {
         icon:  '🔴',
-        title: { ru: 'АККАУНТ НЕ НАЙДЕН',           kz: 'АККАУНТ ТАБЫЛМАДЫ' },
-        text:  { ru: 'Ваш аккаунт не найден в системе. Обратитесь к куратору или в техподдержку.',
-                 kz: 'Аккаунтыңыз жүйеде табылмады. Куратормен немесе техқолдаумен байланысыңыз.' },
+        title: { ru: 'АККАУНТ НЕ НАЙДЕН',                kz: 'АККАУНТ ТАБЫЛМАДЫ' },
+        text:  { ru: 'Ваш аккаунт не найден в системе.',
+                 kz: 'Аккаунтыңыз жүйеде табылмады.' },
+        contact: { ru: 'Напишите куратору или администратору сайта',
+                   kz: 'Куратормен немесе сайт әкімшісіне жазыңыз' },
         waMsg: { ru: 'Здравствуйте, мой аккаунт не найден в системе. Прошу помочь.',
                  kz: 'Сәлеметсіз бе, аккаунтым жүйеде табылмады. Көмек сұраймын.' }
       }
@@ -196,6 +206,15 @@ function triggerInstantBlock(reason) {
       if (iconEl)  iconEl.textContent  = d.icon;
       if (titleEl) titleEl.textContent = d.title[l];
       if (textEl)  textEl.textContent  = d.text[l];
+      const contactEl = document.getElementById('block-overlay-contact');
+      if (contactEl) contactEl.textContent = (d.contact && d.contact[l]) ? d.contact[l] : '';
+      const okEl = document.getElementById('block-overlay-ok');
+      if (okEl) {
+        okEl.onclick = function() {
+          blockOverlay.style.display = 'none';
+          document.body.style.overflow = '';
+        };
+      }
       if (waEl) {
         waEl.textContent = ''; // очищаем перед вставкой SVG + текста
         waEl.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> '
@@ -513,9 +532,9 @@ async function doLogin() {
     scriptOk = true;
     if (!result.found) { finishLogin(btn, true); showMsg('error', t('errNotFound')); return; }
     // Проверяем блокировку / нарушение из Apps Script
-    if (result.isBlocked || result.isViolation) {
+    if (result.isBlocked || result.blocked || result.isViolation || result.isMultiAccount || result.isAdminBlock) {
       finishLogin(btn, true);
-      showMsg('error', lang === 'kz' ? '🚫 Сіз ережелерді бұздыңыз. Аккаунт уақытша бұғатталды. Әкімшіге хабарласыңыз.' : '🚫 Вы нарушили правила. Аккаунт временно заблокирован. Обратитесь к администратору.');
+      triggerInstantBlock((result.isLeak || result.isMultiAccount) ? 'leak' : 'violation');
       return;
     }
     foundName = result.name || name;
@@ -542,23 +561,22 @@ async function doLogin() {
         if (rowIin !== matchIin) continue;
         found = true;
         // Колонка D: проверяем префикс НАРУШЕНИЕ перед номером телефона
-        const rawD = (row[3]||'').trim();
-        const _hasLeakPrefix = /^НАРУШЕНИЕ\s*/i.test(rawD);
-        if (_hasLeakPrefix) {
+        const rawD   = (row[3]||'').trim();
+        const _sA    = (row[10]||'').toUpperCase();
+        const _sP    = (row[11]||'').toUpperCase();
+        if (/^НАРУШЕНИЕ\s*/i.test(rawD)) {
           finishLogin(btn, true);
-          showMsg('error', lang === 'kz'
-            ? '🚫 Сіз компания ережелерін бұздыңыз: оқу материалдарын үшінші тұлғаға бердіңіз. Аккаунт бұғатталды. Әкімшіге хабарласыңыз.'
-            : '🚫 Вы нарушили правила компании: передали обучающие материалы третьему лицу. Аккаунт заблокирован. Обратитесь к администратору.');
+          triggerInstantBlock(_sP.includes('МУЛЬТИАККАУНТ') ? 'leak' : 'violation');
           return;
         }
         const rowPhone = normPhone(rawD.replace(/^НАРУШЕНИЕ\s*/i, ''));
         if (rowPhone && matchPhone && rowPhone !== matchPhone) { finishLogin(btn, true); showMsg('error', t('errNotFound')); return; }
         foundName = (row[1]||'').trim() || name;
-        const statusA = (row[10]||'').toUpperCase();
-        const statusP = (row[11]||'').toUpperCase();
-        // Проверяем блокировку / нарушение
-        const _isBlocked = statusA.includes('ЗАБЛОКИ') || statusA.includes('БҰҒАТТА') || statusP.includes('НАРУШЕНИЕ') || statusP.includes('БҰЗУШЫЛЫ');
-        if (_isBlocked) { finishLogin(btn, true); showMsg('error', lang === 'kz' ? '🚫 Сіз ережелерді бұздыңыз. Аккаунт уақытша бұғатталды. Әкімшіге хабарласыңыз.' : '🚫 Вы нарушили правила. Аккаунт временно заблокирован. Обратитесь к администратору.'); return; }
+        const statusA = _sA || (row[10]||'').toUpperCase();
+        const statusP = _sP || (row[11]||'').toUpperCase();
+        // Проверяем блокировку
+        const _isBlocked = statusA.includes('ЗАБЛОКИ') || statusA.includes('БҰҒАТТА');
+        if (_isBlocked) { finishLogin(btn, true); triggerInstantBlock('violation'); return; }
         isAllowed = statusA.includes('✅') && (statusA.includes('РАЗРЕШЕНО') || statusA.includes('РҰҚСАТ'));
         isPaid    = statusP.includes('✅') && (statusP.includes('ОПЛАЧЕНО')  || statusP.includes('ТӨЛЕНДІ'));
         break;
