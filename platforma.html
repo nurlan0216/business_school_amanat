@@ -480,13 +480,13 @@
   window.__platformaInitDone = true;
   tryRestoreSession().then(function(restored) {
     if (!restored) {
-      // No valid session — redirect to landing page
-      window.location.replace("index.html");
+      // No valid session — redirect to login page
+      window.location.replace("login.html");
     }
     // If restored=true, tryRestoreSession already called showLessons()
   }).catch(function(err) {
     console.error("[platforma] session restore error:", err);
-    window.location.replace("index.html");
+    window.location.replace("login.html");
   });
 })();
 </script></body></html>

@@ -23,8 +23,10 @@ function parseCSV(text) {
 const strip = s => (s || '').replace(/^"|"$/g, '').trim();
 
 // ══════════════════════════════ SECURITY LIVE MONITOR ═════════════
-// Проверяет статус каждые 2 минуты: сначала через Apps Script,
-// при ошибке — напрямую из Google Sheets (Лист1).
+// Проверяет статус каждые 2 минуты через Apps Script.
+// Если Apps Script недоступен — проверка просто пропускается до следующего
+// цикла (без фолбэка на прямой публичный доступ к Google Sheets — Лист1
+// со всеми данными студентов не должен быть публичным).
 // Различает: 🚫 ЗАБЛОКИРОВАНО / 🚫 НАРУШЕНИЕ → сообщение о нарушении.
 function startSecurityMonitor() {
   if (securityCheckInterval) clearInterval(securityCheckInterval);
@@ -51,41 +53,11 @@ function startSecurityMonitor() {
         if (!result.isAllowed || !result.isPaid) { triggerInstantBlock('noaccess'); return; }
         return;
       }
-    } catch (e) { console.warn('[monitor] Apps Script unavailable, falling back to Sheets:', e.message); }
-
-    // -- Попытка 2: прямая проверка Лист1 ------------------------------
-    try {
-      const ctrl2 = new AbortController();
-      const tid2  = setTimeout(() => ctrl2.abort(), 10000);
-      let res2;
-      try { res2 = await fetch('https://docs.google.com/spreadsheets/d/' + gsSheetId + '/gviz/tq?tqx=out:csv&sheet=Лист1&_cb=' + Date.now(), { signal: ctrl2.signal }); }
-      finally { clearTimeout(tid2); }
-      if (!res2.ok) return;
-      const csv  = await res2.text();
-      const rows = parseCSV(csv);
-      const matchIin = currentIin.replace(/\D/g, '').trim();
-      let found = false;
-      for (const row of rows) {
-        const rowIin = (row[0] || '').replace(/\D/g, '').trim();
-        if (rowIin !== matchIin) continue;
-        found = true;
-        // Колонка D (row[3]): НАРУШЕНИЕ перед номером → определяем тип по statusP
-        const _rawD3  = (row[3] || '').trim();
-        const statusA = (row[10] || '').toUpperCase();
-        const statusP = (row[11] || '').toUpperCase();
-        if (/^НАРУШЕНИЕ\s*/i.test(_rawD3)) {
-          triggerInstantBlock(statusP.includes('МУЛЬТИАККАУНТ') ? 'leak' : 'violation');
-          return;
-        }
-        const isBlocked   = statusA.includes('ЗАБЛОКИ') || statusA.includes('БҰҒАТТА');
-        const isAllowed   = statusA.includes('РАЗРЕШЕНО') || statusA.includes('РҰҚСАТ');
-        const isPaid      = statusP.includes('ОПЛАЧЕНО')  || statusP.includes('ТӨЛЕНДІ');
-        if (isBlocked)             { triggerInstantBlock('violation'); return; }
-        if (!isAllowed || !isPaid) { triggerInstantBlock('noaccess');  return; }
-        break;
-      }
-      if (!found) triggerInstantBlock('notfound');
-    } catch (e2) { console.warn('[monitor] Sheets direct check failed:', e2.message); }
+    } catch (e) { console.warn('[monitor] Apps Script unavailable:', e.message); }
+    // Apps Script недоступен — БЕЗ фолбэка на прямой публичный доступ к Google Sheets
+    // (Лист1 со всеми данными студентов не должен быть публичным).
+    // Monitor просто пропускает эту проверку: не блокирует пользователя,
+    // но и не раскрывает данные. Следующая проверка — через 2 минуты.
   }, 120000);
 }
 
@@ -279,9 +251,9 @@ function parseLesson(raw) {
 
 // ══════════════════════════════ LOAD SHEET 2 ══════════════════════
 async function loadSheet2() {
-  if (!gsSheetId) return;
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:csv&sheet=Лист2&_cb=${Date.now()}`;
+    // Запрос идёт через Cloudflare Worker — SHEET_ID не виден в клиентском коде
+    const url = `/api/sheet2?_cb=${Date.now()}`;
     const controller = new AbortController();
     const timeoutId  = setTimeout(() => controller.abort(), 12000);
     let res;
@@ -541,55 +513,14 @@ async function doLogin() {
     isPaid    = !!result.isPaid;
     isAllowed = !!result.isAllowed;
   } catch (e) {
-    console.warn('Apps Script unavailable, trying direct sheet fallback:', e.message);
-    try {
-      await animProg(40, 42, 100, steps[1]);
-      const sheetUrl = `https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:csv&sheet=Лист1`;
-      const ctrl2 = new AbortController();
-      const ctrl2Timer = setTimeout(() => ctrl2.abort(), 12000);
-      let res2;
-      try { res2 = await fetch(sheetUrl, { signal: ctrl2.signal }); }
-      finally { clearTimeout(ctrl2Timer); }
-      if (!res2.ok) throw new Error('sheet_http_' + res2.status);
-      const csv  = await res2.text();
-      const rows = parseCSV(csv);
-      const normPhone = p => { let d = (p||'').replace(/\D/g,''); if (d.length === 11 && d[0] === '8') d = '7' + d.slice(1); if (d.length === 10) d = '7' + d; return d; };
-      const matchIin = iin.replace(/\D/g,'').trim(), matchPhone = normPhone(phone);
-      let found = false;
-      for (const row of rows) {
-        const rowIin = (row[0]||'').replace(/\D/g,'').trim();
-        if (rowIin !== matchIin) continue;
-        found = true;
-        // Колонка D: проверяем префикс НАРУШЕНИЕ перед номером телефона
-        const rawD   = (row[3]||'').trim();
-        const _sA    = (row[10]||'').toUpperCase();
-        const _sP    = (row[11]||'').toUpperCase();
-        if (/^НАРУШЕНИЕ\s*/i.test(rawD)) {
-          finishLogin(btn, true);
-          triggerInstantBlock(_sP.includes('МУЛЬТИАККАУНТ') ? 'leak' : 'violation');
-          return;
-        }
-        const rowPhone = normPhone(rawD.replace(/^НАРУШЕНИЕ\s*/i, ''));
-        if (rowPhone && matchPhone && rowPhone !== matchPhone) { finishLogin(btn, true); showMsg('error', t('errNotFound')); return; }
-        foundName = (row[1]||'').trim() || name;
-        const statusA = _sA || (row[10]||'').toUpperCase();
-        const statusP = _sP || (row[11]||'').toUpperCase();
-        // Проверяем блокировку
-        const _isBlocked = statusA.includes('ЗАБЛОКИ') || statusA.includes('БҰҒАТТА');
-        if (_isBlocked) { finishLogin(btn, true); triggerInstantBlock('violation'); return; }
-        isAllowed = statusA.includes('✅') && (statusA.includes('РАЗРЕШЕНО') || statusA.includes('РҰҚСАТ'));
-        isPaid    = statusP.includes('✅') && (statusP.includes('ОПЛАЧЕНО')  || statusP.includes('ТӨЛЕНДІ'));
-        break;
-      }
-      if (!found) { finishLogin(btn, true); showMsg('error', t('errNotFound')); return; }
-      scriptOk = true;
-    } catch(e2) {
-      await animProg(40, 40, 50, '');
-      btn.disabled = false; btn.classList.remove('loading');
-      pgw.style.display = 'none'; if (pg) pg.classList.remove('active');
-      showMsg('error', (e2.name === 'AbortError') ? t('errSheetUnavailable') : t('errNetwork'));
-      return;
-    }
+    // Apps Script недоступен — БЕЗ фолбэка на прямой публичный доступ к Google Sheets
+    // (Лист1 со всеми данными студентов не должен быть публичным).
+    console.warn('Apps Script unavailable:', e.message);
+    await animProg(40, 40, 50, '');
+    btn.disabled = false; btn.classList.remove('loading');
+    pgw.style.display = 'none'; if (pg) pg.classList.remove('active');
+    showMsg('error', t('errSheetUnavailable'));
+    return;
   }
 
   await animProg(40, 60, 300, steps[2]); markStep(2);
@@ -699,6 +630,33 @@ async function tryRestoreSession() {
     } catch(_) {}
   }
   if (!savedUser || !savedIin) return false;
+
+  // Быстрая ревалидация доступа через Apps Script (Задача 9)
+  try {
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 5000);
+    let res;
+    try {
+      res = await fetch(getScriptUrl(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ _type: 'auth', iin: savedIin, phone: savedPhone }),
+        signal: ctrl.signal
+      });
+    } finally { clearTimeout(tid); }
+    if (res && res.ok) {
+      const result = await res.json();
+      if (!result.found || result.blocked || result.isBlocked || result.isViolation || !result.isPaid || !result.isAllowed) {
+        // Доступ отозван — очищаем сессию
+        try { localStorage.removeItem('bs_session'); } catch(_) {}
+        try { sessionStorage.removeItem('bs_user'); sessionStorage.removeItem('bs_iin'); sessionStorage.removeItem('bs_phone'); } catch(_) {}
+        return false;
+      }
+    }
+  } catch (_) {
+    // Apps Script недоступен — разрешаем войти, security monitor проверит позже
+  }
+
   currentUser = savedUser;
   await loadSheet2();
   // Платформа: показываем lessons; лендинг: редиректим на /platforma
@@ -773,7 +731,7 @@ function clearAdminVideoId() {
 function openAdmin() {
   $('admin-gs-input').value = gsSheetId;
   const scriptInput = $('admin-script-input');
-  if (scriptInput) scriptInput.value = localStorage.getItem('bs_script_url') || LOG_SCRIPT_URL;
+  if (scriptInput) scriptInput.value = '/api/auth'; // URL обрабатывается Cloudflare Worker
   const vid = localStorage.getItem('bs_hero_video_id') || '';
   const vidInput = $('admin-video-id-input');
   if (vidInput) vidInput.value = vid;
@@ -804,7 +762,8 @@ async function runAdminDiag() {
   log('🔍 Проверяем Google Sheets (Лист2)...');
   if (s2El) s2El.textContent = '⏳ проверяем...';
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:csv&sheet=Лист2`;
+    // /api/sheet2 — Worker проксирует запрос, SHEET_ID скрыт на сервере
+    const url = `/api/sheet2?_cb=${Date.now()}`;
     const ctrl = new AbortController();
     const t1 = setTimeout(() => ctrl.abort(), 8000);
     let res;

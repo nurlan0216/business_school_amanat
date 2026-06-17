@@ -2,7 +2,7 @@
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://www.youtube.com https://www.googleapis.com; frame-src https://www.youtube.com https://vk.com https://vkvideo.ru https://drive.google.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://script.google.com https://docs.google.com https://api.ipify.org /api/;
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.youtube.com https://www.googleapis.com; frame-src https://www.youtube.com https://vk.com https://vkvideo.ru https://drive.google.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://script.google.com https://docs.google.com https://api.ipify.org /api/;
 
 /app-core.js
   Cache-Control: public, max-age=86400

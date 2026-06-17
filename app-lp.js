@@ -256,12 +256,9 @@ if (typeof toggleTheme === 'function') {
   initSocialProofCounter();
   const restored = await tryRestoreSession();
   if (!restored) {
-    if (gsSheetId) loadSheet2();
-    else if (typeof applyHeroVideo === 'function') applyHeroVideo();
+    await loadSheet2();
     const lp = document.getElementById('landing-page');
     if (lp) lp.style.display = 'block';
-    $('login-page').style.display   = 'none';
-    $('lessons-page').style.display = 'none';
     resetIdleBeacon();
   }
 })();
