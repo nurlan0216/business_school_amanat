@@ -8,18 +8,17 @@
 'use strict';
 
 // ══════════════════════════════ CONSTANTS ══════════════════════════
-// SHEET_ID и SCRIPT_URL больше не хранятся в клиентском коде.
-// Все запросы к Google Sheets / Apps Script идут через /api/... (Cloudflare Worker).
-// Значения задаются в Cloudflare Dashboard → Pages → Settings → Environment variables.
+const SHEET_ID_DEFAULT = '1_y_qWhuJPybW3hPo91t3bRNu-xd0LS3dojfZbI8fk1A';
+const LOG_SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbzquiIN65v9o4brc8Eve9lKRAJc3qAnb24u0zBt876tU2kEdE74MkF9AG-PFR1omALq/exec';
 
 // ── Запасные значения настроек ────────────────────────────────────
 // Вступают в силу только если в localStorage и в Лист2 ничего нет.
 const HERO_VIDEO_ID_DEFAULT = '';                          // YouTube ID по умолчанию
 const TIMER_CONFIG_DEFAULT  = '{"mode":"float","days":3}'; // JSON конфига таймера
 
-// Всегда возвращает URL авторизации через Cloudflare Worker (секреты на сервере)
+// Всегда возвращает актуальный URL скрипта (из adminpanel или дефолт)
 function getScriptUrl() {
-  return '/api/auth';
+  return localStorage.getItem('bs_script_url') || LOG_SCRIPT_URL;
 }
 
 // ── Возвращает актуальный конфиг таймера ─────────────────────────
@@ -39,7 +38,7 @@ const DEFAULT_COLORS = ['#e31e24','#9d4ed0','#0055ff','#22c48a','#f5c842','#ff5c
 // ══════════════════════════════ STATE ══════════════════════════════
 let lang               = 'ru';
 let currentUser        = null;
-let gsSheetId          = localStorage.getItem('gs_sheet_id') || ''; // ID управляется через Worker, хранится в localStorage только для admin-панели
+let gsSheetId          = localStorage.getItem('gs_sheet_id') || SHEET_ID_DEFAULT;
 let courses            = [];
 let currentCourseIdx   = null;
 let currentLessonIndex = 0;

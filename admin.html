@@ -496,47 +496,19 @@
   }
 
   async function checkAdminPw() {
-    // --- Rate limiting (клиентский барьер) ---
-    const ADMIN_ATTEMPTS_KEY = 'admin_attempts';
-    const ADMIN_BLOCK_KEY    = 'admin_block_until';
-    const MAX_ADMIN_ATTEMPTS = 3;
-    const ADMIN_BLOCK_MS     = 15 * 60 * 1000; // 15 минут
-
-    const errEl    = document.getElementById('pw-error');
-    const input    = document.getElementById('admin-pw-input');
-    const blockUntil = parseInt(sessionStorage.getItem(ADMIN_BLOCK_KEY) || '0', 10);
-    if (Date.now() < blockUntil) {
-      const mins = Math.ceil((blockUntil - Date.now()) / 60000);
-      if (errEl) { errEl.textContent = `❌ Слишком много попыток. Подождите ${mins} мин.`; errEl.style.display = 'block'; }
-      if (input) input.value = '';
-      return;
-    }
-    // --- Конец rate limiting ---
-
+    const input = document.getElementById('admin-pw-input');
+    const errEl = document.getElementById('pw-error');
     const pw = input ? input.value : '';
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
     const hash = [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2,'0')).join('');
     const HASH = '7404297e91a4ab5b540fceefb2c0030cc24965b1ac4591c774435421b5d8b9ad';
-
     if (hash === HASH) {
-      sessionStorage.removeItem(ADMIN_ATTEMPTS_KEY);
-      sessionStorage.removeItem(ADMIN_BLOCK_KEY);
       document.getElementById('admin-gate').style.display = 'none';
       document.getElementById('admin-panel').style.display = 'block';
       _loadAdminFields();
     } else {
-      const attempts = parseInt(sessionStorage.getItem(ADMIN_ATTEMPTS_KEY) || '0', 10) + 1;
-      if (attempts >= MAX_ADMIN_ATTEMPTS) {
-        sessionStorage.setItem(ADMIN_BLOCK_KEY, Date.now() + ADMIN_BLOCK_MS);
-        sessionStorage.removeItem(ADMIN_ATTEMPTS_KEY);
-        if (errEl) { errEl.textContent = '❌ Аккаунт заблокирован на 15 минут'; errEl.style.display = 'block'; }
-      } else {
-        sessionStorage.setItem(ADMIN_ATTEMPTS_KEY, attempts);
-        const left = MAX_ADMIN_ATTEMPTS - attempts;
-        if (errEl) { errEl.textContent = `❌ Неверный пароль. Осталось попыток: ${left}`; errEl.style.display = 'block'; }
-      }
-      // После ошибки — очистить поле и поставить фокус
-      setTimeout(() => { if (input) { input.value = ''; input.focus(); } }, 500);
+      if (errEl) { errEl.textContent = '❌ Неверный пароль. Проверьте: латинская N, цифры 20020216, два символа $$ в конце. Введено символов: ' + pw.length; errEl.style.display = 'block'; }
+      // НЕ очищаем поле — чтобы можно было увидеть что введено
     }
   }
 
