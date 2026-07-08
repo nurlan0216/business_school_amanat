@@ -705,6 +705,8 @@ function openAdmin() {
   $('admin-gs-input').value = gsSheetId;
   const scriptInput = $('admin-script-input');
   if (scriptInput) scriptInput.value = localStorage.getItem('bs_script_url') || LOG_SCRIPT_URL;
+  const keyInput = $('admin-key-input');
+  if (keyInput) keyInput.value = localStorage.getItem('bs_admin_key') || '';
   const vid = localStorage.getItem('bs_hero_video_id') || '';
   const vidInput = $('admin-video-id-input');
   if (vidInput) vidInput.value = vid;
@@ -719,6 +721,11 @@ function saveAdmin() {
     localStorage.setItem('bs_script_url', scriptInput.value.trim());
     showToast('✅ Сохранено! Script URL обновлён.', 'success');
   } else { showToast(t('savedOk'), 'success'); }
+  const keyInput = $('admin-key-input');
+  if (keyInput) {
+    if (keyInput.value.trim()) localStorage.setItem('bs_admin_key', keyInput.value.trim());
+    else localStorage.removeItem('bs_admin_key');
+  }
   closeModal('admin-modal');
   loadSheet2();
 }
