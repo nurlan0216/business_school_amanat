@@ -1055,37 +1055,19 @@
   }
 
   async function loadStudents(queryAfterLoad) {
-    const gsId = localStorage.getItem('gs_sheet_id') || '';
     const st   = document.getElementById('admin-students-status');
     const wrap = document.getElementById('admin-students-table-wrap');
-    if (!gsId) { if (st) { st.textContent = '⚠ Google Sheets ID не задан.'; st.style.display = 'block'; } return; }
     if (st) { st.textContent = '⏳ Загружаю студентов...'; st.style.display = 'block'; }
     try {
-      const url = `https://docs.google.com/spreadsheets/d/${gsId}/gviz/tq?tqx=out:csv&sheet=Лист1&_cb=${Date.now()}`;
+      // Список студентов больше не читается напрямую из Google Sheets
+      // (таблица «Доступ» закрыта) — только через защищённый /api/students,
+      // который на сервере (Worker) добавляет секретный ключ к запросу в Apps Script.
       const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 25000);
-      let res;
-      try { res = await fetch(url, { signal: ctrl.signal }); }
-      catch(fetchErr) {
-        // Fallback: попробуем через Apps Script
-        const scriptUrl = localStorage.getItem('bs_script_url') || '';
-        if (scriptUrl) {
-          const ctrl2 = new AbortController(); setTimeout(() => ctrl2.abort(), 20000);
-          const r2 = await fetch(scriptUrl + '?action=getStudentList', { signal: ctrl2.signal });
-          if (!r2.ok) throw fetchErr;
-          res = r2;
-        } else { throw fetchErr; }
-      }
-      if (!res.ok) throw new Error('HTTP ' + res.status + '. Убедитесь, что таблица открыта для просмотра (Поделиться → Все с ссылкой → Читатель)');
-      const csv = await res.text();
-      const rows = _parseStudentCSV(csv);
-      _allStudents = rows.slice(1).filter(r => r[0] && r[0].replace(/\D/g,'').length >= 10).map(r => ({
-        iin:    (r[0] || '').replace(/"/g,'').trim(),
-        name:   (r[1] || '').replace(/"/g,'').trim(),
-        phone:  (r[3] || '').replace(/"/g,'').trim(),
-        statusA:(r[10] || '').trim(),
-        statusP:(r[11] || '').trim(),
-        blocked:(r[3] || '').toUpperCase().includes('НАРУШЕНИЕ'),
-      }));
+      const res = await fetch('/api/students', { signal: ctrl.signal });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'Ошибка получения списка студентов');
+      _allStudents = (data.students || []);
       _lastStudentsLoad = Date.now();
       const q = queryAfterLoad || (document.getElementById('admin-students-search') || {}).value || '';
       if (q) {
@@ -1103,7 +1085,7 @@
     } catch(e) {
       const isAbort = e.name === 'AbortError' || e.message.includes('aborted');
       const msg = isAbort
-        ? '❌ Таймаут. Убедитесь что таблица открыта (Поделиться → Все с ссылкой → Читатель), затем попробуйте снова.'
+        ? '❌ Таймаут. Проверьте, что Apps Script и ADMIN_KEY настроены верно, затем попробуйте снова.'
         : '❌ Ошибка загрузки: ' + e.message;
       if (st) st.textContent = msg;
     }

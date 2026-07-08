@@ -2,8 +2,11 @@
 //
 // Переменные среды задаются в Cloudflare Dashboard →
 //   Pages → Settings → Environment variables:
-//     SHEET_ID   = <ваш Sheet ID>
-//     SCRIPT_URL = <ваш Apps Script URL>
+//     SHEET_ID   = ID таблицы «Уроки» (только уроки/настройки сайта, без личных данных)
+//     SCRIPT_URL = ваш Apps Script URL (веб-приложение)
+//     ADMIN_KEY  = тот же секретный ключ, что и ADMIN_KEY в Apps Script —
+//                  нужен, чтобы админка могла получить список студентов,
+//                  не читая таблицу «Доступ» напрямую из браузера.
 //
 // БЕЗ переменных Worker вернёт 500 — это намеренно (секреты не должны быть в коде).
 
@@ -16,6 +19,7 @@ export default {
 
     const SHEET_ID   = env.SHEET_ID;
     const SCRIPT_URL = env.SCRIPT_URL;
+    const ADMIN_KEY  = env.ADMIN_KEY;
 
     if (!SHEET_ID || !SCRIPT_URL) {
       return new Response('Worker environment variables not configured', { status: 500 });
@@ -54,6 +58,20 @@ export default {
       const csv = await upstream.text();
       return new Response(csv, {
         headers: { 'Content-Type': 'text/plain;charset=utf-8', ...corsHeaders }
+      });
+    }
+
+    // === /api/students — список студентов для админки (защищено ADMIN_KEY на сервере) ===
+    if (url.pathname === '/api/students' && request.method === 'GET') {
+      if (!ADMIN_KEY) {
+        return new Response(JSON.stringify({ ok: false, error: 'ADMIN_KEY not configured' }), {
+          status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+      const upstream = await fetch(`${SCRIPT_URL}?action=getStudentList&key=${encodeURIComponent(ADMIN_KEY)}`);
+      const data = await upstream.json();
+      return new Response(JSON.stringify(data), {
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
       });
     }
 

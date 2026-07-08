@@ -8,8 +8,8 @@
 'use strict';
 
 // ══════════════════════════════ CONSTANTS ══════════════════════════
-const SHEET_ID_DEFAULT = '1_y_qWhuJPybW3hPo91t3bRNu-xd0LS3dojfZbI8fk1A';
-const LOG_SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbzquiIN65v9o4brc8Eve9lKRAJc3qAnb24u0zBt876tU2kEdE74MkF9AG-PFR1omALq/exec';
+const SHEET_ID_DEFAULT = '16oQKh2SxwtNCNDAFr1lOg-3wdnkd-Lvago7S4ZyRpis';
+const LOG_SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbw70U3y7CRr18ig-87FILlYQK2syJ539pbONP-5JEyC8NegaZ0GjvI-ZXA4F2x19xPolQ/exec;
 
 // ── Запасные значения настроек ────────────────────────────────────
 // Вступают в силу только если в localStorage и в Лист2 ничего нет.

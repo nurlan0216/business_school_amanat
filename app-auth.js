@@ -23,8 +23,8 @@ function parseCSV(text) {
 const strip = s => (s || '').replace(/^"|"$/g, '').trim();
 
 // ══════════════════════════════ SECURITY LIVE MONITOR ═════════════
-// Проверяет статус каждые 2 минуты: сначала через Apps Script,
-// при ошибке — напрямую из Google Sheets (Лист1).
+// Проверяет статус каждые 2 минуты через Apps Script (таблица «Доступ» закрыта
+// от прямого чтения из браузера — это защищает персональные данные студентов).
 // Различает: 🚫 ЗАБЛОКИРОВАНО / 🚫 НАРУШЕНИЕ → сообщение о нарушении.
 function startSecurityMonitor() {
   if (securityCheckInterval) clearInterval(securityCheckInterval);
@@ -51,41 +51,12 @@ function startSecurityMonitor() {
         if (!result.isAllowed || !result.isPaid) { triggerInstantBlock('noaccess'); return; }
         return;
       }
-    } catch (e) { console.warn('[monitor] Apps Script unavailable, falling back to Sheets:', e.message); }
-
-    // -- Попытка 2: прямая проверка Лист1 ------------------------------
-    try {
-      const ctrl2 = new AbortController();
-      const tid2  = setTimeout(() => ctrl2.abort(), 10000);
-      let res2;
-      try { res2 = await fetch('https://docs.google.com/spreadsheets/d/' + gsSheetId + '/gviz/tq?tqx=out:csv&sheet=Лист1&_cb=' + Date.now(), { signal: ctrl2.signal }); }
-      finally { clearTimeout(tid2); }
-      if (!res2.ok) return;
-      const csv  = await res2.text();
-      const rows = parseCSV(csv);
-      const matchIin = currentIin.replace(/\D/g, '').trim();
-      let found = false;
-      for (const row of rows) {
-        const rowIin = (row[0] || '').replace(/\D/g, '').trim();
-        if (rowIin !== matchIin) continue;
-        found = true;
-        // Колонка D (row[3]): НАРУШЕНИЕ перед номером → определяем тип по statusP
-        const _rawD3  = (row[3] || '').trim();
-        const statusA = (row[10] || '').toUpperCase();
-        const statusP = (row[11] || '').toUpperCase();
-        if (/^НАРУШЕНИЕ\s*/i.test(_rawD3)) {
-          triggerInstantBlock(statusP.includes('МУЛЬТИАККАУНТ') ? 'leak' : 'violation');
-          return;
-        }
-        const isBlocked   = statusA.includes('ЗАБЛОКИ') || statusA.includes('БҰҒАТТА');
-        const isAllowed   = statusA.includes('РАЗРЕШЕНО') || statusA.includes('РҰҚСАТ');
-        const isPaid      = statusP.includes('ОПЛАЧЕНО')  || statusP.includes('ТӨЛЕНДІ');
-        if (isBlocked)             { triggerInstantBlock('violation'); return; }
-        if (!isAllowed || !isPaid) { triggerInstantBlock('noaccess');  return; }
-        break;
-      }
-      if (!found) triggerInstantBlock('notfound');
-    } catch (e2) { console.warn('[monitor] Sheets direct check failed:', e2.message); }
+    } catch (e) {
+      // Apps Script недоступен — таблица «Доступ» больше не публична,
+      // поэтому прямой резервной проверки нет (это и есть защита персональных
+      // данных студентов). Просто пропускаем эту итерацию проверки.
+      console.warn('[monitor] Apps Script unavailable, skipping this check:', e.message);
+    }
   }, 120000);
 }
 
@@ -541,55 +512,15 @@ async function doLogin() {
     isPaid    = !!result.isPaid;
     isAllowed = !!result.isAllowed;
   } catch (e) {
-    console.warn('Apps Script unavailable, trying direct sheet fallback:', e.message);
-    try {
-      await animProg(40, 42, 100, steps[1]);
-      const sheetUrl = `https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:csv&sheet=Лист1`;
-      const ctrl2 = new AbortController();
-      const ctrl2Timer = setTimeout(() => ctrl2.abort(), 12000);
-      let res2;
-      try { res2 = await fetch(sheetUrl, { signal: ctrl2.signal }); }
-      finally { clearTimeout(ctrl2Timer); }
-      if (!res2.ok) throw new Error('sheet_http_' + res2.status);
-      const csv  = await res2.text();
-      const rows = parseCSV(csv);
-      const normPhone = p => { let d = (p||'').replace(/\D/g,''); if (d.length === 11 && d[0] === '8') d = '7' + d.slice(1); if (d.length === 10) d = '7' + d; return d; };
-      const matchIin = iin.replace(/\D/g,'').trim(), matchPhone = normPhone(phone);
-      let found = false;
-      for (const row of rows) {
-        const rowIin = (row[0]||'').replace(/\D/g,'').trim();
-        if (rowIin !== matchIin) continue;
-        found = true;
-        // Колонка D: проверяем префикс НАРУШЕНИЕ перед номером телефона
-        const rawD   = (row[3]||'').trim();
-        const _sA    = (row[10]||'').toUpperCase();
-        const _sP    = (row[11]||'').toUpperCase();
-        if (/^НАРУШЕНИЕ\s*/i.test(rawD)) {
-          finishLogin(btn, true);
-          triggerInstantBlock(_sP.includes('МУЛЬТИАККАУНТ') ? 'leak' : 'violation');
-          return;
-        }
-        const rowPhone = normPhone(rawD.replace(/^НАРУШЕНИЕ\s*/i, ''));
-        if (rowPhone && matchPhone && rowPhone !== matchPhone) { finishLogin(btn, true); showMsg('error', t('errNotFound')); return; }
-        foundName = (row[1]||'').trim() || name;
-        const statusA = _sA || (row[10]||'').toUpperCase();
-        const statusP = _sP || (row[11]||'').toUpperCase();
-        // Проверяем блокировку
-        const _isBlocked = statusA.includes('ЗАБЛОКИ') || statusA.includes('БҰҒАТТА');
-        if (_isBlocked) { finishLogin(btn, true); triggerInstantBlock('violation'); return; }
-        isAllowed = statusA.includes('✅') && (statusA.includes('РАЗРЕШЕНО') || statusA.includes('РҰҚСАТ'));
-        isPaid    = statusP.includes('✅') && (statusP.includes('ОПЛАЧЕНО')  || statusP.includes('ТӨЛЕНДІ'));
-        break;
-      }
-      if (!found) { finishLogin(btn, true); showMsg('error', t('errNotFound')); return; }
-      scriptOk = true;
-    } catch(e2) {
-      await animProg(40, 40, 50, '');
-      btn.disabled = false; btn.classList.remove('loading');
-      pgw.style.display = 'none'; if (pg) pg.classList.remove('active');
-      showMsg('error', (e2.name === 'AbortError') ? t('errSheetUnavailable') : t('errNetwork'));
-      return;
-    }
+    // Apps Script недоступен. Таблица «Доступ» больше не публична (это и есть
+    // защита персональных данных студентов), поэтому прямого резервного чтения
+    // Google Sheets больше нет — честно показываем ошибку и просим повторить.
+    console.warn('Apps Script unavailable:', e.message);
+    await animProg(40, 40, 50, '');
+    btn.disabled = false; btn.classList.remove('loading');
+    pgw.style.display = 'none'; if (pg) pg.classList.remove('active');
+    showMsg('error', (e.name === 'AbortError') ? t('errSheetUnavailable') : t('errNetwork'));
+    return;
   }
 
   await animProg(40, 60, 300, steps[2]); markStep(2);
