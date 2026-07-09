@@ -9,7 +9,7 @@
 
 // ══════════════════════════════ CONSTANTS ══════════════════════════
 const SHEET_ID_DEFAULT = '16oQKh2SxwtNCNDAFr1lOg-3wdnkd-Lvago7S4ZyRpis';
-const LOG_SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbx35ZNMGS-tKjgb-wbPTRzFP62Ios3NbgDkmSCJfGFCEfXvzJ1coguV5zDslDSXQygbLQ/exec';
+const LOG_SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbwDwjPqtohPzog9XyYoWNBOn9tMLnSOVuOdfEGezjIkpTzK_ZN-kw2h0D0O_o3WB5-Npw/exec';
 
 // ── Запасные значения настроек ────────────────────────────────────
 // Вступают в силу только если в localStorage и в Лист2 ничего нет.
