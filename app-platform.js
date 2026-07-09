@@ -109,7 +109,7 @@ function renderCoursesGrid() {
     const name       = lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ);
     const lessons    = lang === 'kz' ? course.lessonsKZ : course.lessonsRU;
     const videoCount = lessons.filter(l => l.type === 'video').length;
-    const color      = course.hexColor || DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
+    const color      = safeHexColor(course.hexColor, DEFAULT_COLORS[idx % DEFAULT_COLORS.length]);
     const initials   = name.substring(0, 2).toUpperCase();
     const delay      = fi * 0.06;
     const prog       = getCourseProgress(idx);
@@ -122,8 +122,9 @@ function renderCoursesGrid() {
     const subtitleHtml = subtitle ? `<p class="pc-subtitle">${subtitle}</p>` : '';
     const kzBadgeText = lang === 'kz' ? 'Қазақ тілінде' : 'На казах. языке';
     const kzBadge    = (nameKey.includes('амери') || nameKey.includes('america')) ? `<span class="pc-kz-badge">${kzBadgeText}</span>` : '';
-    const iconHtml   = course.iconUrl
-      ? `<img src="${course.iconUrl}" alt="${escHtml(name)}" loading="lazy" onerror="this.style.display='none'">`
+    const safeIcon   = safeIconUrl(course.iconUrl);
+    const iconHtml   = safeIcon
+      ? `<img src="${safeIcon}" alt="${escHtml(name)}" loading="lazy" onerror="this.style.display='none'">`
       : initials;
     const progressBlock = videoCount > 0 ? `
       <div class="pc-progress-wrap">
@@ -206,7 +207,7 @@ function openLesson(idx) {
 
   const course = courses[idx];
   const name   = lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ);
-  const color  = course.hexColor || DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
+  const color  = safeHexColor(course.hexColor, DEFAULT_COLORS[idx % DEFAULT_COLORS.length]);
 
   const modal = $('lesson-modal').querySelector('.modal');
   if (modal) modal.style.setProperty('--card-accent-modal', color);
@@ -240,7 +241,7 @@ function updateModalProgress(idx) {
 // ══ LESSON LIST ═══════════════════════════════════════════════════
 function renderLessonList(idx) {
   const lessons  = getLessons(idx);
-  const color    = courses[idx]?.hexColor || DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
+  const color    = safeHexColor(courses[idx]?.hexColor, DEFAULT_COLORS[idx % DEFAULT_COLORS.length]);
   const query    = lessonSearchQuery.toLowerCase().trim();
   let videoSeq   = 0, hasResults = false;
 
@@ -815,10 +816,11 @@ function renderDemoCards() {
   }
   grid.innerHTML = courses.map((course, idx) => {
     const name  = lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ);
-    const color = course.hexColor || DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
+    const color = safeHexColor(course.hexColor, DEFAULT_COLORS[idx % DEFAULT_COLORS.length]);
     const initials = name.substring(0, 2).toUpperCase();
-    const iconHtml = course.iconUrl
-      ? `<img src="${course.iconUrl}" alt="${escHtml(name)}" loading="lazy" onerror="this.style.display='none'">`
+    const safeIcon2 = safeIconUrl(course.iconUrl);
+    const iconHtml = safeIcon2
+      ? `<img src="${safeIcon2}" alt="${escHtml(name)}" loading="lazy" onerror="this.style.display='none'">`
       : initials;
     const lessons = lang === 'kz' ? course.lessonsKZ : course.lessonsRU;
     return `<div class="demo-card" style="--demo-accent:${color};--demo-glow:${hexToRgba(color,0.05)}" onclick="openDemoLesson(${idx})">
@@ -845,7 +847,7 @@ function openDemoLesson(idx) {
   const course = courses[idx];
   if (!course) return;
   const name    = lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ);
-  const color   = course.hexColor || DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
+  const color   = safeHexColor(course.hexColor, DEFAULT_COLORS[idx % DEFAULT_COLORS.length]);
   const lessons = lang === 'kz' ? course.lessonsKZ : course.lessonsRU;
   const first   = lessons.find(l => l.type === 'video');
   if (!first || !first.url) { showToast(t('demoUnavailable'), 'error'); return; }
@@ -1355,7 +1357,7 @@ function showResumeBeacon() {
     const next = vl[nextIdx];
     const course = courses[ci];
     const name = lang === 'kz' ? (course.nameKZ || course.nameRU) : (course.nameRU || course.nameKZ);
-    const color = course.hexColor || DEFAULT_COLORS[ci % DEFAULT_COLORS.length];
+    const color = safeHexColor(course.hexColor, DEFAULT_COLORS[ci % DEFAULT_COLORS.length]);
     const lessons = lang === 'kz' ? course.lessonsKZ : course.lessonsRU;
     let vNum = 0;
     for (let i = 0; i < next.absIdx; i++) if (lessons[i].type === 'video') vNum++;

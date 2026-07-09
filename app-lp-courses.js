@@ -136,7 +136,9 @@ function _findCourseIcon(matchKey) {
     const nameKZ = (c.nameKZ || '').toLowerCase();
     return nameRU.includes(key) || nameKZ.includes(key);
   });
-  return (found && found.iconUrl) ? found.iconUrl : null;
+  // ⚠️ iconUrl приходит из Google Sheets (изменяемо через админ-панель) —
+  // валидируем/экранируем перед вставкой в HTML-атрибут (защита от XSS).
+  return (found && found.iconUrl) ? safeIconUrl(found.iconUrl) : null;
 }
 
 // ── Рендер иконки: из Sheets или fallback-эмодзи ────────────

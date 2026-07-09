@@ -9,7 +9,7 @@
 
 // ══════════════════════════════ CONSTANTS ══════════════════════════
 const SHEET_ID_DEFAULT = '16oQKh2SxwtNCNDAFr1lOg-3wdnkd-Lvago7S4ZyRpis';
-const LOG_SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbw9tCD903JcFL-PG63t3svFqVYIj4PAQJ0xl7JQfovilUhh4vEgk8ojJ_LLOe_rQdxw1A/exec';
+const LOG_SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbx35ZNMGS-tKjgb-wbPTRzFP62Ios3NbgDkmSCJfGFCEfXvzJ1coguV5zDslDSXQygbLQ/exec';
 
 // ── Запасные значения настроек ────────────────────────────────────
 // Вступают в силу только если в localStorage и в Лист2 ничего нет.
@@ -838,6 +838,19 @@ function escHtml(s) {
 }
 function safeAttr(s) {
   return (s || '').replace(/'/g, '&apos;').replace(/"/g, '&quot;');
+}
+// ⚠️ Данные о курсах (иконки/цвета) приходят из Google Sheets и могут быть
+// изменены через админ-панель/Apps Script — поэтому перед вставкой в HTML-атрибуты
+// их нужно валидировать (защита от XSS через iconUrl/hexColor).
+function safeIconUrl(url) {
+  const u = String(url || '').trim();
+  if (!/^https:\/\//i.test(u) && !/^data:image\//i.test(u)) return '';
+  // экранируем спецсимволы, которые могли бы вырваться из атрибута src="..."
+  return escHtml(u);
+}
+function safeHexColor(color, fallback) {
+  const c = String(color || '').trim();
+  return /^#[0-9a-fA-F]{3}$|^#[0-9a-fA-F]{6}$/.test(c) ? c : fallback;
 }
 const easeOut = t => 1 - Math.pow(1 - t, 3);
 
