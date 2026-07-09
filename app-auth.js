@@ -23,7 +23,7 @@ function parseCSV(text) {
 const strip = s => (s || '').replace(/^"|"$/g, '').trim();
 
 // ══════════════════════════════ SECURITY LIVE MONITOR ═════════════
-// Проверяет статус каждые 2 минуты через Apps Script (таблица «Доступ» закрыта
+// Проверяет статус каждые 30 секунд через Apps Script (таблица «Доступ» закрыта
 // от прямого чтения из браузера — это защищает персональные данные студентов).
 // Различает: 🚫 ЗАБЛОКИРОВАНО / 🚫 НАРУШЕНИЕ → сообщение о нарушении.
 function startSecurityMonitor() {
@@ -57,7 +57,7 @@ function startSecurityMonitor() {
       // данных студентов). Просто пропускаем эту итерацию проверки.
       console.warn('[monitor] Apps Script unavailable, skipping this check:', e.message);
     }
-  }, 120000);
+  }, 30000);
 }
 
 function triggerInstantBlock(reason) {
