@@ -1071,13 +1071,7 @@
     try {
       // Список студентов запрашивается напрямую из Apps Script (без Cloudflare-прокси,
       // так как сайт хостится на GitHub Pages, где серверный код не выполняется).
-      // ADMIN_KEY хранится в localStorage этого браузера (см. настройки → Admin Key)
-      // и передаётся Apps Script для проверки прав на выдачу списка студентов.
       const adminKey = localStorage.getItem('bs_admin_key') || '';
-      if (!adminKey) {
-        if (st) st.textContent = '❌ Не задан Admin Key. Откройте «Настройки подключения» и укажите ADMIN_KEY.';
-        return;
-      }
       const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 25000);
       const apiUrl = getScriptUrl() + '?action=getStudentList&key=' + encodeURIComponent(adminKey);
       const res = await fetch(apiUrl, { signal: ctrl.signal });
