@@ -119,7 +119,7 @@ const LP_COURSE_DATA = {
         ru: 'Продажи на американском рынке.',
         kz: 'Американдық нарықта сату.'
       },
-      langTag: { ru: 'На казах. языке · Америка сабақтары', kz: 'Қазақ тілінде · Америка сабақтары' },
+      langTag: { ru: 'Курс на казахском языке', kz: '' },
       matchKey: 'америка'
     }
   ]
@@ -214,10 +214,17 @@ function applyLpCourseCards() {
       sublistEl.innerHTML = items.map(item => `<li>${item}</li>`).join('');
     }
 
-    // Языковой тег (Америка)
+    // Языковой тег (Америка) — на KZ-версии скрываем: уточнение "на казахском" излишне,
+    // когда весь сайт уже переключён на казахский язык
     const langTagEl = card.querySelector('.lp-course-lang-tag');
     if (langTagEl && data.langTag) {
-      langTagEl.textContent = data.langTag[l] || data.langTag.ru;
+      const text = data.langTag[l];
+      if (text) {
+        langTagEl.textContent = text;
+        langTagEl.style.display = '';
+      } else {
+        langTagEl.style.display = 'none';
+      }
     }
   });
 }
