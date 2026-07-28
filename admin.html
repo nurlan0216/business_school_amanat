@@ -332,33 +332,6 @@
         <strong>🔄 Сбросить таймер</strong> — удаляет сохранённый дедлайн из браузера. При следующем открытии лендинга таймер запустится заново по текущим настройкам.
       </div>
     </div>
-    <!-- ══ AI КАЛЬКУЛЯТОР (Claude API key) ════════════════════════════ -->
-    <div class="admin-video-block" style="margin-top:20px">
-      <div class="admin-video-block-header">
-        <span class="admin-video-block-icon">🤖</span>
-        <div>
-          <div class="admin-video-block-title">AI Калькулятор (Claude API)</div>
-          <div class="admin-video-block-sub">Ключ для работы AI-прогноза доходов в калькуляторе лендинга</div>
-        </div>
-      </div>
-      <div class="field" style="margin-top:14px">
-        <label class="field-label">API Key</label>
-        <div class="field-wrap">
-          <input type="password" id="admin-anthropic-key-input" class="field-input" placeholder="sk-ant-..." style="padding-left:16px">
-          <div class="field-border-anim"></div>
-        </div>
-      </div>
-      <div class="admin-video-hint">
-        <strong>⚠️ Важно:</strong> Ключ хранится в localStorage браузера администратора. Для продакшна рекомендуется проксировать запросы через backend, чтобы ключ не был виден в DevTools клиентов.<br><br>
-        Получить ключ: <a href="https://console.anthropic.com" target="_blank" rel="noopener" style="color:var(--gold)">console.anthropic.com</a>
-      </div>
-      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
-        <button onclick="saveAnthropicKey()" class="login-btn" style="flex:1;min-width:120px">
-          <span class="btn-content"><span>💾 Сохранить ключ</span></span>
-        </button>
-      </div>
-    </div>
-
     <div id="admin-save-msg" class="msg" style="margin-top:12px;display:none"></div>
 
     <!-- ══ СТУДЕНТЫ ══════════════════════════════════════════════ -->

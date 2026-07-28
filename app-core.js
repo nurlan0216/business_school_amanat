@@ -520,63 +520,6 @@ function applyTexts() {
   setText('lp-timer-unit-m', t('lpTimerUnitM'));
   setText('lp-timer-unit-s', t('lpTimerUnitS'));
 
-  // ── Калькулятор ──
-  setText('lp-calc-label',      t('lpCalcLabel'));
-  setText('lp-calc-h',          t('lpCalcH'));
-  setText('lp-calc-desc',       t('lpCalcDesc'));
-  setText('lp-calc-lbl-market', t('lpCalcLblMarket'));
-  setText('lp-calc-cta-text',   t('lpCalcCtaText'));
-  const calcBtnEl = document.querySelector('#lp-calc-ai-btn .lp-calc-ai-btn-text');
-  if (calcBtnEl) calcBtnEl.textContent = t('lpCalcBtnText');
-  const calcInput = document.getElementById('lp-calc-input');
-  if (calcInput) calcInput.placeholder = t('lpCalcInputPlaceholder');
-  const calcStepLabel = document.querySelector('.lp-calc-step-label');
-  if (calcStepLabel) { const spans = calcStepLabel.querySelectorAll('span'); if (spans.length >= 2) spans[1].textContent = t('lpCalcStepLabel'); }
-  const calcEmptyText = document.querySelector('.lp-calc-empty-text');
-  if (calcEmptyText) calcEmptyText.innerHTML = t('lpCalcEmptyText').replace('\n', '<br>');
-  const calcResHeaderText = document.querySelector('.lp-calc-res-header-text');
-  if (calcResHeaderText) {
-    let prodStrong = calcResHeaderText.querySelector('#lp-calc-product-name');
-    if (!prodStrong) { prodStrong = document.createElement('strong'); prodStrong.id = 'lp-calc-product-name'; prodStrong.textContent = '—'; }
-    else { prodStrong.remove(); }
-    calcResHeaderText.textContent = t('lpCalcResHeader');
-    calcResHeaderText.appendChild(prodStrong);
-  }
-  const aiInsightLabel = document.querySelector('.lp-calc-ai-insight-label');
-  if (aiInsightLabel) aiInsightLabel.innerHTML = '<span aria-hidden="true">✦</span> ' + escHtml(t('lpCalcAiLabel'));
-  const barLbls = document.querySelectorAll('.lp-calc-bar-lbl');
-  const monthKeys = ['lpCalcMonth1', 'lpCalcMonth2', 'lpCalcMonth3'];
-  barLbls.forEach((el, i) => { if (monthKeys[i]) el.textContent = t(monthKeys[i]); });
-  const summaryLbls = document.querySelectorAll('.lp-calc-summary-lbl');
-  const summaryKeys = ['lpCalcRevenueLbl', 'lpCalcProfitLbl', 'lpCalcCapitalLbl'];
-  summaryLbls.forEach((el, i) => { if (summaryKeys[i]) el.textContent = t(summaryKeys[i]); });
-  const calcTipsTitle = document.querySelector('.lp-calc-tips-title');
-  if (calcTipsTitle) calcTipsTitle.textContent = t('lpCalcTipsTitle');
-  const calcDisc = document.querySelector('.lp-calc-disclaimer');
-  if (calcDisc) calcDisc.textContent = t('lpCalcDisc');
-  const calcRetryBtn = document.querySelector('.lp-calc-retry-btn');
-  if (calcRetryBtn) {
-    let textNode = null;
-    calcRetryBtn.childNodes.forEach(n => {
-      if (n.nodeType === Node.TEXT_NODE) textNode = n;
-    });
-    if (textNode) {
-      textNode.textContent = ' ' + t('lpCalcRetry');
-    } else {
-      calcRetryBtn.appendChild(document.createTextNode(' ' + t('lpCalcRetry')));
-    }
-  }
-  const calcTagEls = document.querySelectorAll('.lp-calc-tag');
-  const tagKeys = ['lpCalcTag1', 'lpCalcTag2', 'lpCalcTag3', 'lpCalcTag4', 'lpCalcTag5', 'lpCalcTag6'];
-  const tagRawKz = ['Балалар шұлықтары','Қол кремі','Телефон қапшығы','Төсек-орын жабдықтары','Антистресс','Су бутылкасы'];
-  const tagRawRu = ['Детские носки','Крем для рук','Чехол для телефона','Постельное бельё','Игрушка антистресс','Спортивная бутылка'];
-  calcTagEls.forEach((btn, i) => {
-    if (i >= tagKeys.length) return;
-    btn.textContent = t(tagKeys[i]);
-    const raw = (lang === 'kz' ? tagRawKz[i] : tagRawRu[i]) || '';
-    if (raw) btn.setAttribute('onclick', `setCalcProduct('${raw.replace(/'/g, "\\'")}')`);
-  });
-
   // ── Сравнение ──
   setText('lp-cmp-label',      t('lpCmpLabel'));
   setText('lp-cmp-h',          t('lpCmpH'));
@@ -621,32 +564,6 @@ function applyTexts() {
   setText('lp-popup-sub',     t('lpPopupSub'));
   setText('lp-popup-wa-text', t('lpPopupWaText'));
   setText('lp-popup-skip',    t('lpPopupSkip'));
-
-  // ── Калькулятор — ID-based ──
-  // Примечание: lp-calc-empty-text, lp-calc-disclaimer, lp-calc-ai-btn-text
-  // обновляются выше через querySelector (строки 505–539).
-  // lp-calc-retry-btn не имеет id — обновляется через querySelector на строке 533.
-  const calcStepNumEl = document.getElementById('lp-calc-step-num');
-  if (calcStepNumEl) calcStepNumEl.textContent = '1';
-  const calcStepLabelById = document.getElementById('lp-calc-step-label-text');
-  if (calcStepLabelById) calcStepLabelById.textContent = t('lpCalcStepLabel');
-  setText('lp-calc-bar-lbl-1', t('lpCalcMonth1'));
-  setText('lp-calc-bar-lbl-2', t('lpCalcMonth2'));
-  setText('lp-calc-bar-lbl-3', t('lpCalcMonth3'));
-  setText('lp-calc-summary-lbl-1', t('lpCalcRevenueLbl'));
-  setText('lp-calc-summary-lbl-2', t('lpCalcProfitLbl'));
-  setText('lp-calc-summary-lbl-3', t('lpCalcCapitalLbl'));
-  const aiInsightLabelById = document.getElementById('lp-calc-ai-insight-label');
-  if (aiInsightLabelById) aiInsightLabelById.innerHTML = '<span aria-hidden="true">✦</span> ' + escHtml(t('lpCalcAiLabel'));
-  setText('lp-calc-tips-title', t('lpCalcTipsTitle'));
-  const calcResHeaderById = document.getElementById('lp-calc-res-header-text');
-  if (calcResHeaderById) {
-    let prodStrong = calcResHeaderById.querySelector('#lp-calc-product-name');
-    if (!prodStrong) { prodStrong = document.createElement('strong'); prodStrong.id = 'lp-calc-product-name'; prodStrong.textContent = '—'; }
-    else { prodStrong.remove(); }
-    calcResHeaderById.textContent = t('lpCalcResHeader');
-    calcResHeaderById.appendChild(prodStrong);
-  }
 
   // ── Social proof ──
   const spToastActionEl = document.querySelector('.sp-toast-action');
